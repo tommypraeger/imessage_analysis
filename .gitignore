@@ -1,0 +1,13 @@
+# mac/editor stuff
+.DS_Store
+.vscode
+
+# python stuff
+venv
+__pycache__
+
+# my stuff
+message_data.csv
+member_data.csv
+correlation_matrix.csv
+user_data.py
