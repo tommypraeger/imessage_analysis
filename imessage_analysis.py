@@ -1,9 +1,13 @@
 import argparse
+import csv
+import datetime
 import sqlite3
 import time
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from constants import *
 from functions import *
@@ -21,9 +25,16 @@ parser.add_argument('--separate', action='store_true', help='separate phrase int
 parser.add_argument('--case-sensitive', action='store_true', help='make search case sensitive')
 parser.add_argument('--type', type=str, help='MIME type of message to search for')
 parser.add_argument('--print-messages', action='store_true', help='print found messages')
+parser.add_argument('--graph', type=str, help='name of graphs to make')
+parser.add_argument('--graph-individual', action='store_true', help='graph lines for each person in group')
 function_group = parser.add_mutually_exclusive_group()
 function_group.add_argument('--function', type=str, help='name of function to call')
 function_group.add_argument('--all-functions', action='store_true', help='call all functions')
+graph_time_periods = parser.add_mutually_exclusive_group()
+graph_time_periods.add_argument('--day', action='store_true', help='graph data by day')
+graph_time_periods.add_argument('--week', action='store_true', help='graph data by week')
+graph_time_periods.add_argument('--month', action='store_true', help='graph data by month')
+graph_time_periods.add_argument('--year', action='store_true', help='graph data by year')
 args = parser.parse_args()
 
 # Create SQL connection
@@ -116,6 +127,9 @@ if args.function and args.function not in FUNCTIONS:
 
 if not args.function and not args.all_functions and not args.phrase and not args.type:
     args.function = 'total'
+
+if args.graph and args.graph not in GRAPH_OPTIONS:
+    raise Exception('Invalid graph name')
 
 total_messages_dict = {}
 non_reaction_messages_dict = {}
@@ -424,6 +438,92 @@ if args.function == 'game' or args.all_functions:
             result_dict['% of messages that are game starts'].append(
                 round((game_starts / non_reaction_messages) * 100, 2)
             )
+
+if args.graph == 'frequency':
+    if not (args.day or args.week or args.month or args.year):
+        raise Exception('Must give time period length for graph')
+    
+    message_freqs = {
+        'Total': []
+    }
+    if args.graph_individual:
+        members = []
+        for member_name in CONTACT_NAME_TO_ID.keys():
+            if initialize_result_dict(member_name):
+                members.append(member_name)
+        for member in members:
+            message_freqs[member] = []
+    if args.day:
+        df['time_period'] = df['time'].apply(get_day)
+        time_period_name = 'day'
+    elif args.week:
+        df['time_period'] = df['time'].apply(get_week)
+        time_period_name = 'week'
+    elif args.month:
+        df['time_period'] = df['time'].apply(get_month)
+        time_period_name = 'month'
+    elif args.year:
+        df['time_period'] = df['time'].apply(get_year)
+        time_period_name = 'year'
+
+    day_fmt = '%m/%d/%y'
+    time_periods = sorted(
+        list(df['time_period'].unique()),
+        key=lambda date: datetime.datetime.strptime(date, day_fmt)
+    )
+    for time_period in time_periods:
+        message_freqs['Total'].append(len(
+            df[df['time_period'] == time_period]
+        ))
+        if args.graph_individual:
+            for member_name in members:
+                message_freqs[member_name].append(len(
+                    df[(df['time_period'] == time_period) & (df['sender'] == member_name)]
+                ))
+
+    plt.figure()
+    
+    x = [datetime.datetime.strptime(d, day_fmt).date() for d in time_periods]
+    ax = plt.gca()
+
+    if args.day or args.week:
+        ax.xaxis.set_major_formatter(mdates.DateFormatter(day_fmt))
+        ax.xaxis.set_major_locator(mdates.DayLocator())
+    elif args.month:
+        print('month')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
+    elif args.year:
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_minor_locator(mdates.MonthLocator())
+
+    for key in message_freqs:
+        plt.plot(x, message_freqs[key], label=key)
+
+    max_ticks = 20 if args.month or args.year else 10
+    if len(x) > max_ticks:
+        ax.xaxis.set_major_locator(plt.MaxNLocator(max_ticks))
+    
+    plt.title(f'{args.name}, by {time_period_name}')
+    plt.xlabel('Date')
+    plt.ylabel('# of Messages')
+    plt.legend()
+    plt.show()
+
+    message_freqs['Date'] = []
+    for time_period in time_periods:
+        message_freqs['Date'].append(time_period)
+    csv_file = 'message_frequencies.csv'
+    with open(csv_file, 'w') as f:
+        keys = message_freqs.keys()
+        w = csv.writer(f)
+        w.writerow(keys)
+        for idx in range(len(time_periods)):
+            line = []
+            for key in keys:
+                line.append(message_freqs[key][idx])
+            w.writerow(line)
 
 if args.phrase:
     PHRASE = args.phrase

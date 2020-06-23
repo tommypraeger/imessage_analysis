@@ -191,3 +191,18 @@ def is_game_start(msg, mime):
     if is_reaction(msg):
         return False
     return str(msg) == '�￼' and mime == 'image/jpeg'
+
+
+def get_day(date):
+    return f'{date.month}/{date.day}/{str(date.year)[-2:]}'
+
+
+def get_week(date):
+    last_monday = date - datetime.timedelta(days=date.weekday())
+    return f'{last_monday.month}/{last_monday.day}/{str(last_monday.year)[-2:]}'
+
+def get_month(date):
+    return f'{date.month}/1/{str(date.year)[-2:]}'
+
+def get_year(date):
+    return f'1/1/{str(date.year)[-2:]}'

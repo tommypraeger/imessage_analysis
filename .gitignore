@@ -10,4 +10,5 @@ __pycache__
 message_data.csv
 member_data.csv
 correlation_matrix.csv
+message_frequencies.csv
 user_data.py

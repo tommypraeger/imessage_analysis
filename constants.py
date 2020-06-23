@@ -18,6 +18,9 @@ FUNCTIONS = [
     'message series',
     'game'
 ]
+GRAPH_OPTIONS = [
+    'frequency'
+]
 REACTIONS = [
     'Laughed at',
     'Emphasized',
