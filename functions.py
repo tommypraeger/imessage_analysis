@@ -2,6 +2,7 @@ import datetime
 import re
 import string
 from statistics import mean
+from dateutil import relativedelta
 
 from emoji import UNICODE_EMOJI
 
@@ -204,5 +205,33 @@ def get_week(date):
 def get_month(date):
     return f'{date.month}/1/{str(date.year)[-2:]}'
 
+
 def get_year(date):
     return f'1/1/{str(date.year)[-2:]}'
+
+
+def get_time_periods(begin_date, end_date, time_period_name):
+    if time_period_name == 'day':
+        num_days = (end_date - begin_date).days
+        return [
+            get_day(begin_date + relativedelta.relativedelta(days=i))
+            for i in range(num_days + 1)
+        ]
+    if time_period_name == 'week':
+        num_weeks = (end_date - begin_date).days // 7
+        return [
+            get_week(begin_date + relativedelta.relativedelta(days=i*7))
+            for i in range(num_weeks + 1)
+        ]
+    if time_period_name == 'month':
+        num_months = (end_date.year - begin_date.year) * 12 + (end_date.month - begin_date.month)
+        return [
+            get_month(begin_date + relativedelta.relativedelta(months=i))
+            for i in range(num_months + 1)
+        ]
+    if time_period_name == 'year':
+        num_years = end_date.year - begin_date.year
+        return [
+            get_year(begin_date + relativedelta.relativedelta(years=i))
+            for i in range(num_years + 1)
+        ]

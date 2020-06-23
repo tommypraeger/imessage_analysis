@@ -467,10 +467,9 @@ if args.graph == 'frequency':
         time_period_name = 'year'
 
     day_fmt = '%m/%d/%y'
-    time_periods = sorted(
-        list(df['time_period'].unique()),
-        key=lambda date: datetime.datetime.strptime(date, day_fmt)
-    )
+    begin_date = datetime.datetime.strptime(df['time_period'].iloc[0], day_fmt)
+    end_date = datetime.datetime.strptime(df['time_period'].iloc[-1], day_fmt)
+    time_periods = get_time_periods(begin_date, end_date, time_period_name)
     for time_period in time_periods:
         message_freqs['Total'].append(len(
             df[df['time_period'] == time_period]
@@ -490,7 +489,6 @@ if args.graph == 'frequency':
         ax.xaxis.set_major_formatter(mdates.DateFormatter(day_fmt))
         ax.xaxis.set_major_locator(mdates.DayLocator())
     elif args.month:
-        print('month')
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
         ax.xaxis.set_major_locator(mdates.MonthLocator())
     elif args.year:
@@ -501,7 +499,7 @@ if args.graph == 'frequency':
     for key in message_freqs:
         plt.plot(x, message_freqs[key], label=key)
 
-    max_ticks = 20 if args.month or args.year else 10
+    max_ticks = 15 if args.month or args.year else 10
     if len(x) > max_ticks:
         ax.xaxis.set_major_locator(plt.MaxNLocator(max_ticks))
     
