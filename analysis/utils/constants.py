@@ -1,26 +1,10 @@
 from user_data import USERNAME, CHAT_IDS, CONTACT_ID_TO_NAME, CONTACT_NAME_TO_ID
 
 TIME_OFFSET = 978307200000000000
-CONVO_STARTER_THRESHOLD_MINUTES = 120
-LINK_REGEX = ('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]'
-              '|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-FUNCTIONS = [
-    'total',
-    'reaction',
-    'attachment',
-    'emoji',
-    'all caps',
-    'tweet',
-    'convo starter',
-    'message word count',
-    'word length',
-    'link',
-    'message series',
-    'game'
-]
-GRAPH_OPTIONS = [
-    'frequency'
-]
+CONVO_STARTER_THRESHOLD_MINUTES = 30
+LINK_REGEX = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]'
+              r'|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+FUNCTIONS_REGEX = (r'^([a-zA-Z][a-zA-Z0-9_]*).py')
 REACTIONS = [
     'Laughed at',
     'Emphasized',

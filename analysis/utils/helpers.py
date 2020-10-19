@@ -1,4 +1,5 @@
 import datetime
+import os
 import re
 import string
 from statistics import mean
@@ -6,10 +7,19 @@ from dateutil import relativedelta
 
 from emoji import UNICODE_EMOJI
 
-from constants import *
+import analysis.utils.constants as constants
 
 
-# Filter by from date and to date
+def get_functions():
+    pattern = re.compile(constants.FUNCTIONS_REGEX)
+    _, _, file_names = next(os.walk('./analysis/functions'))
+    file_names = [
+        pattern.match(file_name).group(1) for file_name in file_names 
+        if pattern.match(file_name)
+    ]
+    return file_names
+
+
 def date_to_time(date, end=False):
     month = int(date[0:2])
     day = int(date[2:4])
@@ -18,12 +28,12 @@ def date_to_time(date, end=False):
         timestamp = datetime.datetime(2000 + year, month, day, 23, 59, 59).timestamp()
     else:
         timestamp = datetime.datetime(2000 + year, month, day).timestamp()
-    return timestamp * 1e9 - TIME_OFFSET
+    return timestamp * 1e9 - constants.TIME_OFFSET
 
 
 def is_reaction(msg):
     msg = str(msg)
-    for reaction in REACTIONS:
+    for reaction in constants.REACTIONS:
         if msg.startswith(reaction):
             return True
     return False
@@ -31,10 +41,10 @@ def is_reaction(msg):
 
 def reaction_action(msg):
     msg = str(msg)
-    for reaction in REACTIONS[:6]:
+    for reaction in constants.REACTIONS[:6]:
         if msg.startswith(reaction):
             return 1
-    for reaction in REACTIONS[6:]:
+    for reaction in constants.REACTIONS[6:]:
         if msg.startswith(reaction):
             return -1
     return 0
@@ -159,7 +169,7 @@ def is_tweet(msg):
 
 
 def is_convo_starter(time_diff):
-    return time_diff.total_seconds() > CONVO_STARTER_THRESHOLD_MINUTES * 60
+    return time_diff.total_seconds() > constants.CONVO_STARTER_THRESHOLD_MINUTES * 60
 
 
 def message_word_count(msg):
@@ -177,7 +187,7 @@ def average_word_length(msg):
 def is_link(msg):
     if is_reaction(msg):
         return False
-    if re.match(LINK_REGEX, str(msg)):
+    if re.match(constants.LINK_REGEX, str(msg)):
         return True
     return False
 
@@ -185,7 +195,7 @@ def is_link(msg):
 def is_game_message(msg, mime):
     if is_reaction(msg):
         return False
-    return str(msg) in GAMES and mime == 'image/jpeg' or is_game_start(msg, mime)
+    return str(msg) in constants.GAMES and mime == 'image/jpeg' or is_game_start(msg, mime)
 
 
 def is_game_start(msg, mime):

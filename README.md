@@ -27,7 +27,7 @@ This should print out the username (which is probably something similar to your 
 #### `CONTACT_ID_TO_NAME`
 #### `CONTACT_NAME_TO_ID`
 
-- System Preferences > Security and Privacy > Privacy > Full Disk Access > give Terminal full disk access
+- System Preferences > Security and Privacy > Privacy > Full Disk Access > give Terminal (or wherever you're running the script from) full disk access
 
 ## Usage
 - `python3 imessage_analysis.py NAME flags`
