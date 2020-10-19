@@ -49,10 +49,10 @@ def process_df(df, args):
     if function == 'word_count' or args.all_functions:
         word_count.main(result_dict, df, args.all_functions)
 
-    if function == 'word length' or args.all_functions:
+    if function == 'word_length' or args.all_functions:
         word_length.main(result_dict, df, args.all_functions)
 
-    if function == 'message series' or args.all_functions:
+    if function == 'message_series' or args.all_functions:
         message_series.main(result_dict, df, args.all_functions)
 
     if function == 'game' or args.all_functions:
