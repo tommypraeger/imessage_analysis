@@ -168,8 +168,10 @@ def is_tweet(msg):
     return 'twitter.com' in msg
 
 
-def is_convo_starter(time_diff):
-    return time_diff.total_seconds() > constants.CONVO_STARTER_THRESHOLD_MINUTES * 60
+def is_convo_starter(time_diff, threshold):
+    if threshold is None:
+        threshold = constants.CONVO_STARTER_THRESHOLD_MINUTES
+    return time_diff.total_seconds() > (threshold * 60)
 
 
 def message_word_count(msg):

@@ -2,12 +2,14 @@ from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
-def main(result_dict, df, running_all_functions):
+def main(result_dict, df, running_all_functions, minutes_threshold):
     result_dict['total # of message series'] = []
     result_dict['total messages'] = []
     result_dict['average messages per series'] = []
     if not running_all_functions:
-        df['is convo starter?'] = df['time'].diff().apply(helpers.is_convo_starter)
+        df['is convo starter?'] = df['time'].diff().apply(
+            lambda diff: helpers.is_convo_starter(diff, minutes_threshold)
+        )
         df.iloc[0, df.columns.get_loc('is convo starter?')] = True
     df['is new message series?'] = df['sender'].apply(lambda x: True)
     df['is new message series?'] = df['is new message series?'].shift().where(

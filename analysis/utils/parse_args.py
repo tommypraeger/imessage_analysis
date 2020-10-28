@@ -15,6 +15,7 @@ def get_args():
     parser.add_argument('--graph-individual', action='store_true', help='graph lines for each person in group')
     parser.add_argument('--phrase', type=str, help='phrase to search for')
     parser.add_argument('--mime-type', type=str, help='MIME type of message to search for')
+    parser.add_argument('--minutes-threshold', type=int, help='Threshold in minutes from last messages for a message to be considered a conversation starter')
 
     function_group = parser.add_mutually_exclusive_group()
     function_group.add_argument('--function', type=str, choices=get_functions(), help='name of function to call')

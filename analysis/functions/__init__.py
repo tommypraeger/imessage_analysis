@@ -38,7 +38,7 @@ def process_df(df, args):
         all_caps.main(result_dict, df)
 
     if function == 'convo_starter' or args.all_functions:
-        convo_starter.main(result_dict, df)
+        convo_starter.main(result_dict, df, args.minutes_threshold)
 
     if function == 'tweet' or args.all_functions:
         tweet.main(result_dict, df)
@@ -53,7 +53,7 @@ def process_df(df, args):
         word_length.main(result_dict, df, args.all_functions)
 
     if function == 'message_series' or args.all_functions:
-        message_series.main(result_dict, df, args.all_functions)
+        message_series.main(result_dict, df, args.all_functions, args.minutes_threshold)
 
     if function == 'game' or args.all_functions:
         game.main(result_dict, df)
