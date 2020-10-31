@@ -1,10 +1,10 @@
 import argparse
 from analysis.utils.helpers import get_functions
 
-def get_args():
+def get_analysis_args(args):
     parser = argparse.ArgumentParser(description='run analysis on text messages')
 
-    parser.add_argument('name', type=str)
+    parser.add_argument('--name', type=str, help='name of person of group chat')
     parser.add_argument('--csv', action='store_true', help='export data to csv')
     parser.add_argument('--from-date', type=str, help='date to start from. format mmddyy')
     parser.add_argument('--to-date', type=str, help='date to end at. format mmddyy')
@@ -27,4 +27,4 @@ def get_args():
     graph_time_periods.add_argument('--month', action='store_true', help='graph data by month')
     graph_time_periods.add_argument('--year', action='store_true', help='graph data by year')
 
-    return parser.parse_args()
+    return parser.parse_args(args)
