@@ -6,7 +6,7 @@ def main(result_dict, df):
     result_dict['messages that are tweets'] = []
     result_dict['% of messages that are tweets'] = []
     df['is tweet?'] = df['text'].apply(helpers.is_tweet)
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             tweet_messages = len(

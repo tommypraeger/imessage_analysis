@@ -6,7 +6,7 @@ def main(result_dict, df):
     result_dict['messages that contain emojis'] = []
     result_dict['% of messages that include emojis'] = []
     df['includes emoji?'] = df['text'].apply(helpers.includes_emoji)
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             emoji_messages = len(

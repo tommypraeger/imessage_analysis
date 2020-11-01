@@ -6,7 +6,7 @@ def main(result_dict, df):
     result_dict['attachment messages'] = []
     result_dict['% of messages that are attachments'] = []
     df['is attachment?'] = df['type'].apply(helpers.is_attachment)
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             attachment_messages = len(

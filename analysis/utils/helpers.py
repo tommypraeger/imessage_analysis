@@ -20,6 +20,12 @@ def get_functions():
     return file_names
 
 
+def contact_name_from_id(contact_id):
+    for name in constants.CONTACT_IDS:
+        if contact_id in constants.CONTACT_IDS[name]:
+            return name
+
+
 def date_to_time(date, end=False):
     month = int(date[0:2])
     day = int(date[2:4])

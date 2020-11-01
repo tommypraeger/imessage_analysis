@@ -8,7 +8,7 @@ def main(result_dict, df, mime_type):
     result_dict[f'{mime_type} messages'] = []
     result_dict[f'% of messages that are mime_type {mime_type}'] = []
     df[f'is mime_type {mime_type}?'] = df['type'].apply(lambda typ: helpers.is_type(typ, mime_type))
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             mime_type_messages = len(

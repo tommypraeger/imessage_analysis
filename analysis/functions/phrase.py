@@ -10,7 +10,7 @@ def main(result_dict, df, phrase, case_sensitive, separate):
     df[f'includes {phrase}?'] = df['text'].apply(
         lambda msg: helpers.is_phrase_in(phrase, msg, case_sensitive, separate)
     )
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             word_messages = len(

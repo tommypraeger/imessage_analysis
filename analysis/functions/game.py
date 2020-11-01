@@ -9,7 +9,7 @@ def main(result_dict, df):
     result_dict['% of messages that are game starts'] = []
     df['is game message?'] = df.apply(lambda msg: helpers.is_game_message(msg.text, msg.type), axis=1)
     df['is game start?'] = df.apply(lambda msg: helpers.is_game_start(msg.text, msg.type), axis=1)
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             game_messages = len(

@@ -29,7 +29,7 @@ def main(result_dict, df):
     df['laugh react action'] = df['text'].apply(helpers.laugh_react_action)
     df['emphasis react action'] = df['text'].apply(helpers.emphasis_react_action)
     df['question react action'] = df['text'].apply(helpers.question_react_action)
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             result_dict['total messages'].append(total_messages)

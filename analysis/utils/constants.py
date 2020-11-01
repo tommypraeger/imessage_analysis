@@ -1,4 +1,12 @@
-from user_data import USERNAME, CHAT_IDS, CONTACT_ID_TO_NAME, CONTACT_NAME_TO_ID
+import json
+
+with open('user_data.json', 'r') as user_data_file:
+    user_data = json.load(user_data_file)
+
+USERNAME = user_data['username']
+CONTACTS = user_data['contacts']
+CHAT_IDS = user_data['chat_ids']
+CONTACT_IDS = user_data['contact_ids']
 
 TIME_OFFSET = 978307200000000000
 CONVO_STARTER_THRESHOLD_MINUTES = 30

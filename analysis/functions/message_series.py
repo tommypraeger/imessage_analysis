@@ -16,7 +16,7 @@ def main(result_dict, df, running_all_functions, minutes_threshold):
         df['sender'].shift() != df['sender'], False
     )
     df.iloc[0, df.columns.get_loc('is new message series?')] = True
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, _ = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             message_series = len(

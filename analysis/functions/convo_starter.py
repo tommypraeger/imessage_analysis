@@ -9,7 +9,7 @@ def main(result_dict, df, minutes_threshold):
         lambda diff: helpers.is_convo_starter(diff, minutes_threshold)
     )
     df.iloc[0, df.columns.get_loc('is convo starter?')] = True
-    for member_name in constants.CONTACT_NAME_TO_ID.keys():
+    for member_name in constants.CONTACT_IDS:
         total_messages, _ = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             convo_starters = len(

@@ -12,7 +12,11 @@ procs.append(pip_install)
 # Create user_data.json if not already there
 try:
     with open('user_data.json', 'x') as user_data_file:
-        json.dump({}, user_data_file)
+        json.dump({
+            'contacts': {},
+            'chat_ids': {},
+            'contact_ids': {}
+        }, user_data_file)
 except FileExistsError:
     pass
 
@@ -35,6 +39,15 @@ for proc in procs:
     while proc.poll() is None:
         pass
 
-pip_install.terminate()
+for proc in procs:
+    proc.terminate()
+
+# Add contact for self
+name = input('Type your name as you would like it to appear: ')
+with open('user_data.json', 'r') as user_data_file:
+    user_data = json.load(user_data_file)
+    user_data['contact_ids'][name] = [0]
+with open('user_data.json', 'w') as user_data_file:
+    json.dump(user_data, user_data_file, indent=4)
 
 print('Done setting up.')
