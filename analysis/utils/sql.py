@@ -8,6 +8,14 @@ import analysis.utils.constants as constants
 conn = sqlite3.connect(f'/Users/{constants.USERNAME}/Library/Messages/chat.db')
 c = conn.cursor()
 
+
+# Test DB
+def test_db():
+    cmd = 'SELECt * from handle'
+    c.execute(cmd)
+    conn.close()
+
+
 # Create DataFrame
 def get_df(name, group):
     if group:
@@ -15,6 +23,7 @@ def get_df(name, group):
     else:
         df_msg, df_att = get_individual_df(name)
 
+    conn.close()
     return df_msg.set_index('id').join(df_att.set_index('id'))
 
 

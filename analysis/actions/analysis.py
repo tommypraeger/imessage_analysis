@@ -43,7 +43,7 @@ def main(args):
 
     result_df = pd.DataFrame(data=result_dict)
     result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
-    print(result_df.to_string(index=False))
+    # print(result_df.to_string(index=False))
 
     # Export to CSV
     if args.csv:
@@ -52,3 +52,5 @@ def main(args):
         result_df.corr(method='pearson').round(4).to_csv('correlation_matrix.csv')
 
     # print("--- %s seconds ---" % (time.time() - start_time))
+
+    return result_df.to_html(index=False)
