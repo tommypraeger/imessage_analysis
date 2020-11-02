@@ -1,10 +1,10 @@
 from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 
-def main(result_dict, df):
+def main(result_dict, df, chat_members):
     result_dict['total messages'] = []
     result_dict['% of all messages that are by this person'] = []
-    for member_name in constants.CONTACT_IDS:
+    for member_name in chat_members:
         total_messages, _ = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             result_dict['total messages'].append(total_messages)

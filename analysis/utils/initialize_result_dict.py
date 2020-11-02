@@ -1,8 +1,4 @@
-def initialize_result_dict(member_name, df, result_dict):
-    if len(df.loc[df['sender'] == member_name]) == 0:
-        return 0, 0
-
-    # Add names if not already there
+def initialize_result_dict(member_name, df, result_dict):# Add names if not already there
     if member_name not in result_dict['names']:
         result_dict['names'].append(member_name)
 

@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import re
 import string
@@ -8,6 +9,7 @@ from dateutil import relativedelta
 from emoji import UNICODE_EMOJI
 
 import analysis.utils.constants as constants
+import analysis.utils.sql as sql
 
 
 def get_functions():
@@ -24,6 +26,22 @@ def contact_name_from_id(contact_id):
     for name in constants.CONTACT_IDS:
         if contact_id in constants.CONTACT_IDS[name]:
             return name
+    return sql.get_phone_number_from_contact_id(contact_id)
+
+def load_user_data():
+    with open('user_data.json', 'r') as user_data_file:
+        user_data = json.load(user_data_file)
+    return user_data
+
+
+def save_user_data(user_data):
+    with open('user_data.json', 'w') as user_data_file:
+        json.dump(user_data, user_data_file, indent=4)
+
+
+def clean_phone_number(phone_number):
+    digits = [i for i in phone_number if i.isdigit()]
+    return ''.join(digits)[-10:]
 
 
 def date_to_time(date, end=False):

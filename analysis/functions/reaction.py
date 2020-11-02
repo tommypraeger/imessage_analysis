@@ -2,7 +2,7 @@ from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
-def main(result_dict, df):
+def main(result_dict, df, chat_members):
     result_dict['total messages'] = []
     result_dict['non-reaction messages'] = []
     result_dict['% of all non-reaction messages that are by this person'] = []
@@ -29,7 +29,7 @@ def main(result_dict, df):
     df['laugh react action'] = df['text'].apply(helpers.laugh_react_action)
     df['emphasis react action'] = df['text'].apply(helpers.emphasis_react_action)
     df['question react action'] = df['text'].apply(helpers.question_react_action)
-    for member_name in constants.CONTACT_IDS:
+    for member_name in chat_members:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             result_dict['total messages'].append(total_messages)

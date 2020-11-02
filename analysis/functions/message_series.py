@@ -2,7 +2,7 @@ from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
-def main(result_dict, df, running_all_functions, minutes_threshold):
+def main(result_dict, df, chat_members, running_all_functions, minutes_threshold):
     result_dict['total # of message series'] = []
     result_dict['total messages'] = []
     result_dict['average messages per series'] = []
@@ -16,7 +16,7 @@ def main(result_dict, df, running_all_functions, minutes_threshold):
         df['sender'].shift() != df['sender'], False
     )
     df.iloc[0, df.columns.get_loc('is new message series?')] = True
-    for member_name in constants.CONTACT_IDS:
+    for member_name in chat_members:
         total_messages, _ = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             message_series = len(

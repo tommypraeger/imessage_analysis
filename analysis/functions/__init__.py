@@ -15,7 +15,7 @@ import analysis.functions.word_count as word_count
 import analysis.functions.word_length as word_length
 
 
-def process_df(df, args):
+def process_df(df, args, chat_members):
     function = args.function
     
     result_dict = {
@@ -23,48 +23,48 @@ def process_df(df, args):
     }
     
     if function == 'total' or args.all_functions:
-        total.main(result_dict, df)
+        total.main(result_dict, df, chat_members)
 
     if function == 'reaction' or args.all_functions:
-        reaction.main(result_dict, df)
+        reaction.main(result_dict, df, chat_members)
 
     if function == 'attachment' or args.all_functions:
-        attachment.main(result_dict, df)
+        attachment.main(result_dict, df, chat_members)
 
     if function == 'emoji' or args.all_functions:
-        emoji.main(result_dict, df)
+        emoji.main(result_dict, df, chat_members)
 
     if function == 'all_caps' or args.all_functions:
-        all_caps.main(result_dict, df)
+        all_caps.main(result_dict, df, chat_members)
 
     if function == 'convo_starter' or args.all_functions:
-        convo_starter.main(result_dict, df, args.minutes_threshold)
+        convo_starter.main(result_dict, df, chat_members, args.minutes_threshold)
 
     if function == 'tweet' or args.all_functions:
-        tweet.main(result_dict, df)
+        tweet.main(result_dict, df, chat_members)
 
     if function == 'link' or args.all_functions:
-        link.main(result_dict, df)
+        link.main(result_dict, df, chat_members)
 
     if function == 'word_count' or args.all_functions:
-        word_count.main(result_dict, df, args.all_functions)
+        word_count.main(result_dict, df, chat_members, args.all_functions)
 
     if function == 'word_length' or args.all_functions:
-        word_length.main(result_dict, df, args.all_functions)
+        word_length.main(result_dict, df, chat_members, args.all_functions)
 
     if function == 'message_series' or args.all_functions:
-        message_series.main(result_dict, df, args.all_functions, args.minutes_threshold)
+        message_series.main(result_dict, df, chat_members, args.all_functions, args.minutes_threshold)
 
     if function == 'game' or args.all_functions:
-        game.main(result_dict, df)
+        game.main(result_dict, df, chat_members)
 
     if function == 'frequency':
-        frequency.main(result_dict, df, args)
+        frequency.main(result_dict, df, chat_members, args)
 
     if function == 'phrase':
-        phrase.main(result_dict, df, args.phrase, args.case_sensitive, args.separate)
+        phrase.main(result_dict, df, chat_members, args.phrase, args.case_sensitive, args.separate)
 
     if function == 'mime_type':
-        mime_type.main(result_dict, df, args.mime_type)
+        mime_type.main(result_dict, df, chat_members, args.mime_type)
 
     return result_dict

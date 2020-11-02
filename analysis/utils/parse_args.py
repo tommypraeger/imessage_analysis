@@ -4,7 +4,7 @@ from analysis.utils.helpers import get_functions
 def get_analysis_args(args):
     parser = argparse.ArgumentParser(description='run analysis on text messages')
 
-    parser.add_argument('--name', type=str, help='name of person of group chat')
+    parser.add_argument('--name', type=str, help='name of person or group chat')
     parser.add_argument('--csv', action='store_true', help='export data to csv')
     parser.add_argument('--from-date', type=str, help='date to start from. format mmddyy')
     parser.add_argument('--to-date', type=str, help='date to end at. format mmddyy')
@@ -26,5 +26,17 @@ def get_analysis_args(args):
     graph_time_periods.add_argument('--week', action='store_true', help='graph data by week')
     graph_time_periods.add_argument('--month', action='store_true', help='graph data by month')
     graph_time_periods.add_argument('--year', action='store_true', help='graph data by year')
+
+    return parser.parse_args(args)
+
+
+def get_add_contact_args(args):
+    parser = argparse.ArgumentParser(description='add contact')
+
+    parser.add_argument('--name', type=str, help='name of person or group chat')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--number', type=str, help='phone number of person')
+    group.add_argument('--group', action='store_true', help='desired contact is a group chat name')
 
     return parser.parse_args(args)

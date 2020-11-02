@@ -1,11 +1,17 @@
 astroid==2.3.3
+certifi==2020.6.20
+cycler==0.10.0
 emoji==0.5.4
 isort==4.3.21
+kiwisolver==1.2.0
 lazy-object-proxy==1.4.3
+matplotlib==3.3.2
 mccabe==0.6.1
 numpy==1.18.2
 pandas==1.0.3
+Pillow==8.0.1
 pylint==2.4.4
+pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2019.3
 six==1.14.0

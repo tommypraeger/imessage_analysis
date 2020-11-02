@@ -2,14 +2,14 @@ from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
-def main(result_dict, df):
+def main(result_dict, df, chat_members):
     result_dict['messages that are games'] = []
     result_dict['% of messages that are games'] = []
     result_dict['messages that are game starts'] = []
     result_dict['% of messages that are game starts'] = []
     df['is game message?'] = df.apply(lambda msg: helpers.is_game_message(msg.text, msg.type), axis=1)
     df['is game start?'] = df.apply(lambda msg: helpers.is_game_start(msg.text, msg.type), axis=1)
-    for member_name in constants.CONTACT_IDS:
+    for member_name in chat_members:
         total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
         if total_messages > 0:
             game_messages = len(

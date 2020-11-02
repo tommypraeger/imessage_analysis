@@ -1,6 +1,11 @@
 import json
 import subprocess
 
+# Ask for name in beginning
+name = input('Type your name as you would like it to appear: ')
+while len(name) == 0:
+    name = input('Looks like you didn\'t type your name. Type it here: ')
+
 procs = []
 
 # Install dependenc
@@ -16,16 +21,17 @@ try:
             'contacts': {},
             'chat_ids': {},
             'contact_ids': {}
-        }, user_data_file)
+        }, user_data_file, indent=4)
 except FileExistsError:
     pass
 
 # Get username
+# Can't use helpers yet because setup is not complete
+pwd = subprocess.Popen(['pwd'], stdout=subprocess.PIPE)
+username = subprocess.check_output(['cut', '-d/', '-f3'], stdin=pwd.stdout)
+username = username.decode('utf-8')[:-1]
+print(f'Username is {username}')
 with open('user_data.json', 'r') as user_data_file:
-    pwd = subprocess.Popen(['pwd'], stdout=subprocess.PIPE)
-    username = subprocess.check_output(['cut', '-d/', '-f3'], stdin=pwd.stdout)
-    username = username.decode('utf-8')[:-1]
-    print(f'Username is {username}')
     user_data = json.load(user_data_file)
     user_data['username'] = username
 with open('user_data.json', 'w') as user_data_file:
@@ -43,7 +49,6 @@ for proc in procs:
     proc.terminate()
 
 # Add contact for self
-name = input('Type your name as you would like it to appear: ')
 with open('user_data.json', 'r') as user_data_file:
     user_data = json.load(user_data_file)
     user_data['contact_ids'][name] = [0]

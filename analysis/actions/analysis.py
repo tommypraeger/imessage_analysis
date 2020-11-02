@@ -14,7 +14,13 @@ def main(args):
     args = utils.parse_args.get_analysis_args(args)
 
     # Get messages dataframe
-    df = utils.sql.get_df(args.name, args.group)
+    try:
+        df = utils.sql.get_df(args.name, args.group)
+    except KeyError:
+        if args.group:
+            return f'Please group chat {args.name} as a contact'
+        else:
+            return f'Please add {args.name} as a contact'
 
     # Trim dataframe based on date constraints
     if args.from_date:
@@ -38,8 +44,20 @@ def main(args):
     # Always add reaction column
     df['is reaction?'] = df['text'].apply(utils.helpers.is_reaction)
 
+    # Get members of chat
+    chat_ids = utils.constants.CHAT_IDS[args.name]
+    chat_members = list(set(utils.sql.get_chat_members(chat_ids)))
+    for member in chat_members:
+        if any(char.isdigit() for char in member):
+            if args.group:
+                return f'Please add contacts for every member of {args.name}'
+            else:
+                return f'Please add {args.name} as a contact'
+
     # Process df based on function
-    result_dict = functions.process_df(df, args)
+    result_dict = functions.process_df(df, args, chat_members)
+
+    print(result_dict)
 
     result_df = pd.DataFrame(data=result_dict)
     result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
