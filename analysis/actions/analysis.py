@@ -57,8 +57,6 @@ def main(args):
     # Process df based on function
     result_dict = functions.process_df(df, args, chat_members)
 
-    print(result_dict)
-
     result_df = pd.DataFrame(data=result_dict)
     result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
     # print(result_df.to_string(index=False))

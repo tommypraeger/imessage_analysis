@@ -1,5 +1,5 @@
-import analysis.utils.parse_args as parse_args
 import analysis.utils.helpers as helpers
+import analysis.utils.parse_args as parse_args
 import analysis.utils.sql as sql
 
 
@@ -39,4 +39,4 @@ def main(args):
 
     helpers.save_user_data(user_data)
 
-    return f'Contact for {args.name} added succesfully'
+    return f'Contact for {args.name} added successfully'

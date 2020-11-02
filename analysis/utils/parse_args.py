@@ -37,6 +37,15 @@ def get_add_contact_args(args):
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--number', type=str, help='phone number of person')
-    group.add_argument('--group', action='store_true', help='desired contact is a group chat name')
+    group.add_argument('--group', action='store_true', help='desired contact is a group chat')
+
+    return parser.parse_args(args)
+
+
+def get_delete_contact_args(args):
+    parser = argparse.ArgumentParser(description='add contact')
+
+    parser.add_argument('--name', type=str, help='name of person or group chat')
+    parser.add_argument('--group', action='store_true', help='desired contact is a group chat')
 
     return parser.parse_args(args)
