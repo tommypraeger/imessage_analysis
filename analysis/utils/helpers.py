@@ -1,12 +1,11 @@
 import datetime
+import emoji
 import json
 import os
 import re
 import string
 from statistics import mean
 from dateutil import relativedelta
-
-from emoji import UNICODE_EMOJI
 
 import analysis.utils.constants as constants
 import analysis.utils.sql as sql
@@ -169,19 +168,13 @@ def includes_emoji(msg):
     if is_reaction(msg):
         return False
     msg = str(msg)
-    for emoji in UNICODE_EMOJI:
-        if emoji in msg:
-            return True
-    return False
+    return emoji.emoji_count(msg) > 0
 
 
 def is_all_caps(msg):
     only_letters = re.compile('[^a-zA-Z]')
     msg = only_letters.sub('', str(msg))
-    not_all_emojis = False
-    for c in msg:
-        if c not in UNICODE_EMOJI:
-            not_all_emojis = True
+    not_all_emojis = (len(msg) - emoji.emoji_count(msg)) > 0
     return not_all_emojis and len(msg) > 0 and msg == msg.upper()
 
 
