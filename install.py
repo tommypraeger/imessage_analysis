@@ -8,7 +8,7 @@ while len(name) == 0:
 
 procs = []
 
-# Install dependenc
+# Install dependencies
 pip_install = subprocess.Popen(['pip', 'install', '-r', 'requirements.txt'])
 procs.append(pip_install)
 #npm_install = subprocess.Popen(['npm', 'install'])
