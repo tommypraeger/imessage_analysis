@@ -1,5 +1,17 @@
-import analysis.utils.sql as sql
+import analysis.actions.add_contact as add_contact
+import analysis.actions.delete_contact as delete_contact
 
 
-def main(args):
-    return 0
+def main(name, old_name, group, number):
+    delete_response = delete_contact.main(old_name, group, dry_run=True)
+    if 'successfully' not in delete_response:
+        return delete_response
+    
+    add_response = add_contact.main(name, group, number, dry_run=True)
+    if 'successfully' not in add_response:
+        return add_response
+
+    delete_contact.main(old_name, group)
+    add_contact.main(name, group, number)
+
+    return f'Edited contact for {name} successfully'

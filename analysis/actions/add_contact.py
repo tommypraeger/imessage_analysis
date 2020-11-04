@@ -3,40 +3,39 @@ import analysis.utils.parse_args as parse_args
 import analysis.utils.sql as sql
 
 
-def main(args):
-    args = parse_args.get_add_contact_args(args)
-
+def main(name, group, number, dry_run=False):
     user_data = helpers.load_user_data()
 
-    if args.group:
-        chat_ids = sql.get_chat_ids_from_chat_name(args.name)
+    if group:
+        chat_ids = sql.get_chat_ids_from_chat_name(name)
         if len(chat_ids) == 0:
-            return (f'Did not find {args.name}.\n'
+            return (f'Did not find {name}.\n'
                     'Make sure you type the chat name exactly right.')
 
-        user_data['chat_ids'][args.name] = chat_ids
-        user_data['contacts'][args.name] = 'group'
+        user_data['chat_ids'][name] = chat_ids
+        user_data['contacts'][name] = 'group'
     else:
-        if args.number is None:
+        if number is None:
             return 'Must provide a phone number when adding a non-group contact'
         
-        phone_number = helpers.clean_phone_number(args.number)
+        phone_number = helpers.clean_phone_number(number)
     
         contact_ids = sql.get_contact_ids_from_phone_number(phone_number)
         if len(contact_ids) == 0:
-            return (f'Did not find {args.number}.\n'
+            return (f'Did not find {number}.\n'
                     'Make sure you type in the phone number correctly.')
         
         chat_ids = sql.get_chat_ids_from_phone_number(phone_number)
         if len(chat_ids) == 0:
-            return (f'Did not find {args.number}.\n'
+            return (f'Did not find {number}.\n'
                     'Make sure you type in the phone number correctly'
                     'and you have messages with this number.')
         
-        user_data['contact_ids'][args.name] = contact_ids
-        user_data['chat_ids'][args.name] = chat_ids
-        user_data['contacts'][args.name] = args.number
+        user_data['contact_ids'][name] = contact_ids
+        user_data['chat_ids'][name] = chat_ids
+        user_data['contacts'][name] = number
 
-    helpers.save_user_data(user_data)
+    if not dry_run:
+        helpers.save_user_data(user_data)
 
-    return f'Contact for {args.name} added successfully'
+    return f'Contact for {name} added successfully'

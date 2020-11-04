@@ -138,3 +138,21 @@ def get_phone_number_from_contact_id(contact_id):
             WHERE ROWID={contact_id}'
     c.execute(cmd)
     return str(c.fetchone())
+
+
+def get_all_phone_numbers():
+    cmd = 'SELECT DISTINCT chat_identifier \
+           FROM chat \
+           WHERE chat_identifier NOT LIKE "chat%"'
+    c.execute(cmd)
+    phone_numbers = c.fetchall()
+    return [str(phone_number[0]) for phone_number in phone_numbers]
+
+
+def get_all_chat_names():
+    cmd = 'SELECT DISTINCT display_name \
+           FROM chat \
+           WHERE display_name LIKE "_%";'
+    c.execute(cmd)
+    chat_names = c.fetchall()
+    return [str(chat_name[0]) for chat_name in chat_names]

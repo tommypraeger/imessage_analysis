@@ -10,9 +10,6 @@ import analysis.utils as utils
 def main(args):
     # start_time = time.time()
 
-    # Get command line args
-    args = utils.parse_args.get_analysis_args(args)
-
     # Get messages dataframe
     try:
         df = utils.sql.get_df(args.name, args.group)
