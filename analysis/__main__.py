@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import analysis.actions as actions
@@ -33,4 +34,4 @@ if action == 'test_db':
     response = actions.test_db.main()
 
 
-print(response)
+print(json.dumps(response))

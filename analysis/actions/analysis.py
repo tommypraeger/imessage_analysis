@@ -66,4 +66,6 @@ def main(args):
 
     # print("--- %s seconds ---" % (time.time() - start_time))
 
-    return result_df.to_html(index=False)
+    return {
+        'htmlTable': result_df.to_html(index=False)
+    }

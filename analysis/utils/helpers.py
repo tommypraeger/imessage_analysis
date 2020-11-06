@@ -27,6 +27,7 @@ def contact_name_from_id(contact_id):
             return name
     return sql.get_phone_number_from_contact_id(contact_id)
 
+
 def load_user_data():
     with open('user_data.json', 'r') as user_data_file:
         user_data = json.load(user_data_file)
@@ -41,6 +42,18 @@ def save_user_data(user_data):
 def clean_phone_number(phone_number):
     digits = [i for i in phone_number if i.isdigit()]
     return ''.join(digits)[-10:]
+
+
+def make_error_message(msg):
+    return {
+        'errorMessage': msg
+    }
+
+
+def make_success_message(msg):
+    return {
+        'successMessage': msg
+    }
 
 
 def date_to_time(date, end=False):

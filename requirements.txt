@@ -1,10 +1,17 @@
+aniso8601==8.0.0
 astroid==2.3.3
 certifi==2020.6.20
+click==7.1.2
 cycler==0.10.0
 emoji==0.5.4
+Flask==1.1.2
+Flask-RESTful==0.3.8
 isort==4.3.21
+itsdangerous==1.1.0
+Jinja2==2.11.2
 kiwisolver==1.2.0
 lazy-object-proxy==1.4.3
+MarkupSafe==1.1.1
 matplotlib==3.3.2
 mccabe==0.6.1
 numpy==1.18.2
@@ -15,4 +22,5 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2019.3
 six==1.14.0
+Werkzeug==1.0.1
 wrapt==1.11.2

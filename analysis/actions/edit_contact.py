@@ -1,5 +1,6 @@
 import analysis.actions.add_contact as add_contact
 import analysis.actions.delete_contact as delete_contact
+import analysis.utils.helpers as helpers
 
 
 def main(name, old_name, group, number):
@@ -14,4 +15,4 @@ def main(name, old_name, group, number):
     delete_contact.main(old_name, group)
     add_contact.main(name, group, number)
 
-    return f'Edited contact for {name} successfully'
+    return helpers.make_success_message(f'Edited contact for {name} successfully')
