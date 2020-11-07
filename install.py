@@ -11,8 +11,8 @@ procs = []
 # Install dependencies
 pip_install = subprocess.Popen(['pip', 'install', '-r', 'requirements.txt'])
 procs.append(pip_install)
-#npm_install = subprocess.Popen(['npm', 'install'])
-#procs.append(npm_install)
+npm_install = subprocess.Popen(['npm', 'install', '--prefix', './ui'])
+procs.append(npm_install)
 
 # Create user_data.json if not already there
 try:
@@ -30,7 +30,7 @@ except FileExistsError:
 pwd = subprocess.Popen(['pwd'], stdout=subprocess.PIPE)
 username = subprocess.check_output(['cut', '-d/', '-f3'], stdin=pwd.stdout)
 username = username.decode('utf-8')[:-1]
-print(f'Username is {username}')
+print(f'USER PROFILE is {username}')
 with open('user_data.json', 'r') as user_data_file:
     user_data = json.load(user_data_file)
     user_data['username'] = username
