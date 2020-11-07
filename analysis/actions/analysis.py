@@ -15,9 +15,11 @@ def main(args):
         df = utils.sql.get_df(args.name, args.group)
     except KeyError:
         if args.group:
-            return f'Please group chat {args.name} as a contact'
+            msg = f'Please group chat {args.name} as a contact'
+            return utils.helpers.make_error_message(msg)
         else:
-            return f'Please add {args.name} as a contact'
+            msg = f'Please add {args.name} as a contact'
+            return utils.helpers.make_error_message(msg)
 
     # Trim dataframe based on date constraints
     if args.from_date:
@@ -47,12 +49,20 @@ def main(args):
     for member in chat_members:
         if any(char.isdigit() for char in member):
             if args.group:
-                return f'Please add contacts for every member of {args.name}'
+                msg = f'Please add contacts for every member of {args.name}'
+                return utils.helpers.make_error_message(msg)
             else:
-                return f'Please add {args.name} as a contact'
+                msg = f'Please add {args.name} as a contact'
+                return utils.helpers.make_error_message(msg)
 
     # Process df based on function
     result_dict = functions.process_df(df, args, chat_members)
+
+    # Result dictionary without multiple columns means we are returning an graph
+    if len(result_dict) < 2:
+        return {
+            'imagePath': 'graph.png'
+        }
 
     result_df = pd.DataFrame(data=result_dict)
     result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)

@@ -14,8 +14,19 @@ api = Api(application)
 
 class Application(Resource):
     def get(self, action):
-        args = ['python3', '-m', 'analysis', action]
-        output = json.loads(subprocess.check_output(args))
+        try:
+            args = ['python3', '-m', 'analysis', action]
+            output = subprocess.check_output(args)
+            output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            # Get exception from stack trace
+            error = str(e.output).split('\\n')[-2][11:]
+            print(error)
+            return {
+                'errorMessage': error['message']
+            }
+
+        output = json.loads(output)
 
         if 'errorMessage' in output:
             return output, 400
@@ -30,11 +41,23 @@ class Application(Resource):
         args_list = []
         for key in args_dict:
             args_list.append(f'--{key}')
-            args_list.append(args_dict[key])
+            val = args_dict[key]
+            if val != '':
+                args_list.append(val)
 
-        args = ['python3', '-m', 'analysis', action]
-        args.extend(args_list)
-        output = json.loads(subprocess.check_output(args))
+        try:
+            args = ['python3', '-m', 'analysis', action]
+            args.extend(args_list)
+            output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            # Get exception from stack trace
+            error = str(e.output).split('\\n')[-2][11:]
+            print(error)
+            return {
+                'errorMessage': error
+            }
+
+        output = json.loads(output)
 
         if 'errorMessage' in output:
             return output, 400

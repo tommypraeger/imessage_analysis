@@ -77,7 +77,7 @@ def main(result_dict, df, chat_members, args):
     plt.xlabel('Date')
     plt.ylabel('# of Messages')
     plt.legend()
-    plt.savefig('message_frequencies.png', bbox_inches='tight')
+    plt.savefig('graph.png', bbox_inches='tight')
 
     message_freqs['Date'] = []
     for time_period in time_periods:
