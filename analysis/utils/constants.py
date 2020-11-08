@@ -1,6 +1,6 @@
 import json
 
-with open('user_data.json', 'r') as user_data_file:
+with open('./ui/public/user_data.json', 'r') as user_data_file:
     user_data = json.load(user_data_file)
 
 USERNAME = user_data['username']

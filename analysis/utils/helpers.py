@@ -15,7 +15,7 @@ def get_functions():
     pattern = re.compile(constants.FUNCTIONS_REGEX)
     _, _, file_names = next(os.walk('./analysis/functions'))
     file_names = [
-        pattern.match(file_name).group(1) for file_name in file_names 
+        pattern.match(file_name).group(1) for file_name in file_names
         if pattern.match(file_name)
     ]
     return file_names
@@ -29,13 +29,13 @@ def contact_name_from_id(contact_id):
 
 
 def load_user_data():
-    with open('user_data.json', 'r') as user_data_file:
+    with open('./ui/public/user_data.json', 'r') as user_data_file:
         user_data = json.load(user_data_file)
     return user_data
 
 
 def save_user_data(user_data):
-    with open('user_data.json', 'w') as user_data_file:
+    with open('./ui/public/user_data.json', 'w') as user_data_file:
         json.dump(user_data, user_data_file, indent=4)
 
 
@@ -243,6 +243,7 @@ def get_day(date):
 def get_week(date):
     last_monday = date - datetime.timedelta(days=date.weekday())
     return f'{last_monday.month}/{last_monday.day}/{str(last_monday.year)[-2:]}'
+
 
 def get_month(date):
     return f'{date.month}/1/{str(date.year)[-2:]}'
