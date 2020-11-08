@@ -1,21 +1,16 @@
+import React, {useState} from 'react';
 import './App.css';
+import NavBar from './components/NavBar';
+import Page from './components/Page';
 
-function App() {
+const App = () => {
+  const [page, setPage] = useState('home');
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar page={page} setPage={setPage}/>
+      <Page />
     </div>
   );
 }
