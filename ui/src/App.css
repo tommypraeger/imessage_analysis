@@ -1,0 +1,22 @@
+#nav-bar {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #333;
+}
+
+#nav-bar li {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    flex-grow: 1;
+}
+
+#nav-bar li:hover:not(.active) {
+    background-color: #111;
+}
+
+#nav-bar .active {
+    background-color: #1982fc;
+}
