@@ -7,9 +7,11 @@ from flask_restful import (
     Api,
     reqparse
 )
+from flask_cors import CORS
 
 application = Flask(__name__)
 api = Api(application)
+CORS(application)
 
 
 class Application(Resource):

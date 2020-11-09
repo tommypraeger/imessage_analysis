@@ -1,3 +1,9 @@
+.page {
+    display: block;
+    margin: auto;
+    width: 80%;
+}
+
 #nav-bar {
     margin: 0;
     padding: 0;
@@ -19,4 +25,47 @@
 
 #nav-bar .active {
     background-color: #1982fc;
+}
+
+.contact-list {
+    padding: 0;
+}
+
+.x-btn {
+    float: right;
+    padding: 5px 20px;
+}
+
+.contact {
+    display: block;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.contact-name {
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+.contact-number {
+    display: inline-block;
+    color: gray;
+    padding: 5px 20px;
+}
+
+.contacts-section-header {
+    display: block;
+}
+
+.contacts-section-header h3 {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.contacts-section-header p {
+    float: right;
+    margin-bottom: 0;
+    cursor: pointer;
 }
