@@ -4,8 +4,7 @@ import NavBar from './components/NavBar';
 import Page from './components/Page';
 
 const App = () => {
-  const [page, setPage] = useState('home');
-
+  const [page, setPage] = useState('contacts');
 
   return (
     <div className='App'>

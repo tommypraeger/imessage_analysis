@@ -1,6 +1,5 @@
 const NavBar = ({ page, setPage }) => {
   const pages = [
-    'home',
     'contacts',
     'analysis'
   ];
