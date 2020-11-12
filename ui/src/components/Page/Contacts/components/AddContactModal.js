@@ -8,6 +8,7 @@ Modal.setAppElement('#root');
 const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  console.log(name);
 
   return (
     <Modal
@@ -21,7 +22,7 @@ const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
 
       <TextField
         value={name}
-        onChange={(event, newValue) => setName(newValue)}
+        onChange={(event) => setName(event.target.value)}
         className='input'
         label='Name'
         variant='outlined'
@@ -38,7 +39,7 @@ const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
       />
 
       <button onClick={() => addContact(name, number)}>
-        addContact
+        Add Contact
       </button>
     </Modal>
   );

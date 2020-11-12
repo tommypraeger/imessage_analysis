@@ -30,7 +30,7 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
       />
 
       <button onClick={() => addGroup(name)}>
-        addContact
+        Add Contact
     </button>
     </Modal>
   );

@@ -22,7 +22,7 @@ const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
 
       <TextField
         value={newName}
-        onChange={(event, newValue) => setNewName(newValue)}
+        onChange={(event) => setNewName(event.target.value)}
         className='input'
         label='Name'
         variant='outlined'

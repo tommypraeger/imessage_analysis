@@ -40,9 +40,10 @@ const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
         {number ? <p className='contact-number'>{number}</p> : ''}
         <p
           className='x-btn'
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             if (number) {
-              deleteContact(name, number);
+              deleteContact(name);
             } else {
               deleteGroup(name);
             }

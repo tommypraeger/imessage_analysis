@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-
 import AnalysisPage from './Analysis';
 import ContactsPage from './Contacts';
+import { getFetch } from './utils';
 
 const Page = ({ page }) => {
   const [contacts, setContacts] = useState({});
@@ -20,11 +20,12 @@ const Page = ({ page }) => {
   }, [refetchContacts])
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/v1/get_all_chat_names')
+    getFetch('get_all_chat_names')
       .then(response => response.json())
       .then(chatNames => setAllChatNames(JSON.parse(chatNames)))
       .catch(err => console.log(err));
-    fetch('http://localhost:5000/api/v1/get_all_phone_numbers')
+
+    getFetch('get_all_phone_numbers')
       .then(response => response.json())
       .then(phoneNumbers => setAllPhoneNumbers(JSON.parse(phoneNumbers)))
       .catch(err => console.log(err));
