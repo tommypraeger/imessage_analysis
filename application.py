@@ -40,6 +40,8 @@ class Application(Resource):
         parser.add_argument('args', type=dict, required=True)
         args_dict = parser.parse_args()['args']
 
+        print(args_dict)
+
         args_list = []
         for key in args_dict:
             args_list.append(f'--{key}')
@@ -59,6 +61,7 @@ class Application(Resource):
                 'errorMessage': error
             }
 
+        print(output)
         output = json.loads(output)
 
         if 'errorMessage' in output:

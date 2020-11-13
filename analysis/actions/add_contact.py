@@ -19,12 +19,12 @@ def main(name, group, number, dry_run=False):
         if number is None:
             msg = 'Must provide a phone number when adding a non-group contact'
             return helpers.make_error_message(msg)
-        
+
         phone_number = helpers.clean_phone_number(number)
-    
+
         contact_ids = sql.get_contact_ids_from_phone_number(phone_number)
         if len(contact_ids) == 0:
-            msg = f'Did not find {number}.\nMake sure you type in the phone number correctly.'    
+            msg = f'Did not find {number}.\nMake sure you type in the phone number correctly.'
             return helpers.make_error_message(msg)
 
         chat_ids = sql.get_chat_ids_from_phone_number(phone_number)
