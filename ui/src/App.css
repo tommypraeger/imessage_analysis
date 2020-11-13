@@ -42,11 +42,18 @@
     border-radius: 10px;
     margin-bottom: 10px;
     background-color: white;
+    cursor: pointer;
+}
+
+.group-chat-name {
+    display: inline-block;
+    padding: 5px 20px;
 }
 
 .contact-name {
     display: inline-block;
     padding: 5px 20px;
+    width: 20%;
 }
 
 .contact-number {
@@ -87,4 +94,13 @@
     right: 0;
     bottom: 0;
     background-color: lightgray;
+}
+
+.input {
+    margin-bottom: 20px !important;
+}
+
+.loading-gif {
+    width: 200px;
+    margin: 100px auto;
 }

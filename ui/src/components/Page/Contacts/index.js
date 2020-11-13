@@ -4,6 +4,7 @@ import AddGroupChatModal from './components/AddGroupChatModal';
 import EditContactModal from './components/EditContactModal';
 import EditGroupChatModal from './components/EditGroupChatModal';
 import { deleteContact, deleteGroup } from './utils';
+import { formatNumber } from '../utils';
 
 const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
   const [editContactModalOpen, setEditContactModalOpen] = useState(false);
@@ -34,10 +35,10 @@ const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
           }
         }}
       >
-        <p className='contact-name'>
+        <p className={number ? 'contact-name' : 'group-chat-name'}>
           {name}
         </p>
-        {number ? <p className='contact-number'>{number}</p> : ''}
+        {number ? <p className='contact-number'>{formatNumber(number)}</p> : ''}
         <p
           className='x-btn'
           onClick={(e) => {
@@ -57,7 +58,7 @@ const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
 };
 
 const ContactsPage = ({
-  contacts, refetchContacts, setRefetchContacts, allChatNames, allPhoneNumbers
+  contacts, allChatNames, allPhoneNumbers
 }) => {
   const [addContactModalOpen, setAddContactModalOpen] = useState(false);
   const [addGroupChatModalOpen, setAddGroupChatModalOpen] = useState(false);

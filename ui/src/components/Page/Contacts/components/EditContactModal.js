@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { editContact } from '../utils';
+import { editContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
 const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
@@ -13,7 +13,11 @@ const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
   return (
     <Modal
       isOpen={open}
-      onRequestClose={() => setOpen(false)}
+      onRequestClose={() => {
+        setOpen(false);
+        setNewName('');
+        setNewNumber('');
+      }}
       className='modal'
       overlayClassName='modal-background'
       shouldFocusAfterRender={false}
@@ -21,24 +25,29 @@ const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
       <h2>Edit Contact</h2>
 
       <TextField
-        value={newName}
         onChange={(event) => setNewName(event.target.value)}
         className='input'
         label='Name'
         variant='outlined'
       />
+
       <Autocomplete
-        value={newNumber}
-        onChange={(event, newValue) => setNewNumber(newValue)}
+        onChange={(event, newValue) => setNewNumber(newValue.number)}
         options={allPhoneNumbers}
+        getOptionLabel={number => number.formatted}
+        filterOptions={phoneNumberFilterOptions}
         renderInput={(params) => <TextField
           {...params}
+          className='input'
           label='Phone Number'
           variant='outlined'
         />}
       />
 
-      <button onClick={() => editContact(name, number, oldName)}>
+      <button onClick={() => {
+        editContact(newName, newNumber, oldName);
+        setOpen(false);
+      }}>
         Edit Contact
       </button>
     </Modal>

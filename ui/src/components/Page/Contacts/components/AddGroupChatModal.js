@@ -11,7 +11,10 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
   return (
     <Modal
       isOpen={open}
-      onRequestClose={() => setOpen(false)}
+      onRequestClose={() => {
+        setOpen(false);
+        setName('');
+      }}
       className='modal'
       overlayClassName='modal-background'
       shouldFocusAfterRender={false}
@@ -19,7 +22,6 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
       <h2>Add Group Chat</h2>
 
       <Autocomplete
-        value={name}
         onChange={(event, newValue) => setName(newValue)}
         options={allChatNames}
         renderInput={(params) => <TextField
@@ -29,7 +31,10 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
           variant='outlined' />}
       />
 
-      <button onClick={() => addGroup(name)}>
+      <button onClick={() => {
+        addGroup(name);
+        setOpen(false);
+      }}>
         Add Contact
     </button>
     </Modal>
