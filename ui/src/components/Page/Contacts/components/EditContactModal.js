@@ -44,7 +44,7 @@ const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
         />}
       />
 
-      <button onClick={() => {
+      <button className='btn' onClick={() => {
         editContact(newName, newNumber, oldName);
         setOpen(false);
       }}>

@@ -1,67 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Loader from 'react-loader-spinner';
 import AddContactModal from './components/AddContactModal';
 import AddGroupChatModal from './components/AddGroupChatModal';
-import EditContactModal from './components/EditContactModal';
-import EditGroupChatModal from './components/EditGroupChatModal';
-import { deleteContact, deleteGroup } from './utils';
-import { formatNumber } from '../utils';
+import Contact from './components/Contact';
+import { getFetch, formatNumbers } from '../utils';
 
-const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
-  const [editContactModalOpen, setEditContactModalOpen] = useState(false);
-  const [editGroupChatModalOpen, setEditGroupChatModalOpen] = useState(false);
-
-  return (
-    <React.Fragment>
-      <EditContactModal
-        open={editContactModalOpen}
-        setOpen={setEditContactModalOpen}
-        name={name}
-        number={number}
-        allPhoneNumbers={allPhoneNumbers}
-      />
-      <EditGroupChatModal
-        open={editGroupChatModalOpen}
-        setOpen={setEditGroupChatModalOpen}
-        name={name}
-        allChatNames={allChatNames}
-      />
-      <li
-        className='contact'
-        onClick={() => {
-          if (number) {
-            setEditContactModalOpen(true);
-          } else {
-            setEditGroupChatModalOpen(true);
-          }
-        }}
-      >
-        <p className={number ? 'contact-name' : 'group-chat-name'}>
-          {name}
-        </p>
-        {number ? <p className='contact-number'>{formatNumber(number)}</p> : ''}
-        <p
-          className='x-btn'
-          onClick={(e) => {
-            e.stopPropagation();
-            if (number) {
-              deleteContact(name);
-            } else {
-              deleteGroup(name);
-            }
-          }}
-        >
-          &#x2715;
-      </p>
-      </li>
-    </React.Fragment>
-  )
-};
-
-const ContactsPage = ({
-  contacts, allChatNames, allPhoneNumbers
-}) => {
+const ContactsPage = ({ contacts }) => {
   const [addContactModalOpen, setAddContactModalOpen] = useState(false);
   const [addGroupChatModalOpen, setAddGroupChatModalOpen] = useState(false);
+  const [allChatNames, setAllChatNames] = useState([]);
+  const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
+
+  useEffect(() => {
+    getFetch('get_all_chat_names')
+      .then(chatNames => setAllChatNames(JSON.parse(chatNames)))
+      .catch(err => console.log(err));
+
+    getFetch('get_all_phone_numbers')
+      .then(phoneNumbers => setAllPhoneNumbers(formatNumbers(JSON.parse(phoneNumbers))))
+      .catch(err => console.log(err));
+  }, []);
+
+  if (allChatNames.length === 0 || allPhoneNumbers.length === 0) {
+    return (
+      <div className='loading-gif'>
+        <Loader
+          type="Oval"
+          color="#1982fc"
+          height={200}
+          width={200}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className='page'>

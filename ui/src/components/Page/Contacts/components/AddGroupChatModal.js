@@ -31,12 +31,12 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
           variant='outlined' />}
       />
 
-      <button onClick={() => {
+      <button className='btn' onClick={() => {
         addGroup(name);
         setOpen(false);
       }}>
-        Add Contact
-    </button>
+        Add Group Chat
+      </button>
     </Modal>
   );
 };

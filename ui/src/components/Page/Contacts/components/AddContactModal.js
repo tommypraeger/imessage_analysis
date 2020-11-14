@@ -43,7 +43,7 @@ const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
         />}
       />
 
-      <button onClick={() => {
+      <button className='btn' onClick={() => {
         addContact(name, number);
         setOpen(false);
       }}>

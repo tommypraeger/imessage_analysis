@@ -32,11 +32,11 @@ const EditGroupChatModal = ({ open, setOpen, name, allChatNames }) => {
           variant='outlined' />}
       />
 
-      <button onClick={() => {
+      <button className='btn' onClick={() => {
         editGroup(newName, oldName);
         setOpen(false);
       }}>
-        Edit Contact
+        Edit Group Chat
       </button>
     </Modal>
   );

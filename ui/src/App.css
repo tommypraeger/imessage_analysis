@@ -104,3 +104,9 @@
     width: 200px;
     margin: 100px auto;
 }
+
+.btn {
+    background-color: #1982fc;
+    padding: 10px;
+    color: white;
+}
