@@ -5,7 +5,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { editGroup } from '../utils';
 Modal.setAppElement('#root');
 
-const EditGroupChatModal = ({ open, setOpen, name, allChatNames }) => {
+const EditGroupChatModal = ({
+  open, setOpen, name, allChatNames, setFetchesInProgress
+}) => {
   const oldName = name;
   const [newName, setNewName] = useState(name);
 
@@ -33,7 +35,7 @@ const EditGroupChatModal = ({ open, setOpen, name, allChatNames }) => {
       />
 
       <button className='btn' onClick={() => {
-        editGroup(newName, oldName);
+        editGroup(newName, oldName, setFetchesInProgress);
         setOpen(false);
       }}>
         Edit Group Chat

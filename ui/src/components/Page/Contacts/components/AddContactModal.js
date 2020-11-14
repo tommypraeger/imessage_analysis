@@ -5,7 +5,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { addContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
-const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
+const AddContactModal = ({
+  open, setOpen, allPhoneNumbers, setFetchesInProgress
+}) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -44,7 +46,7 @@ const AddContactModal = ({ open, setOpen, allPhoneNumbers }) => {
       />
 
       <button className='btn' onClick={() => {
-        addContact(name, number);
+        addContact(name, number, setFetchesInProgress);
         setOpen(false);
       }}>
         Add Contact

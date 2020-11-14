@@ -4,7 +4,9 @@ import EditGroupChatModal from './EditGroupChatModal';
 import { deleteContact, deleteGroup } from '../utils';
 import { formatNumber } from '../../utils';
 
-const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
+const Contact = ({
+  name, number, allPhoneNumbers, allChatNames, setFetchesInProgress
+}) => {
   const [editContactModalOpen, setEditContactModalOpen] = useState(false);
   const [editGroupChatModalOpen, setEditGroupChatModalOpen] = useState(false);
 
@@ -16,12 +18,14 @@ const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
         name={name}
         number={number}
         allPhoneNumbers={allPhoneNumbers}
+        setFetchesInProgress={setFetchesInProgress}
       />
       <EditGroupChatModal
         open={editGroupChatModalOpen}
         setOpen={setEditGroupChatModalOpen}
         name={name}
         allChatNames={allChatNames}
+        setFetchesInProgress={setFetchesInProgress}
       />
       <li
         className='contact'
@@ -42,9 +46,9 @@ const Contact = ({ name, number, allPhoneNumbers, allChatNames }) => {
           onClick={(e) => {
             e.stopPropagation();
             if (number) {
-              deleteContact(name);
+              deleteContact(name, setFetchesInProgress);
             } else {
-              deleteGroup(name);
+              deleteGroup(name, setFetchesInProgress);
             }
           }}
         >

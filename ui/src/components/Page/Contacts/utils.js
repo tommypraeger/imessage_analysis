@@ -1,52 +1,52 @@
 import { postFetch, verifySuccessOrAlert } from '../utils';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
-const addContact = (name, number) => {
+const addContact = (name, number, setFetchesInProgress) => {
   postFetch('add_contact', {
     name,
     number
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 
-const addGroup = (name) => {
+const addGroup = (name, setFetchesInProgress) => {
   postFetch('add_contact', {
     name,
     group: ''
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 
-const editContact = (name, oldName, number) => {
+const editContact = (name, oldName, number, setFetchesInProgress) => {
   postFetch('edit_contact', {
     name,
     number,
     'old-name': oldName
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 
-const editGroup = (name, oldName) => {
+const editGroup = (name, oldName, setFetchesInProgress) => {
   postFetch('edit_contact', {
     name,
     group: '',
     'old-name': oldName
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 
-const deleteContact = (name) => {
+const deleteContact = (name, setFetchesInProgress) => {
   postFetch('delete_contact', {
     name
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 
-const deleteGroup = (name) => {
+const deleteGroup = (name, setFetchesInProgress) => {
   postFetch('delete_contact', {
     name,
     group: ''
-  }).then(response => verifySuccessOrAlert(response))
+  }, setFetchesInProgress).then(response => verifySuccessOrAlert(response))
     .catch(err => console.log(err));
 };
 

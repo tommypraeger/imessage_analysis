@@ -10,18 +10,21 @@ const ContactsPage = ({ contacts }) => {
   const [addGroupChatModalOpen, setAddGroupChatModalOpen] = useState(false);
   const [allChatNames, setAllChatNames] = useState([]);
   const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
+  const [fetchesInProgress, setFetchesInProgress] = useState(0);
 
   useEffect(() => {
-    getFetch('get_all_chat_names')
+    getFetch('get_all_chat_names', setFetchesInProgress)
       .then(chatNames => setAllChatNames(JSON.parse(chatNames)))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => setFetchesInProgress(fetches => fetches - 1));
 
-    getFetch('get_all_phone_numbers')
+    getFetch('get_all_phone_numbers', setFetchesInProgress)
       .then(phoneNumbers => setAllPhoneNumbers(formatNumbers(JSON.parse(phoneNumbers))))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => setFetchesInProgress(fetches => fetches - 1));
   }, []);
 
-  if (allChatNames.length === 0 || allPhoneNumbers.length === 0) {
+  if (fetchesInProgress > 0) {
     return (
       <div className='loading-gif'>
         <Loader
@@ -40,11 +43,13 @@ const ContactsPage = ({ contacts }) => {
         open={addContactModalOpen}
         setOpen={setAddContactModalOpen}
         allPhoneNumbers={allPhoneNumbers}
+        setFetchesInProgress={setFetchesInProgress}
       />
       <AddGroupChatModal
         open={addGroupChatModalOpen}
         setOpen={setAddGroupChatModalOpen}
         allChatNames={allChatNames}
+        setFetchesInProgress={setFetchesInProgress}
       />
       <div>
         <div className='contacts-section-header'>
@@ -64,6 +69,7 @@ const ContactsPage = ({ contacts }) => {
                   name={name}
                   allChatNames={allChatNames}
                   allPhoneNumbers={allPhoneNumbers}
+                  setFetchesInProgress={setFetchesInProgress}
                 />)
           }
         </ul>
@@ -86,6 +92,7 @@ const ContactsPage = ({ contacts }) => {
                 number={contacts[name]}
                 allChatNames={allChatNames}
                 allPhoneNumbers={allPhoneNumbers}
+                setFetchesInProgress={setFetchesInProgress}
               />)
           }
         </ul>

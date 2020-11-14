@@ -5,7 +5,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { editContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
-const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
+const EditContactModal = ({
+  open, setOpen, name, number, allPhoneNumbers, setFetchesInProgress
+}) => {
   const oldName = name;
   const [newName, setNewName] = useState(name);
   const [newNumber, setNewNumber] = useState(number);
@@ -45,7 +47,7 @@ const EditContactModal = ({ open, setOpen, name, number, allPhoneNumbers }) => {
       />
 
       <button className='btn' onClick={() => {
-        editContact(newName, newNumber, oldName);
+        editContact(newName, newNumber, oldName, setFetchesInProgress);
         setOpen(false);
       }}>
         Edit Contact

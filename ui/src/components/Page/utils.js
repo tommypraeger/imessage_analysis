@@ -8,12 +8,14 @@ const verifySuccessOrAlert = (response) => {
   }
 };
 
-const getFetch = (action) => {
+const getFetch = (action, setFetchesInProgress) => {
+  setFetchesInProgress(fetches => fetches + 1);
   return fetch(`http://localhost:5000/api/v1/${action}`)
     .then(response => response.json());
 };
 
-const postFetch = (action, body) => {
+const postFetch = (action, body, setFetchesInProgress) => {
+  setFetchesInProgress(fetches => fetches + 1);
   return fetch(`http://localhost:5000/api/v1/${action}`, {
     method: 'POST',
     headers: {

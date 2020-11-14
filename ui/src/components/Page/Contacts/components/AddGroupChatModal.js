@@ -5,7 +5,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { addGroup } from '../utils';
 Modal.setAppElement('#root');
 
-const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
+const AddGroupChatModal = ({
+  open, setOpen, allChatNames, setFetchesInProgress
+}) => {
   const [name, setName] = useState('');
 
   return (
@@ -32,7 +34,7 @@ const AddGroupChatModal = ({ open, setOpen, allChatNames }) => {
       />
 
       <button className='btn' onClick={() => {
-        addGroup(name);
+        addGroup(name, setFetchesInProgress);
         setOpen(false);
       }}>
         Add Group Chat
