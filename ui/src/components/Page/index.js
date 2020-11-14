@@ -3,7 +3,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import AnalysisPage from './Analysis';
 import ContactsPage from './Contacts';
 
-const Page = ({ page }) => {
+const Page = ({ page, setPage }) => {
   const [contacts, setContacts] = useState({});
   const [selectedContact, setSelectedContact] = useState({});
 
@@ -30,19 +30,8 @@ const Page = ({ page }) => {
       );
 
     default:
-      // page currently defaults to 'contacts' so this logic is not really needed
-      if (Object.values(contacts).length === 0) {
-        return (
-          <ContactsPage contacts={contacts} />
-        );
-      }
-      return (
-        <AnalysisPage
-          contacts={contacts}
-          selectedContact={selectedContact}
-          setSelectedContact={setSelectedContact}
-        />
-      );
+      // Should never be the case
+      return <React.Fragment />
   }
 }
 

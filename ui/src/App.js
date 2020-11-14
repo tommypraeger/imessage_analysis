@@ -4,7 +4,9 @@ import NavBar from './components/NavBar';
 import Page from './components/Page';
 
 const App = () => {
-  const [page, setPage] = useState('contacts');
+  const urlParams = new URLSearchParams(window.location.search);
+  const pageParam = urlParams.get('page') ? urlParams.get('page') : 'contacts'
+  const [page, setPage] = useState(pageParam);
 
   return (
     <div className='App'>

@@ -3,6 +3,7 @@ const NavBar = ({ page, setPage }) => {
     'contacts',
     'analysis'
   ];
+  const urlParams = new URLSearchParams(window.location.search);
 
   return (
     <ul id='nav-bar'>
@@ -10,7 +11,11 @@ const NavBar = ({ page, setPage }) => {
         <li
           key={pageName}
           className={page === pageName ? 'active' : ''}
-          onClick={() => setPage(pageName)}
+          onClick={() => {
+            setPage(pageName);
+            urlParams.set('page', pageName);
+            window.location.search = urlParams.toString();
+          }}
         >
           {pageName.charAt(0).toUpperCase() + pageName.slice(1)}
         </li>
