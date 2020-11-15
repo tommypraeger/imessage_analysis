@@ -111,18 +111,18 @@
     color: white;
 }
 
-.select-contact {
+.select-div {
     width: 100;
     text-align: center;
 }
 
-.select-contact h2 {
+.select-div h2 {
     vertical-align: middle;
     display: inline-block;
     margin-right: 10px;
 }
 
-.select-contact .contact-select {
+.select {
     padding: 6px;
     vertical-align: middle;
     font-size: 16px;
