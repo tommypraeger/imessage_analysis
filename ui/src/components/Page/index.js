@@ -5,7 +5,6 @@ import ContactsPage from './Contacts';
 
 const Page = ({ page, setPage }) => {
   const [contacts, setContacts] = useState({});
-  const [selectedContact, setSelectedContact] = useState({});
 
   useEffect(() => {
     fetch('user_data.json')
@@ -17,11 +16,7 @@ const Page = ({ page, setPage }) => {
   switch (page) {
     case 'analysis':
       return (
-        <AnalysisPage
-          contacts={contacts}
-          selectedContact={selectedContact}
-          setSelectedContact={setSelectedContact}
-        />
+        <AnalysisPage contacts={contacts} />
       );
 
     case 'contacts':

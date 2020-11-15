@@ -110,3 +110,20 @@
     padding: 10px;
     color: white;
 }
+
+.select-contact {
+    width: 100;
+    text-align: center;
+}
+
+.select-contact h2 {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.select-contact .contact-select {
+    padding: 6px;
+    vertical-align: middle;
+    font-size: 16px;
+}
