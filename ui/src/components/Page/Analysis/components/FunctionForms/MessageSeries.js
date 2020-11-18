@@ -10,7 +10,7 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
       <p>
         Time (in minutes) after the previous message for a new message
         to be classified as a new conversation:
-    </p>
+      </p>
       <input
         type='number'
         min='1'
