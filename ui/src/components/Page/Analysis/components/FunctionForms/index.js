@@ -15,10 +15,10 @@ import TweetForm from './Tweet';
 import WordCountForm from './WordCount';
 import WordLengthForm from './WordLength';
 
-const FunctionForm = ({ func }) => {
+const FunctionForm = ({ func, setFuncArgs }) => {
   switch (func) {
     case 'all_functions':
-      return <AllFunctionsForm />
+      return <AllFunctionsForm setFuncArgs={setFuncArgs} />
 
     case 'all_caps':
       return <AllCapsForm />;
@@ -27,13 +27,13 @@ const FunctionForm = ({ func }) => {
       return <AttachmentForm />;
 
     case 'convo_start':
-      return <ConvoStarterForm />;
+      return <ConvoStarterForm setFuncArgs={setFuncArgs} />;
 
     case 'emoji':
       return <EmojiForm />;
 
     case 'frequency':
-      return <FrequencyForm />;
+      return <FrequencyForm setFuncArgs={setFuncArgs} />;
 
     case 'game':
       return <GameForm />;
@@ -42,13 +42,13 @@ const FunctionForm = ({ func }) => {
       return <LinkForm />;
 
     case 'message_series':
-      return <MessageSeriesForm />;
+      return <MessageSeriesForm setFuncArgs={setFuncArgs} />;
 
     case 'mime_type':
-      return <MimeTypeForm />;
+      return <MimeTypeForm setFuncArgs={setFuncArgs} />;
 
     case 'phrase':
-      return <PhraseForm />;
+      return <PhraseForm setFuncArgs={setFuncArgs} />;
 
     case 'reaction':
       return <ReactionForm />;

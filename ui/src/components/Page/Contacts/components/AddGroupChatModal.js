@@ -28,7 +28,7 @@ const AddGroupChatModal = ({
         options={allChatNames}
         renderInput={(params) => <TextField
           {...params}
-          className='input'
+          classname='modal-input'
           label='Group Chat Name (exactly as it appears in Messages)'
           variant='outlined' />}
       />

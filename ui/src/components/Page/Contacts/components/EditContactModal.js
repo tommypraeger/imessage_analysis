@@ -28,7 +28,7 @@ const EditContactModal = ({
 
       <TextField
         onChange={(event) => setNewName(event.target.value)}
-        className='input'
+        classname='modal-input'
         label='Name'
         variant='outlined'
       />
@@ -40,7 +40,7 @@ const EditContactModal = ({
         filterOptions={phoneNumberFilterOptions}
         renderInput={(params) => <TextField
           {...params}
-          className='input'
+          classname='modal-input'
           label='Phone Number'
           variant='outlined'
         />}

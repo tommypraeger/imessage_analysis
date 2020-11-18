@@ -96,7 +96,7 @@
     background-color: lightgray;
 }
 
-.input {
+.modal-input {
     margin-bottom: 20px !important;
 }
 
@@ -111,12 +111,17 @@
     color: white;
 }
 
-.select-div {
-    width: 100;
+.input-div {
     text-align: center;
 }
 
-.select-div h2 {
+.input-div h2 {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.input-div p {
     vertical-align: middle;
     display: inline-block;
     margin-right: 10px;

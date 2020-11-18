@@ -27,7 +27,7 @@ const AddContactModal = ({
 
       <TextField
         onChange={(event) => setName(event.target.value)}
-        className='input'
+        classname='modal-input'
         label='Name'
         variant='outlined'
       />
@@ -39,7 +39,7 @@ const AddContactModal = ({
         getOptionLabel={number => number.formatted}
         renderInput={(params) => <TextField
           {...params}
-          className='input'
+          classname='modal-input'
           label='Phone Number'
           variant='outlined'
         />}
