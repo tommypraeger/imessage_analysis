@@ -51,10 +51,13 @@ const AddContactModal = ({
         />}
       />
 
-      <button className='btn' onClick={() => {
-        addContact(name, number, setFetchesInProgress);
-        setOpen(false);
-      }}>
+      <button
+        className='btn'
+        disabled={!name || !number}
+        onClick={() => {
+          addContact(name, number, setFetchesInProgress);
+          setOpen(false);
+        }}>
         Add Contact
       </button>
     </Modal>

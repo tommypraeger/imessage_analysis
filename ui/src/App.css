@@ -109,10 +109,38 @@
     background-color: #1982fc;
     padding: 10px;
     color: white;
+    cursor: pointer;
+}
+
+.center-btn {
+    background-color: #1982fc;
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn:disabled {
+    background-color: lightgray;
+    cursor: not-allowed;
+}
+
+.center-btn:disabled {
+    background-color: lightgray;
+    cursor: not-allowed;
+}
+
+.center-content {
+    text-align: center;
+    margin: auto;
+    max-width: 60%;
 }
 
 .input-div {
-    text-align: center;
+    text-align: left;
 }
 
 .input-div h2 {

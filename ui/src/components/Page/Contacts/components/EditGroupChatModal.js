@@ -35,10 +35,13 @@ const EditGroupChatModal = ({
           variant='outlined' />}
       />
 
-      <button className='btn' onClick={() => {
-        editGroup(newName, oldName, setFetchesInProgress);
-        setOpen(false);
-      }}>
+      <button
+        className='btn'
+        disabled={!newName}
+        onClick={() => {
+          editGroup(newName, oldName, setFetchesInProgress);
+          setOpen(false);
+        }}>
         Edit Group Chat
       </button>
     </Modal>

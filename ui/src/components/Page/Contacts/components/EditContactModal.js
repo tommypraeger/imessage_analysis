@@ -54,10 +54,13 @@ const EditContactModal = ({
         />}
       />
 
-      <button className='btn' onClick={() => {
-        editContact(newName, newNumber, oldName, setFetchesInProgress);
-        setOpen(false);
-      }}>
+      <button
+        className='btn'
+        disabled={!newName || !newNumber}
+        onClick={() => {
+          editContact(newName, newNumber, oldName, setFetchesInProgress);
+          setOpen(false);
+        }}>
         Edit Contact
       </button>
     </Modal>

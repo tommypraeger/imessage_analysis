@@ -18,7 +18,7 @@ const SelectFunction = ({ setFunc }) => (
       How many messages are attachments
     </option>
 
-    <option value='convo_start'>
+    <option value='convo_starter'>
       How many times each person starts are conversation
     </option>
 

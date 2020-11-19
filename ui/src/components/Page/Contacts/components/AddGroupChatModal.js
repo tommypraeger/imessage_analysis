@@ -33,10 +33,13 @@ const AddGroupChatModal = ({
           variant='outlined' />}
       />
 
-      <button className='btn' onClick={() => {
-        addGroup(name, setFetchesInProgress);
-        setOpen(false);
-      }}>
+      <button
+        className='btn'
+        disabled={!name}
+        onClick={() => {
+          addGroup(name, setFetchesInProgress);
+          setOpen(false);
+        }}>
         Add Group Chat
       </button>
     </Modal>

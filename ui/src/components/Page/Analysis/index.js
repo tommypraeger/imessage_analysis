@@ -9,12 +9,17 @@ const AnalysisPage = ({ contacts }) => {
   const [func, setFunc] = useState('');
   const [funcArgs, setFuncArgs] = useState({});
 
+  console.log(!('day' in funcArgs)
+    && !('week' in funcArgs)
+    && !('month' in funcArgs)
+    && !('year' in funcArgs))
+
   // TODO: Add calendars to choose from-date and to-date
 
   return (
-    <div>
+    <div className='center-content'>
       <div className='input-div'>
-        <h2>Analysis for</h2>
+        <h2>Analysis for:</h2>
         <SelectContact
           contacts={contacts}
           setContactName={setContactName}
@@ -30,6 +35,23 @@ const AnalysisPage = ({ contacts }) => {
           <FunctionForm func={func} setFuncArgs={setFuncArgs} />
         </div>
       )}
+      <button
+        className='center-btn'
+        disabled={
+          !contactName
+          || !func
+          || (func === 'phrase' && !funcArgs.phrase)
+          || (func === 'mime_type' && !funcArgs['mime-type'])
+          || (((func === 'all_functions') || (func === 'message_series') || (func === 'convo_starter'))
+            && !funcArgs['minutes-threshold'])
+          || (func === 'frequency'
+            && (!('day' in funcArgs)
+              && !('week' in funcArgs)
+              && !('month' in funcArgs)
+              && !('year' in funcArgs)))
+        }
+      >Analyze
+      </button>
     </div>
   );
 };
