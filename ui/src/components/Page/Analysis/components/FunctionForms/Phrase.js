@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const MessageSeriesForm = ({ setFuncArgs }) => {
+const PhraseForm = ({ setFuncArgs }) => {
   useEffect(() => {
     setFuncArgs({ 'phrase': '' })
   }, [setFuncArgs]);
@@ -20,8 +20,7 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
               { 'phrase': event.target.value })
             )
           }
-        >
-        </input>
+        />
       </div>
       <div className='input-div'>
         <p>
@@ -29,6 +28,7 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
         </p>
         <input
           type='checkbox'
+          className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
               setFuncArgs(args => Object.assign(
@@ -44,8 +44,7 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
               })
             }
           }}
-        >
-        </input>
+        />
       </div>
       <div className='input-div'>
         <p>
@@ -53,6 +52,7 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
         </p>
         <input
           type='checkbox'
+          className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
               setFuncArgs(args => Object.assign(
@@ -68,11 +68,10 @@ const MessageSeriesForm = ({ setFuncArgs }) => {
               })
             }
           }}
-        >
-        </input>
+        />
       </div>
-    </div >
+    </div>
   );
 };
 
-export default MessageSeriesForm;
+export default PhraseForm;

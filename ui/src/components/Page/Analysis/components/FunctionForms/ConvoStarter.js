@@ -22,8 +22,7 @@ const ConvoStarterForm = ({ setFuncArgs }) => {
             { 'minutes-threshold': event.target.valueAsNumber })
           )
         }
-      >
-      </input>
+      />
     </div>
   );
 };

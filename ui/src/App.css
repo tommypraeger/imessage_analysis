@@ -132,3 +132,12 @@
     vertical-align: middle;
     font-size: 16px;
 }
+
+.checkbox {
+    vertical-align: sub;
+}
+
+.radio {
+    vertical-align: text-top;
+    margin-left: 20px;
+}

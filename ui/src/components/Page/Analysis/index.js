@@ -10,7 +10,6 @@ const AnalysisPage = ({ contacts }) => {
   const [funcArgs, setFuncArgs] = useState({});
 
   // TODO: Add calendars to choose from-date and to-date
-  console.log(funcArgs)
 
   return (
     <div>

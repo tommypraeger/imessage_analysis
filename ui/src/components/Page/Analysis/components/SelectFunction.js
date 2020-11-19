@@ -7,7 +7,7 @@ const SelectFunction = ({ setFunc }) => (
     <option value='none' disabled={true}>Select a function</option>
 
     <option value='all_functions'>
-      All functions
+      All functions (except a few that require more input)
     </option>
 
     <option value='all_caps'>
