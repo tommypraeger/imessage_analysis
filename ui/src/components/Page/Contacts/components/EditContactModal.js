@@ -36,7 +36,13 @@ const EditContactModal = ({
 
       <Autocomplete
         defaultValue={allPhoneNumbers.filter(numObj => numObj.number === number)[0]}
-        onChange={(event, newValue) => setNewNumber(newValue.number)}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            setNewNumber(newValue.number);
+          } else {
+            setNewNumber('');
+          }
+        }}
         options={allPhoneNumbers}
         getOptionLabel={numberObj => numberObj.formatted}
         filterOptions={phoneNumberFilterOptions}

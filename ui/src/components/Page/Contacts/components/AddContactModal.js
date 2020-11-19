@@ -33,7 +33,13 @@ const AddContactModal = ({
       />
 
       <Autocomplete
-        onChange={(event, newValue) => setNumber(newValue.number)}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            setNumber(newValue.number);
+          } else {
+            setNumber('');
+          }
+        }}
         options={allPhoneNumbers}
         filterOptions={phoneNumberFilterOptions}
         getOptionLabel={number => number.formatted}
