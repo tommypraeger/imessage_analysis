@@ -25,11 +25,12 @@ const EditGroupChatModal = ({
       <h2>Edit Group Chat</h2>
 
       <Autocomplete
+        defaultValue={name}
         onChange={(event, newValue) => setNewName(newValue)}
         options={allChatNames}
         renderInput={(params) => <TextField
           {...params}
-          classname='modal-input'
+          className='modal-input'
           label='Group Chat Name (exactly as it appears in Messages)'
           variant='outlined' />}
       />

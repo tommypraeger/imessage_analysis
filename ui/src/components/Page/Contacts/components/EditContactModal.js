@@ -27,20 +27,22 @@ const EditContactModal = ({
       <h2>Edit Contact</h2>
 
       <TextField
+        defaultValue={name}
         onChange={(event) => setNewName(event.target.value)}
-        classname='modal-input'
+        className='modal-input'
         label='Name'
         variant='outlined'
       />
 
       <Autocomplete
+        defaultValue={allPhoneNumbers.filter(numObj => numObj.number === number)[0]}
         onChange={(event, newValue) => setNewNumber(newValue.number)}
         options={allPhoneNumbers}
-        getOptionLabel={number => number.formatted}
+        getOptionLabel={numberObj => numberObj.formatted}
         filterOptions={phoneNumberFilterOptions}
         renderInput={(params) => <TextField
           {...params}
-          classname='modal-input'
+          className='modal-input'
           label='Phone Number'
           variant='outlined'
         />}
