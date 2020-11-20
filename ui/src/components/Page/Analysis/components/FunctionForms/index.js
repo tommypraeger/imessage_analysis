@@ -17,7 +17,7 @@ import WordLengthForm from './WordLength';
 
 const FunctionForm = ({ func, setFuncArgs }) => {
   switch (func) {
-    case 'all_functions':
+    case 'all-functions':
       return <AllFunctionsForm setFuncArgs={setFuncArgs} />
 
     case 'all_caps':

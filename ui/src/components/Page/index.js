@@ -3,7 +3,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import AnalysisPage from './Analysis';
 import ContactsPage from './Contacts';
 
-const Page = ({ page, setPage }) => {
+const Page = ({ page }) => {
   const [contacts, setContacts] = useState({});
 
   useEffect(() => {

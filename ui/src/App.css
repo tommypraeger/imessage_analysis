@@ -169,3 +169,8 @@
     vertical-align: text-top;
     margin-left: 20px;
 }
+
+.analysis-table table {
+    margin: auto;
+    margin-top: 25px;
+}
