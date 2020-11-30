@@ -8,17 +8,19 @@ from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
+
 def main(result_dict, df, chat_members, args):
     if not (args.day or args.week or args.month or args.year):
         raise Exception('Must give time period length for graph')
-    
+
     message_freqs = {
         'Total': []
     }
     if args.graph_individual:
         members = []
         for member_name in chat_members:
-            total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
+            total_messages, non_reaction_messages = initialize_result_dict(
+                member_name, df, result_dict)
             if total_messages > 0:
                 members.append(member_name)
         for member in members:
@@ -51,7 +53,7 @@ def main(result_dict, df, chat_members, args):
                 ))
 
     plt.figure()
-    
+
     x = [datetime.datetime.strptime(d, day_fmt).date() for d in time_periods]
     ax = plt.gca()
 
@@ -72,12 +74,12 @@ def main(result_dict, df, chat_members, args):
     max_ticks = 15 if args.month or args.year else 10
     if len(x) > max_ticks:
         ax.xaxis.set_major_locator(plt.MaxNLocator(max_ticks))
-    
+
     plt.title(f'{args.name}, by {time_period_name}')
     plt.xlabel('Date')
     plt.ylabel('# of Messages')
     plt.legend()
-    plt.savefig('graph.png', bbox_inches='tight')
+    plt.savefig('ui/public/graph.png', bbox_inches='tight')
 
     message_freqs['Date'] = []
     for time_period in time_periods:

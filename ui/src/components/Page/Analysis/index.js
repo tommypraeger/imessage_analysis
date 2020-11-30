@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FunctionForm from './components/FunctionForms';
 import SelectContact from './components/SelectContact';
 import SelectFunction from './components/SelectFunction';
@@ -12,6 +12,10 @@ const AnalysisPage = ({ contacts }) => {
   const [funcArgs, setFuncArgs] = useState({});
   const [fetchesInProgress, setFetchesInProgress] = useState(0);
   const [response, setResponse] = useState({});
+
+  useEffect(() => {
+    setResponse({});
+  }, [contactName, func])
 
   // TODO: Add calendars to choose from-date and to-date
 

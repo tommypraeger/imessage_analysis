@@ -25,7 +25,17 @@ const Analysis = ({ response, fetchesInProgress }) => {
         />
       );
     } else if ('imagePath' in response) {
-      return <img src={response.imagePath} alt='Analysis Table' />;
+      return (
+        <img
+          src={response.imagePath}
+          alt='Analysis Table'
+          className='center-img'
+        />
+      );
+    } else if ('errorMessage' in response) {
+      return <p className='center-content'>{response.errorMessage}</p>;
+    } else {
+      return <div />;
     }
   }
 };

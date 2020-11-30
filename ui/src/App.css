@@ -115,8 +115,7 @@
 .center-btn {
     background-color: #1982fc;
     display: block;
-    margin: auto;
-    margin-top: 20px;
+    margin: 20px auto;
     padding: 10px;
     font-size: 16px;
     color: white;
@@ -173,4 +172,9 @@
 .analysis-table table {
     margin: auto;
     margin-top: 25px;
+}
+
+.center-img {
+    display: block;
+    margin: auto;
 }

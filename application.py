@@ -31,6 +31,7 @@ class Application(Resource):
         output = json.loads(output)
 
         if 'errorMessage' in output:
+            print(output['errorMessage'])
             return output, 400
 
         return output, 200
@@ -62,6 +63,7 @@ class Application(Resource):
         output = json.loads(output)
 
         if 'errorMessage' in output:
+            print(output['errorMessage'])
             return output, 400
 
         return output, 200
