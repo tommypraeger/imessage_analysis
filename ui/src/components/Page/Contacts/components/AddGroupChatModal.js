@@ -6,7 +6,7 @@ import { addGroup } from '../utils';
 Modal.setAppElement('#root');
 
 const AddGroupChatModal = ({
-  open, setOpen, allChatNames, setFetchesInProgress
+  open, setOpen, allChatNames, setFetchesInProgress, setUpdateContacts
 }) => {
   const [name, setName] = useState('');
 
@@ -37,7 +37,7 @@ const AddGroupChatModal = ({
         className='btn'
         disabled={!name}
         onClick={() => {
-          addGroup(name, setFetchesInProgress);
+          addGroup(name, setFetchesInProgress, setUpdateContacts);
           setOpen(false);
         }}>
         Add Group Chat

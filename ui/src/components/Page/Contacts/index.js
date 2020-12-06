@@ -5,12 +5,14 @@ import AddGroupChatModal from './components/AddGroupChatModal';
 import Contact from './components/Contact';
 import { getFetch, formatNumbers } from '../utils';
 
-const ContactsPage = ({ contacts }) => {
+const ContactsPage = ({ contacts, setContacts }) => {
   const [addContactModalOpen, setAddContactModalOpen] = useState(false);
   const [addGroupChatModalOpen, setAddGroupChatModalOpen] = useState(false);
   const [allChatNames, setAllChatNames] = useState([]);
   const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
   const [fetchesInProgress, setFetchesInProgress] = useState(0);
+  // Meaningless variable changed to update contacts
+  const [updateContacts, setUpdateContacts] = useState(0);
 
   useEffect(() => {
     getFetch('get_all_chat_names', setFetchesInProgress)
@@ -24,6 +26,13 @@ const ContactsPage = ({ contacts }) => {
       .finally(() => setFetchesInProgress(fetches => fetches - 1));
   }, []);
 
+  useEffect(() => {
+    fetch('user_data.json')
+      .then(response => response.json())
+      .then(userData => setContacts(userData.contacts))
+      .catch(err => console.log(err));
+  }, [setContacts, updateContacts]);
+
   if (fetchesInProgress > 0) {
     return (
       <div className='loading-gif'>
@@ -35,7 +44,7 @@ const ContactsPage = ({ contacts }) => {
         />
       </div>
     );
-  }
+  };
 
   return (
     <div className='page'>
@@ -44,12 +53,14 @@ const ContactsPage = ({ contacts }) => {
         setOpen={setAddContactModalOpen}
         allPhoneNumbers={allPhoneNumbers}
         setFetchesInProgress={setFetchesInProgress}
+        setUpdateContacts={setUpdateContacts}
       />
       <AddGroupChatModal
         open={addGroupChatModalOpen}
         setOpen={setAddGroupChatModalOpen}
         allChatNames={allChatNames}
         setFetchesInProgress={setFetchesInProgress}
+        setUpdateContacts={setUpdateContacts}
       />
       <div>
         <div className='contacts-section-header'>
@@ -70,6 +81,7 @@ const ContactsPage = ({ contacts }) => {
                   allChatNames={allChatNames}
                   allPhoneNumbers={allPhoneNumbers}
                   setFetchesInProgress={setFetchesInProgress}
+                  setUpdateContacts={setUpdateContacts}
                 />)
           }
         </ul>
@@ -93,6 +105,7 @@ const ContactsPage = ({ contacts }) => {
                 allChatNames={allChatNames}
                 allPhoneNumbers={allPhoneNumbers}
                 setFetchesInProgress={setFetchesInProgress}
+                setUpdateContacts={setUpdateContacts}
               />)
           }
         </ul>

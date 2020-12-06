@@ -6,7 +6,7 @@ import { editContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
 const EditContactModal = ({
-  open, setOpen, name, number, allPhoneNumbers, setFetchesInProgress
+  open, setOpen, name, number, allPhoneNumbers, setFetchesInProgress, setUpdateContacts
 }) => {
   const oldName = name;
   const [newName, setNewName] = useState(name);
@@ -58,7 +58,7 @@ const EditContactModal = ({
         className='btn'
         disabled={!newName || !newNumber}
         onClick={() => {
-          editContact(newName, newNumber, oldName, setFetchesInProgress);
+          editContact(newName, newNumber, oldName, setFetchesInProgress, setUpdateContacts);
           setOpen(false);
         }}>
         Edit Contact

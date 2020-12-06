@@ -6,7 +6,7 @@ import { addContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
 const AddContactModal = ({
-  open, setOpen, allPhoneNumbers, setFetchesInProgress
+  open, setOpen, allPhoneNumbers, setFetchesInProgress, setUpdateContacts
 }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -55,7 +55,7 @@ const AddContactModal = ({
         className='btn'
         disabled={!name || !number}
         onClick={() => {
-          addContact(name, number, setFetchesInProgress);
+          addContact(name, number, setFetchesInProgress, setUpdateContacts);
           setOpen(false);
         }}>
         Add Contact

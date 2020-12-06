@@ -6,7 +6,7 @@ import { editGroup } from '../utils';
 Modal.setAppElement('#root');
 
 const EditGroupChatModal = ({
-  open, setOpen, name, allChatNames, setFetchesInProgress
+  open, setOpen, name, allChatNames, setFetchesInProgress, setUpdateContacts
 }) => {
   const oldName = name;
   const [newName, setNewName] = useState(name);
@@ -39,7 +39,7 @@ const EditGroupChatModal = ({
         className='btn'
         disabled={!newName}
         onClick={() => {
-          editGroup(newName, oldName, setFetchesInProgress);
+          editGroup(newName, oldName, setFetchesInProgress, setUpdateContacts);
           setOpen(false);
         }}>
         Edit Group Chat

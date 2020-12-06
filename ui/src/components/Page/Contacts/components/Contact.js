@@ -5,7 +5,7 @@ import { deleteContact, deleteGroup } from '../utils';
 import { formatNumber } from '../../utils';
 
 const Contact = ({
-  name, number, allPhoneNumbers, allChatNames, setFetchesInProgress
+  name, number, allPhoneNumbers, allChatNames, setFetchesInProgress, setUpdateContacts
 }) => {
   const [editContactModalOpen, setEditContactModalOpen] = useState(false);
   const [editGroupChatModalOpen, setEditGroupChatModalOpen] = useState(false);
@@ -46,9 +46,9 @@ const Contact = ({
           onClick={(e) => {
             e.stopPropagation();
             if (number) {
-              deleteContact(name, setFetchesInProgress);
+              deleteContact(name, setFetchesInProgress, setUpdateContacts);
             } else {
-              deleteGroup(name, setFetchesInProgress);
+              deleteGroup(name, setFetchesInProgress, setUpdateContacts);
             }
           }}
         >

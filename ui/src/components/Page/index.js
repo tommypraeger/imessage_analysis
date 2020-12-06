@@ -21,7 +21,7 @@ const Page = ({ page }) => {
 
     case 'contacts':
       return (
-        <ContactsPage contacts={contacts} />
+        <ContactsPage contacts={contacts} setContacts={setContacts} />
       );
 
     default:
