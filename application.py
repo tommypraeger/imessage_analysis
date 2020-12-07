@@ -18,8 +18,7 @@ class Application(Resource):
     def get(self, action):
         try:
             args = ['python3', '-m', 'analysis', action]
-            output = subprocess.check_output(args)
-            output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+            output = self.get_output(args)
         except subprocess.CalledProcessError as e:
             # Get exception from stack trace
             error = str(e.output).split('\\n')[-2][11:]
@@ -51,7 +50,7 @@ class Application(Resource):
         try:
             args = ['python3', '-m', 'analysis', action]
             args.extend(args_list)
-            output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+            output = self.get_output(args)
         except subprocess.CalledProcessError as e:
             # Get exception from stack trace
             error = str(e.output).split('\\n')[-2][11:]
@@ -67,6 +66,14 @@ class Application(Resource):
             return output, 400
 
         return output, 200
+
+    def get_output(self, args):
+        args = self.convert_args_to_strs(args)
+        output = subprocess.run(args, stdout=subprocess.PIPE)
+        return output.stdout.decode('utf-8')
+
+    def convert_args_to_strs(self, args):
+        return [str(arg) for arg in args]
 
 
 api.add_resource(Application, '/api/v1/<string:action>')
