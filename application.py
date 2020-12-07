@@ -25,9 +25,15 @@ class Application(Resource):
             print(error)
             return {
                 'errorMessage': error['message']
-            }
+            }, 400
 
-        output = json.loads(output)
+        try:
+            output = json.loads(output)
+        except json.decoder.JSONDecodeError:
+            print(output)
+            return {
+                'errorMessage': output
+            }, 400
 
         if 'errorMessage' in output:
             print(output['errorMessage'])
@@ -57,9 +63,15 @@ class Application(Resource):
             print(error)
             return {
                 'errorMessage': error
-            }
+            }, 400
 
-        output = json.loads(output)
+        try:
+            output = json.loads(output)
+        except json.decoder.JSONDecodeError:
+            print(output)
+            return {
+                'errorMessage': output
+            }, 400
 
         if 'errorMessage' in output:
             print(output['errorMessage'])

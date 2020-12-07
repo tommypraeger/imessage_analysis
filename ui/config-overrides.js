@@ -1,5 +1,3 @@
-const path = require('path')
-
 module.exports = {
   webpack: function (config, env) {
     return config;
@@ -12,8 +10,8 @@ module.exports = {
       const config = configFunction(proxy, allowedHost);
       config.watchOptions = {
         ignored: [
-          path.resolve(__dirname, 'public/graph.png'),
-          path.resolve(__dirname, 'public/user_data.json')
+          '**/public/graph*.png',
+          '**public/user_data.json'
         ]
       };
       return config;

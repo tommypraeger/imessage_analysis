@@ -58,10 +58,10 @@ def main(args):
     # Process df based on function
     result_dict = functions.process_df(df, args, chat_members)
 
-    # Result dictionary without multiple columns means we are returning an graph
-    if len(result_dict) < 2:
+    # Return image if necessary
+    if 'imagePath' in result_dict:
         return {
-            'imagePath': 'graph.png'
+            'imagePath': result_dict['imagePath']
         }
 
     result_df = pd.DataFrame(data=result_dict)

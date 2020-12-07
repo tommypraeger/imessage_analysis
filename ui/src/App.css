@@ -178,3 +178,8 @@
     display: block;
     margin: auto;
 }
+
+.date-input {
+    display: inline-block;
+    margin-left: 20px;
+}

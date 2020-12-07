@@ -58,12 +58,12 @@ def make_success_message(msg):
 
 def date_to_time(date, end=False):
     month = int(date[0:2])
-    day = int(date[2:4])
-    year = int(date[4:6])
+    day = int(date[3:5])
+    year = int(date[6:10])
     if end:
-        timestamp = datetime.datetime(2000 + year, month, day, 23, 59, 59).timestamp()
+        timestamp = datetime.datetime(year, month, day, 23, 59, 59).timestamp()
     else:
-        timestamp = datetime.datetime(2000 + year, month, day).timestamp()
+        timestamp = datetime.datetime(year, month, day).timestamp()
     return timestamp * 1e9 - constants.TIME_OFFSET
 
 

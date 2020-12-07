@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import AnalysisPage from './Analysis';
 import ContactsPage from './Contacts';
 

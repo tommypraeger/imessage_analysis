@@ -3,8 +3,8 @@ import Loader from 'react-loader-spinner';
 const LoadingGif = () => (
   <div className='loading-gif'>
     <Loader
-      type="Oval"
-      color="#1982fc"
+      type='Oval'
+      color='#1982fc'
       height={200}
       width={200}
     />

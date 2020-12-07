@@ -1,5 +1,7 @@
 import csv
 import datetime
+import os
+import time
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -14,7 +16,7 @@ def main(result_dict, df, chat_members, args):
         raise Exception('Must give time period length for graph')
 
     message_freqs = {
-        'Total': []
+        'Total Messages': []
     }
     if args.graph_individual:
         members = []
@@ -43,7 +45,7 @@ def main(result_dict, df, chat_members, args):
     end_date = datetime.datetime.strptime(df['time_period'].iloc[-1], day_fmt)
     time_periods = helpers.get_time_periods(begin_date, end_date, time_period_name)
     for time_period in time_periods:
-        message_freqs['Total'].append(len(
+        message_freqs['Total Messages'].append(len(
             df[df['time_period'] == time_period]
         ))
         if args.graph_individual:
@@ -52,10 +54,12 @@ def main(result_dict, df, chat_members, args):
                     df[(df['time_period'] == time_period) & (df['sender'] == member_name)]
                 ))
 
-    plt.figure()
+    fig, ax = plt.subplots()
 
     x = [datetime.datetime.strptime(d, day_fmt).date() for d in time_periods]
-    ax = plt.gca()
+
+    for key in message_freqs:
+        ax.plot(x, message_freqs[key], label=key)
 
     if args.day or args.week:
         ax.xaxis.set_major_formatter(mdates.DateFormatter(day_fmt))
@@ -68,18 +72,18 @@ def main(result_dict, df, chat_members, args):
         ax.xaxis.set_major_locator(mdates.YearLocator())
         ax.xaxis.set_minor_locator(mdates.MonthLocator())
 
-    for key in message_freqs:
-        plt.plot(x, message_freqs[key], label=key)
+    ax.xaxis.set_major_locator(plt.MaxNLocator(20))
+    fig.autofmt_xdate()
 
-    max_ticks = 15 if args.month or args.year else 10
-    if len(x) > max_ticks:
-        ax.xaxis.set_major_locator(plt.MaxNLocator(max_ticks))
-
-    plt.title(f'{args.name}, by {time_period_name}')
-    plt.xlabel('Date')
-    plt.ylabel('# of Messages')
-    plt.legend()
-    plt.savefig('ui/public/graph.png', bbox_inches='tight')
+    ax.set_title(f'{args.name}, by {time_period_name}')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('# of Messages')
+    ax.legend()
+    time_stamp = int(time.time())
+    os.system('rm ui/public/graph_*.png')
+    image_path = f'ui/public/graph_{time_stamp}.png'
+    plt.savefig(image_path, bbox_inches='tight')
+    result_dict['imagePath'] = image_path.split('/')[-1]
 
     message_freqs['Date'] = []
     for time_period in time_periods:

@@ -1,6 +1,17 @@
 import { postFetch } from '../utils';
 
-const buildArgs = (contactName, func, funcArgs, group) => {
+const formatDate = (date) => {
+  let strDate = date.toLocaleString().split(',')[0];
+  if (strDate.split('/')[0].length < 2) {
+    strDate = `0${strDate}`;
+  }
+  if (strDate.split('/')[1].length < 2) {
+    strDate = `${strDate.slice(0, 3)}0${strDate.slice(3)}`;
+  }
+  return strDate;
+};
+
+const buildArgs = (contactName, func, funcArgs, group, startDate, endDate) => {
   const args = {
     name: contactName,
   };
@@ -17,14 +28,29 @@ const buildArgs = (contactName, func, funcArgs, group) => {
     args.group = '';
   }
 
+  if (startDate) {
+    args['from-date'] = formatDate(startDate);
+  }
+
+  if (endDate) {
+    args['to-date'] = formatDate(endDate);
+  }
+
   return args;
 };
 
 const runAnalysis = (
-  contactName, func, funcArgs, group, setFetchesInProgress, setResponse
+  contactName,
+  func,
+  funcArgs,
+  group,
+  startDate,
+  endDate,
+  setFetchesInProgress,
+  setResponse
 ) => {
   setResponse({});
-  const args = buildArgs(contactName, func, funcArgs, group);
+  const args = buildArgs(contactName, func, funcArgs, group, startDate, endDate);
   postFetch('analysis', args, setFetchesInProgress)
     .then(response => setResponse(response))
     .catch(err => console.log(err))

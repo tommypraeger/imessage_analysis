@@ -37,8 +37,8 @@ const ContactsPage = ({ contacts, setContacts }) => {
     return (
       <div className='loading-gif'>
         <Loader
-          type="Oval"
-          color="#1982fc"
+          type='Oval'
+          color='#1982fc'
           height={200}
           width={200}
         />
