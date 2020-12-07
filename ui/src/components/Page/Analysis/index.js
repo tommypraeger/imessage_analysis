@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DateForm from './components/DateForm';
 import FunctionForm from './components/FunctionForms';
 import SelectContact from './components/SelectContact';
 import SelectFunction from './components/SelectFunction';
@@ -10,14 +11,14 @@ const AnalysisPage = ({ contacts }) => {
   const [group, setGroup] = useState(false);
   const [func, setFunc] = useState('');
   const [funcArgs, setFuncArgs] = useState({});
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [fetchesInProgress, setFetchesInProgress] = useState(0);
   const [response, setResponse] = useState({});
 
   useEffect(() => {
     setResponse({});
-  }, [contactName, func])
-
-  // TODO: Add calendars to choose from-date and to-date
+  }, [contactName, func]);
 
   return (
     <div>
@@ -39,11 +40,27 @@ const AnalysisPage = ({ contacts }) => {
             <FunctionForm func={func} setFuncArgs={setFuncArgs} />
           </div>
         )}
+        <DateForm
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+        />
         <button
           className='center-btn'
-          onClick={() =>
-            runAnalysis(contactName, func, funcArgs, group, setFetchesInProgress, setResponse)
-          }
+          onClick={() => {
+            setResponse({});
+            runAnalysis(
+              contactName,
+              func,
+              funcArgs,
+              group,
+              startDate,
+              endDate,
+              setFetchesInProgress,
+              setResponse
+            );
+          }}
           disabled={
             !contactName
             || !func
