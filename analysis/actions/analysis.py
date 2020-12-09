@@ -56,7 +56,10 @@ def main(args):
                 return utils.helpers.make_error_message(msg)
 
     # Process df based on function
-    result_dict = functions.process_df(df, args, chat_members)
+    try:
+        result_dict = functions.process_df(df, args, chat_members)
+    except Exception as e:
+        return utils.helpers.make_error_message(str(e))
 
     # Return image if necessary
     if 'imagePath' in result_dict:
