@@ -67,9 +67,12 @@ def main(args):
             'imagePath': result_dict['imagePath']
         }
 
-    result_df = pd.DataFrame(data=result_dict)
-    result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
-    # print(result_df.to_string(index=False))
+    try:
+        result_df = pd.DataFrame(data=result_dict)
+        result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
+        # print(result_df.to_string(index=False))
+    except Exception as e:
+        return utils.helpers.make_error_message(str(e))
 
     # Export to CSV
     if args.csv:

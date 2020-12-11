@@ -56,6 +56,13 @@ def make_success_message(msg):
     }
 
 
+def safe_divide(num, denom):
+    try:
+        return num / denom
+    except ZeroDivisionError:
+        return 0
+
+
 def date_to_time(date, end=False):
     month = int(date[0:2])
     day = int(date[3:5])

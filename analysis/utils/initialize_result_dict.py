@@ -8,7 +8,7 @@ def initialize_result_dict(member_name, df, result_dict):  # Add names if not al
     non_reaction_messages = len(
         df[(df['sender'] == member_name) & (~df['is reaction?'])]
     )
-    if total_messages == 0 or non_reaction_messages == 0:
-        raise Exception('Somebody in this chat hasn\'t sent a message yet. Aborting.')
+    # if total_messages == 0 or non_reaction_messages == 0:
+    #     raise Exception('Somebody in this chat hasn\'t sent a message yet. Aborting.')
 
     return total_messages, non_reaction_messages
