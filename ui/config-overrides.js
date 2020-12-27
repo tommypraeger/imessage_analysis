@@ -11,7 +11,7 @@ module.exports = {
       config.watchOptions = {
         ignored: [
           '**/public/graph*.png',
-          '**public/user_data.json'
+          '**/public/user_data.json'
         ]
       };
       return config;
