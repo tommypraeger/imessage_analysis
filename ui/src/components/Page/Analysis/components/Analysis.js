@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import Loader from 'react-loader-spinner';
+import { makeTableNice } from '../utils';
 
 const LoadingGif = () => (
   <div className='loading-gif'>
@@ -12,6 +14,10 @@ const LoadingGif = () => (
 );
 
 const Analysis = ({ response, fetchesInProgress }) => {
+  useEffect(() => {
+    makeTableNice();
+  });
+
   if (fetchesInProgress > 0) {
     return <LoadingGif />;
   } else if (Object.keys(response).length === 0) {
@@ -20,7 +26,7 @@ const Analysis = ({ response, fetchesInProgress }) => {
     if ('htmlTable' in response) {
       return (
         <div
-          className='analysis-table'
+          id='analysis-table'
           dangerouslySetInnerHTML={{ __html: response.htmlTable }}
         />
       );

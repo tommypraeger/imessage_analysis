@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import 'datatables.net';
+import 'datatables.net-dt/css/jquery.dataTables.css';
 import { postFetch } from '../utils';
 
 const formatDate = (date) => {
@@ -57,6 +60,17 @@ const runAnalysis = (
     .finally(() => setFetchesInProgress(fetches => fetches - 1));
 };
 
+const makeTableNice = () => {
+  const table = $('#analysis-table').children('table');
+  if (table.length > 0) {
+    table.DataTable({
+      paging: false,
+      searching: false
+    });
+  }
+};
+
 export {
-  runAnalysis
+  runAnalysis,
+  makeTableNice
 };

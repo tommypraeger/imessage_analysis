@@ -169,9 +169,14 @@
     margin-left: 20px;
 }
 
-.analysis-table table {
+#analysis-table .dataTables_wrapper {
     margin: auto;
     margin-top: 25px;
+    width: 80%;
+}
+
+.dataTables_info {
+    display: none;
 }
 
 .center-img {
