@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "datatables.net": "^1.10.23",
     "datatables.net-dt": "^1.10.23",
+    "immer": "^8.0.1",
     "jquery": "^3.5.1",
     "react": "^17.0.1",
     "react-datepicker": "^3.3.0",
