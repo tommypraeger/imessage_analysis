@@ -13,13 +13,22 @@ const LoadingGif = () => (
   </div>
 );
 
-const Analysis = ({ response, fetchesInProgress }) => {
+const Analysis = ({ response, fetchesInProgress, fetchSeconds }) => {
   useEffect(() => {
     makeTableNice();
   });
 
   if (fetchesInProgress > 0) {
-    return <LoadingGif />;
+    return (
+      <div>
+        <LoadingGif />
+        {fetchSeconds < 3 ? '' : (
+          <p className='center-content'>
+            Request has been loading for {fetchSeconds} seconds
+          </p>
+        )}
+      </div>
+    );
   } else if (Object.keys(response).length === 0) {
     return <div />;
   } else {

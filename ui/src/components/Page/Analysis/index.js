@@ -13,12 +13,26 @@ const AnalysisPage = ({ contacts }) => {
   const [funcArgs, setFuncArgs] = useState({});
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [fetchesInProgress, setFetchesInProgress] = useState(0);
   const [response, setResponse] = useState({});
+  const [fetchesInProgress, setFetchesInProgress] = useState(0);
+  const [fetchSeconds, setFetchSeconds] = useState(0);
+  const [counterId, setCounterId] = useState(0);
+  const [isCounterSet, setIsCounterSet] = useState(false);
 
   useEffect(() => {
     setResponse({});
   }, [contactName, func]);
+
+  useEffect(() => {
+    if (fetchesInProgress > 0 && !isCounterSet) {
+      setCounterId(setInterval(() => setFetchSeconds((seconds) => seconds + 1), 1000));
+      setIsCounterSet(true);
+    } else if (fetchesInProgress === 0) {
+      clearInterval(counterId);
+      setIsCounterSet(false);
+      setFetchSeconds(0);
+    }
+  }, [counterId, isCounterSet, fetchesInProgress]);
 
   return (
     <div>
@@ -78,7 +92,11 @@ const AnalysisPage = ({ contacts }) => {
         </button>
       </div>
       <div>
-        <Analysis response={response} fetchesInProgress={fetchesInProgress} />
+        <Analysis
+          response={response}
+          fetchesInProgress={fetchesInProgress}
+          fetchSeconds={fetchSeconds}
+        />
       </div>
     </div>
   );
