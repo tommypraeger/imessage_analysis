@@ -1,12 +1,16 @@
 const SelectContact = ({ contacts, setContactName, setGroup }) => {
-  const groupOptions = Object.keys(contacts).filter(name => contacts[name] === 'group')
+  const groupOptions = Object.keys(contacts)
+    .filter(name => contacts[name] === 'group')
+    .sort()
     .map(name => (
       <option key={name} value={name}>
         {name}
       </option>
     ));
 
-  const contactOptions = Object.keys(contacts).filter(name => contacts[name] !== 'group')
+  const contactOptions = Object.keys(contacts)
+    .filter(name => contacts[name] !== 'group')
+    .sort()
     .map(name => (
       <option key={name} value={name}>
         {name}
