@@ -15,7 +15,7 @@ def main(args):
         df = utils.sql.get_df(args.name, args.group)
     except KeyError:
         if args.group:
-            msg = f'Please group chat {args.name} as a contact'
+            msg = f'Please add group chat {args.name} as a contact'
             return utils.helpers.make_error_message(msg)
         else:
             msg = f'Please add {args.name} as a contact'
