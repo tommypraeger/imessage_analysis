@@ -1,4 +1,4 @@
-const SelectContact = ({ contacts, setContactName, setGroup }) => {
+const SelectContact = ({ contacts, setContactName, setGroup, setCsv }) => {
   const groupOptions = Object.keys(contacts)
     .filter(name => contacts[name] === 'group')
     .sort()
@@ -25,8 +25,19 @@ const SelectContact = ({ contacts, setContactName, setGroup }) => {
       } else {
         setGroup(false);
       }
+      if (event.target.value === 'messages.csv') {
+        setCsv(true)
+      } else {
+        setCsv(false);
+      }
     }}>
       <option value='none' disabled={true}>Select a contact</option>
+
+      <optgroup label='Messages CSV'>
+        <option value='messages.csv'>
+          messages.csv
+        </option>
+      </optgroup>
 
       <optgroup label='Group Chats'>
         {groupOptions}

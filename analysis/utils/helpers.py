@@ -63,15 +63,23 @@ def safe_divide(num, denom):
         return 0
 
 
-def date_to_time(date, end=False):
-    month = int(date[0:2])
-    day = int(date[3:5])
-    year = int(date[6:10])
-    if end:
-        timestamp = datetime.datetime(year, month, day, 23, 59, 59).timestamp()
+def date_to_time(date, time=False, end=False):
+    month = int(date[constants.MONTH])
+    day = int(date[constants.DAY])
+    year = int(date[constants.YEAR])
+
+    if time:
+        hours = int(date[constants.HOURS])
+        minutes = int(date[constants.MINUTES])
+        seconds = int(date[constants.SECONDS])
+        timestamp = datetime.datetime(year, month, day, hours, minutes, seconds).timestamp()
     else:
-        timestamp = datetime.datetime(year, month, day).timestamp()
-    return timestamp * 1e9 - constants.TIME_OFFSET
+        if end:
+            timestamp = datetime.datetime(year, month, day, 23, 59, 59).timestamp()
+        else:
+            timestamp = datetime.datetime(year, month, day).timestamp()
+
+    return timestamp * 1e9
 
 
 def is_reaction(msg):

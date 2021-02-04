@@ -8,6 +8,13 @@ CONTACTS = user_data['contacts']
 CHAT_IDS = user_data['chat_ids']
 CONTACT_IDS = user_data['contact_ids']
 
+MONTH = slice(0, 2)
+DAY = slice(3, 5)
+YEAR = slice(6, 10)
+HOURS = slice(11, 13)
+MINUTES = slice(14, 16)
+SECONDS = slice(17, 19)
+
 TIME_OFFSET = 978307200000000000
 CONVO_STARTER_THRESHOLD_MINUTES = 30
 LINK_REGEX = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]'

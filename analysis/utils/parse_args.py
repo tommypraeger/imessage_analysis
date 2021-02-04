@@ -6,10 +6,11 @@ def get_analysis_args(args):
     parser = argparse.ArgumentParser(description='run analysis on text messages')
 
     parser.add_argument('--name', type=str, help='name of person or group chat')
-    parser.add_argument('--csv', action='store_true', help='export data to csv')
+    parser.add_argument('--export', action='store_true', help='export data to csv')
     parser.add_argument('--from-date', type=str, help='date to start from. format mmddyy')
     parser.add_argument('--to-date', type=str, help='date to end at. format mmddyy')
     parser.add_argument('--group', action='store_true', help='desired chat is a group chat')
+    parser.add_argument('--csv', action='store_true', help='messages are uploaded as a csv')
     parser.add_argument('--separate', action='store_true', help='separate phrase into words')
     parser.add_argument('--case-sensitive', action='store_true', help='make search case sensitive')
     parser.add_argument('--print-messages', action='store_true',

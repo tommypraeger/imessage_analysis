@@ -64,14 +64,14 @@ def get_individual_df(name):
     contact_id = constants.CONTACT_IDS[name][0]
 
     # Get chat history
-    cmd1 = f'SELECT ROWID, text, is_from_me, date, is_read \
+    cmd1 = f'SELECT ROWID, text, is_from_me, date \
                 FROM message T1 \
                 INNER JOIN chat_message_join T2 \
                     ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
                     AND T1.ROWID=T2.message_id \
                 ORDER BY T1.date'
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=['id', 'text', 'sender', 'time', 'is_read'])
+    df_msg = pd.DataFrame(c.fetchall(), columns=['id', 'text', 'sender', 'time'])
     df_msg['sender'] = [
         helpers.contact_name_from_id(0) if sender == 1 else helpers.contact_name_from_id(contact_id)
         for sender in df_msg['sender']

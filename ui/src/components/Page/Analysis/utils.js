@@ -14,9 +14,10 @@ const formatDate = (date) => {
   return strDate;
 };
 
-const buildArgs = (contactName, func, funcArgs, group, startDate, endDate) => {
+const buildArgs = (contactName, func, funcArgs, group, csv, startDate, endDate) => {
   const args = {
     name: contactName,
+    export: ''
   };
 
   if (func === 'all_functions') {
@@ -29,6 +30,8 @@ const buildArgs = (contactName, func, funcArgs, group, startDate, endDate) => {
 
   if (group) {
     args.group = '';
+  } else if (csv) { // Don't set csv if a group chat is named 'messages.csv' lol
+    args.csv = '';
   }
 
   if (startDate) {
@@ -47,13 +50,14 @@ const runAnalysis = (
   func,
   funcArgs,
   group,
+  csv,
   startDate,
   endDate,
   setFetchesInProgress,
   setResponse
 ) => {
   setResponse({});
-  const args = buildArgs(contactName, func, funcArgs, group, startDate, endDate);
+  const args = buildArgs(contactName, func, funcArgs, group, csv, startDate, endDate);
   postFetch('analysis', args, setFetchesInProgress)
     .then(response => setResponse(response))
     .catch(err => console.log(err))

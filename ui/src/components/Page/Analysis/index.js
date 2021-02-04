@@ -9,6 +9,7 @@ import { runAnalysis } from './utils';
 const AnalysisPage = ({ contacts }) => {
   const [contactName, setContactName] = useState('');
   const [group, setGroup] = useState(false);
+  const [csv, setCsv] = useState(false);
   const [func, setFunc] = useState('');
   const [funcArgs, setFuncArgs] = useState({});
   const [startDate, setStartDate] = useState('');
@@ -43,6 +44,7 @@ const AnalysisPage = ({ contacts }) => {
             contacts={contacts}
             setContactName={setContactName}
             setGroup={setGroup}
+            setCsv={setCsv}
           />
         </div>
         <div className='input-div'>
@@ -69,6 +71,7 @@ const AnalysisPage = ({ contacts }) => {
               func,
               funcArgs,
               group,
+              csv,
               startDate,
               endDate,
               setFetchesInProgress,
