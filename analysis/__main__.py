@@ -30,8 +30,10 @@ if action == 'get_all_chat_names':
 if action == 'get_all_phone_numbers':
     response = actions.get_all_phone_numbers.main()
 
+try:
+    print(json.dumps(response))
+except NameError:
+    pass
+
 if action == 'test_db':
-    response = actions.test_db.main()
-
-
-print(json.dumps(response))
+    print(actions.test_db.main())

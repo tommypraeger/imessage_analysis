@@ -4,7 +4,7 @@ import analysis.utils.sql as sql
 def main():
     try:
         sql.test_db()
-        return 'Database has sufficient permissions'
+        return 'Database has sufficient permissions.'
     except Exception as e:
         ret = ''
         ret = add_string_on_new_line(ret, str(e))

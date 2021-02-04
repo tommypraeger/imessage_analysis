@@ -8,13 +8,11 @@ name = input('Type your name as you would like it to appear: ')
 while len(name) == 0:
     name = input('Looks like you didn\'t type your name. Type it here: ')
 
-procs = []
 
 # Install dependencies
 pip_install = subprocess.Popen(['pip', 'install', '-r', 'requirements.txt'])
-procs.append(pip_install)
 npm_install = subprocess.Popen(['npm', 'install', '--prefix', './ui'])
-procs.append(npm_install)
+install_procs = [pip_install, npm_install]
 
 # Create user_data.json if not already there
 try:
@@ -39,11 +37,11 @@ with open(user_data_file_name, 'r') as user_data_file:
 with open(user_data_file_name, 'w') as user_data_file:
     json.dump(user_data, user_data_file, indent=4)
 
-for proc in procs:
+for proc in install_procs:
     while proc.poll() is None:
         pass
 
-for proc in procs:
+for proc in install_procs:
     proc.terminate()
 
 # Test database access
