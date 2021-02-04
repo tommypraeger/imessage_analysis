@@ -93,6 +93,9 @@ def main(args):
         # Clean type column
         df['type'] = [t if type(t) is str else 'text/plain' for t in df['type']]
 
+    # Remove duplicate messages (happens with links sometimes)
+    df = df.drop_duplicates(subset=['text', 'sender', 'time'])
+
     # Default to just getting total messages
     if args.function is None and not args.all_functions:
         args.function = 'total'
