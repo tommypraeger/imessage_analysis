@@ -15,9 +15,7 @@ def main(result_dict, df, chat_members, args):
     if not (args.day or args.week or args.month or args.year):
         raise Exception('Must give time period length for graph')
 
-    message_freqs = {
-        'Total Messages': []
-    }
+    message_freqs = {}
     if args.graph_individual:
         members = []
         for member_name in chat_members:
@@ -27,6 +25,9 @@ def main(result_dict, df, chat_members, args):
                 members.append(member_name)
         for member in members:
             message_freqs[member] = []
+    else:
+        message_freqs['Total Messages'] = []
+
     if args.day:
         df['time_period'] = df['time'].apply(helpers.get_day)
         time_period_name = 'day'
@@ -45,14 +46,15 @@ def main(result_dict, df, chat_members, args):
     end_date = datetime.datetime.strptime(df['time_period'].iloc[-1], day_fmt)
     time_periods = helpers.get_time_periods(begin_date, end_date, time_period_name)
     for time_period in time_periods:
-        message_freqs['Total Messages'].append(len(
-            df[df['time_period'] == time_period]
-        ))
         if args.graph_individual:
             for member_name in members:
                 message_freqs[member_name].append(len(
                     df[(df['time_period'] == time_period) & (df['sender'] == member_name)]
                 ))
+        else:
+            message_freqs['Total Messages'].append(len(
+                df[df['time_period'] == time_period]
+            ))
 
     fig, ax = plt.subplots()
 
