@@ -41,7 +41,7 @@ To add one of your contacts, click "+ Add Contact" and type in the contact's nam
 ### Running Analysis
 Go to the Analysis page by clicking Analysis in the navigation bar at the top.
 
-Choose which contact or group chat to run analysis, choose the function to run, set any other required arguments, and optionally set start and end dates. Then click Analyze.
+Choose which contact or group chat to run analysis, choose the function to run, set any other required arguments, and optionally set start and end dates. Then click Analyze. Depending on the function, a table or graph will be shown. If a table is shown, you can sort by any of the columns by clicking on the column header.
 
 
 ### Using a CSV
@@ -86,6 +86,69 @@ You may optionally also include a column titled `type`, which contains the mime 
 - application/x-yaml
 - application/vnd.openxmlformats-officedocument.presentationml.presentation
 - message/rfc82
+
+## Notes
+
+### Functions
+
+#### Total
+This is the total number of messages sent by each person. It also shows what percent of the total messages each person has sent.
+
+#### Frequency
+This is a graph of the number of messages over time. You can select between graphing by the number of messages per day, per week, per month, or per year. You may also select whether to graph each chat member individually, or just graph the total messages for each time period.
+
+One future feature I may consider for this is to allow graphing of specific chat members, as opposed to having to graph every chat member when graphing individually. This can make it hard to follow the line of any individual member. Another option is to do the graphing in the front-end, as opposed to to creating the graph from the back-end and just displaying it in the front-end. This could make the graph more interactive rather than being a static picture.
+
+#### Reactions
+This is the total number of iMessage reactions each person sends, along with how many of the total reactions they send. It also shows how many of each kind of reaction they send, along with what proportion each reaction is of the all of the reactions they send. The current iMessage reactions are:
+- Like
+- Love
+- Dislike
+- Laugh
+- Emphasis
+- Question
+
+The numbers returned are just approximates of the actual numbers, as reaction messages are stored as regular plain text messages, and I try to figure out based on the content of each message whether it is a reaction or not. Unfortunately, there is no data on how many reactions a message or got or who reacted to which messages, but these could also be estimated in a similar way to how I am doing it.
+
+#### Starters
+This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time, which I currently default to 60 minutes. I also show what percentage of the conversations are started by each person.
+
+#### Word/Phrase
+This is how many messages include a certain word or phrase that you enter. You have the option of making the search case-sensitive or case-insensitive i.e. whether I should ignore case. You also have the option to search separate words. For example, if you choose to search separate words, then "tom" will not match "tomorrow", but if you choose not to, it will. Punctuation is ignored in the message unless there is punctuation in the search term. Only the total number of messages that contain the search term is shown, not how many times the search term actually appears i.e a single message can only count once, no matter how many times it contains the search term.
+
+#### Message Series
+This is how many series of messages a person sends. A series of messages is defined as a string of messages all send my one person, where no message is sent longer than a certain amount of time of the last one (this is prevent the last message of a conversation and the first message of the next conversation from being counted in the same "messages series", if both messages were sent by the same person). This amount of time is configurable. I also show the average number of messages in each series.
+
+#### Word Count
+This is the average number of words in each message.
+
+#### Word Length
+This is the average length of each word sent.
+
+#### Attachments
+This is how many messages are attachments. Attachments are defined as anything that isn't plain text.
+
+#### Links
+This is how many messages include links.
+
+#### Emoji
+This is how many messages include emoji.
+
+#### Games
+This is how many messages are iMessage games. I approximate whether a message is an iMessage game by checking if the file type is a JPEG image and the text of the message is iMessage game text. I also show how many times each person starts a game and what percentage of games they start.
+
+#### Tweets
+This is how many messages are shared tweets.
+
+#### All Caps
+This shows how many messages are completely capitalized. A message must contain letters (i.e. not just emoji or an attachment) to be considered to be all caps.
+
+#### File Type
+This shows how many messages are of a specific file type. The only file types that I made searchable are listed above in the Using a CSV section.
+
+#### All: All functions (except a few that require more input)
+This runs all functions and puts them in a table except for Frequency, Word/Phrase, and File Type, because they take special input.
+
 ## Contributing
 - Add unit tests to make sure this actually works.
 - Add more functions. Be creative!
