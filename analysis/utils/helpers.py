@@ -167,11 +167,13 @@ def is_phrase_in(phrase, msg, case_sensitive, separate):
     if is_reaction(msg):
         return False
     msg = str(msg)
+    if not any(char in string.punctuation for char in phrase):
+        msg = msg.translate(str.maketrans('', '', string.punctuation))
     if not case_sensitive:
         msg = msg.lower()
         phrase = phrase.lower()
     if separate:
-        msg = msg.translate(str.maketrans('', '', string.punctuation)).split()
+        msg = msg.split()
         phrase = phrase.split()
         return is_sub_list(phrase, msg)
     else:
@@ -202,8 +204,8 @@ def includes_emoji(msg):
 def is_all_caps(msg):
     only_letters = re.compile('[^a-zA-Z]')
     msg = only_letters.sub('', str(msg))
-    not_all_emojis = (len(msg) - emoji.emoji_count(msg)) > 0
-    return not_all_emojis and len(msg) > 0 and msg == msg.upper()
+    not_all_emoji = (len(msg) - emoji.emoji_count(msg)) > 0
+    return not_all_emoji and len(msg) > 0 and msg == msg.upper()
 
 
 def is_tweet(msg):

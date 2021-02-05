@@ -47,7 +47,7 @@ const SelectFunction = ({ setFunc }) => (
     </option>
 
     <option value='emoji'>
-      Emojis: How many messages include emojis
+      Emoji: How many messages include emoji
     </option>
 
     <option value='game'>
