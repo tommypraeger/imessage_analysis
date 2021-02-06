@@ -45,7 +45,7 @@ Choose which contact or group chat to run analysis, choose the function to run, 
 
 
 ### Using a CSV
-**To use a CSV of messages, you can place a CSV file called `messages.csv` at the root of the `imessage_analysis` directory (i.e. the directory that the `run.sh` file is in.** When choosing who to run analysis for, choose `messages.csv`.
+**To use a CSV of messages, you can place a CSV file called `messages.csv` at the root of the `imessage_analysis` directory (i.e. the directory that the `run.sh` file is in).** When choosing who to run analysis for, choose `messages.csv`.
 
 The CSV file must contain at least the following columns:
 - A column titled `text`, which contains the text of the message
