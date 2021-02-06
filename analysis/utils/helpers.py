@@ -212,8 +212,7 @@ def includes_emoji(msg):
 def is_all_caps(msg):
     only_letters = re.compile('[^a-zA-Z]')
     msg = only_letters.sub('', str(msg))
-    not_all_emoji = (len(msg) - emoji.emoji_count(msg)) > 0
-    return not_all_emoji and len(msg) > 0 and msg == msg.upper()
+    return len(msg) > 0 and msg == msg.upper()
 
 
 def is_tweet(msg):
