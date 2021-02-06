@@ -57,4 +57,5 @@ with open(user_data_file_name, 'r') as user_data_file:
 with open(user_data_file_name, 'w') as user_data_file:
     json.dump(user_data, user_data_file, indent=4)
 
-print('Done setting up.')
+print('\nDone setting up.')
+print('If you see a message above about insufficient database permissions, follow the instructions.')

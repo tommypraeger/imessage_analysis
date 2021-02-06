@@ -1,3 +1,4 @@
+from sqlite3 import OperationalError
 import analysis.utils.sql as sql
 
 
@@ -5,9 +6,8 @@ def main():
     try:
         sql.test_db()
         return 'Database has sufficient permissions.'
-    except Exception as e:
+    except OperationalError:
         ret = ''
-        ret = add_string_on_new_line(ret, str(e))
         ret = add_string_on_new_line(ret, 'There is an error with accessing the database.')
         ret = add_string_on_new_line(ret, 'Do the following:')
         ret = add_string_on_new_line(ret, 'Open System Preferences')

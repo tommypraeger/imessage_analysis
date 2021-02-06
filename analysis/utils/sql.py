@@ -6,12 +6,14 @@ import analysis.utils.helpers as helpers
 
 
 # Create SQL connection
-conn = sqlite3.connect(f'/Users/{constants.USERNAME}/Library/Messages/chat.db')
-c = conn.cursor()
+def connect_to_db():
+    conn = sqlite3.connect(f'/Users/{constants.USERNAME}/Library/Messages/chat.db')
+    return conn.cursor()
 
 
 # Test DB
 def test_db():
+    c = connect_to_db()
     cmd = 'SELECT * FROM handle'
     c.execute(cmd)
 
@@ -27,6 +29,7 @@ def get_df(name, group):
 
 
 def get_group_df(name):
+    c = connect_to_db()
     chat_ids = constants.CHAT_IDS[name]
 
     # Get chat history
@@ -59,6 +62,7 @@ def get_group_df(name):
 
 
 def get_individual_df(name):
+    c = connect_to_db()
     chat_ids = constants.CHAT_IDS[name]
     # Doesn't matter which contact ID we use, all will map to same name
     contact_id = constants.CONTACT_IDS[name][0]
@@ -94,6 +98,7 @@ def get_individual_df(name):
 
 
 def get_chat_members(chat_ids):
+    c = connect_to_db()
     cmd = f'SELECT handle_id \
             FROM chat_handle_join \
             WHERE chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])})'
@@ -106,6 +111,7 @@ def get_chat_members(chat_ids):
 
 
 def get_contact_ids_from_phone_number(phone_number):
+    c = connect_to_db()
     cmd = f'SELECT ROWID \
             FROM handle \
             WHERE id like "%{phone_number}%"'
@@ -115,6 +121,7 @@ def get_contact_ids_from_phone_number(phone_number):
 
 
 def get_chat_ids_from_phone_number(phone_number):
+    c = connect_to_db()
     cmd = f'SELECT ROWID \
             FROM chat \
             WHERE chat_identifier like "%{phone_number}%"'
@@ -124,6 +131,7 @@ def get_chat_ids_from_phone_number(phone_number):
 
 
 def get_chat_ids_from_chat_name(chat_name):
+    c = connect_to_db()
     cmd = f'SELECT ROWID \
             FROM chat \
             WHERE display_name="{chat_name}"'
@@ -133,6 +141,7 @@ def get_chat_ids_from_chat_name(chat_name):
 
 
 def get_phone_number_from_contact_id(contact_id):
+    c = connect_to_db()
     cmd = f'SELECT id \
             FROM handle \
             WHERE ROWID={contact_id}'
@@ -141,6 +150,7 @@ def get_phone_number_from_contact_id(contact_id):
 
 
 def get_all_phone_numbers():
+    c = connect_to_db()
     cmd = 'SELECT DISTINCT chat_identifier \
            FROM chat \
            WHERE chat_identifier NOT LIKE "chat%"'
@@ -150,6 +160,7 @@ def get_all_phone_numbers():
 
 
 def get_all_chat_names():
+    c = connect_to_db()
     cmd = 'SELECT DISTINCT display_name \
            FROM chat \
            WHERE display_name LIKE "_%";'
