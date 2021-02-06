@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { addArg } from '../../utils';
 
 const ConvoStarterForm = ({ setFuncArgs }) => {
   useEffect(() => {
@@ -15,13 +16,7 @@ const ConvoStarterForm = ({ setFuncArgs }) => {
         type='number'
         min='1'
         defaultValue='60'
-        onChange={(event) =>
-          setFuncArgs(args => Object.assign(
-            {},
-            args,
-            { 'minutes-threshold': event.target.valueAsNumber })
-          )
-        }
+        onChange={(event) => addArg(setFuncArgs, 'minutes-threshold', event.target.valueAsNumber)}
       />
     </div>
   );

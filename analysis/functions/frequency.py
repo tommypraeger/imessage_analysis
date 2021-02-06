@@ -74,7 +74,8 @@ def main(result_dict, df, chat_members, args):
         ax.xaxis.set_major_locator(mdates.YearLocator())
         ax.xaxis.set_minor_locator(mdates.MonthLocator())
 
-    ax.xaxis.set_major_locator(plt.MaxNLocator(20))
+    num_ticks = 16 if len(time_periods) > 16 else len(time_periods)
+    ax.xaxis.set_major_locator(plt.MaxNLocator(num_ticks))
     fig.autofmt_xdate()
 
     ax.set_title(f'{args.name}, by {time_period_name}')

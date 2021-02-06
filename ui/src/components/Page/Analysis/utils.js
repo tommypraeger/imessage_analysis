@@ -58,6 +58,7 @@ const runAnalysis = (
 ) => {
   setResponse({});
   const args = buildArgs(contactName, func, funcArgs, group, csv, startDate, endDate);
+  console.log(args)
   postFetch('analysis', args, setFetchesInProgress)
     .then(response => setResponse(response))
     .catch(err => console.log(err))
@@ -74,7 +75,27 @@ const makeTableNice = () => {
   }
 };
 
+const addArg = (setFuncArgs, key, val) => {
+  const newArg = {}
+  newArg[key] = val;
+  setFuncArgs(args => Object.assign(
+    {},
+    args,
+    newArg
+  ));
+};
+
+const removeArg = (setFuncArgs, key) => {
+  setFuncArgs(args => {
+    const newArgs = Object.assign({}, args);
+    delete newArgs[key];
+    return newArgs;
+  });
+};
+
 export {
   runAnalysis,
-  makeTableNice
+  makeTableNice,
+  addArg,
+  removeArg
 };

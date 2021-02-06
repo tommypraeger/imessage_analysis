@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { addArg, removeArg } from '../../utils';
 
 const PhraseForm = ({ setFuncArgs }) => {
   useEffect(() => {
@@ -13,13 +14,7 @@ const PhraseForm = ({ setFuncArgs }) => {
         </p>
         <input
           type='text'
-          onChange={(event) =>
-            setFuncArgs(args => Object.assign(
-              {},
-              args,
-              { 'phrase': event.target.value })
-            )
-          }
+          onChange={(event) => addArg(setFuncArgs, 'phrase', event.target.value)}
         />
       </div>
       <div className='input-div'>
@@ -31,17 +26,9 @@ const PhraseForm = ({ setFuncArgs }) => {
           className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
-              setFuncArgs(args => Object.assign(
-                {},
-                args,
-                { 'separate': '' })
-              );
+              addArg(setFuncArgs, 'separate', '')
             } else {
-              setFuncArgs(args => {
-                const newArgs = Object.assign({}, args);
-                delete newArgs.separate;
-                return newArgs;
-              })
+              removeArg(setFuncArgs, 'separate')
             }
           }}
         />
@@ -55,17 +42,9 @@ const PhraseForm = ({ setFuncArgs }) => {
           className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
-              setFuncArgs(args => Object.assign(
-                {},
-                args,
-                { 'case-sensitive': '' })
-              );
+              addArg(setFuncArgs, 'case-sensitive', '')
             } else {
-              setFuncArgs(args => {
-                const newArgs = Object.assign({}, args);
-                delete newArgs['case-sensitive'];
-                return newArgs;
-              })
+              removeArg(setFuncArgs, 'case-sensitive')
             }
           }}
         />

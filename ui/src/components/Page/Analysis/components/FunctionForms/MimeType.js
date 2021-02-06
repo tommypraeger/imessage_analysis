@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { addArg } from '../../utils';
 
 const MimeTypeForm = ({ setFuncArgs }) => {
   useEffect(() => {
@@ -44,13 +45,7 @@ const MimeTypeForm = ({ setFuncArgs }) => {
       <select
         className='select'
         defaultValue='image/png'
-        onChange={(event) =>
-          setFuncArgs(args => Object.assign(
-            {},
-            args,
-            { 'mime-type': event.target.value })
-          )
-        }
+        onChange={(event) => addArg(setFuncArgs, 'mime-type', event.target.value)}
       >
         {mimeTypes.map(mimeType => (
           <option key={mimeType} value={mimeType}>

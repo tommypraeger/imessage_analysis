@@ -1,13 +1,11 @@
+import { addArg, removeArg } from '../../utils';
+
 const handleChange = (event, setFuncArgs) => {
-  setFuncArgs(args => {
-    const newArgs = Object.assign({}, args);
-    delete newArgs['day'];
-    delete newArgs['week'];
-    delete newArgs['month'];
-    delete newArgs['year'];
-    Object.assign(newArgs, { [event.target.value]: '' })
-    return newArgs
-  });
+  removeArg(setFuncArgs, 'day');
+  removeArg(setFuncArgs, 'week');
+  removeArg(setFuncArgs, 'month');
+  removeArg(setFuncArgs, 'year');
+  addArg(setFuncArgs, event.target.value, '');
 };
 
 const FrequencyForm = ({ setFuncArgs }) => (
@@ -15,23 +13,15 @@ const FrequencyForm = ({ setFuncArgs }) => (
     <div className='input-div'>
       <p>
         Graph each person individually (as opposed to just the total):
-        </p>
+      </p>
       <input
         type='checkbox'
         className='checkbox'
         onChange={(event) => {
           if (event.target.checked) {
-            setFuncArgs(args => Object.assign(
-              {},
-              args,
-              { 'graph-individual': '' })
-            );
+            addArg(setFuncArgs, 'graph-individual', '')
           } else {
-            setFuncArgs(args => {
-              const newArgs = Object.assign({}, args);
-              delete newArgs['graph-individual'];
-              return newArgs;
-            })
+            removeArg(setFuncArgs, 'graph-individual')
           }
         }}
       />
