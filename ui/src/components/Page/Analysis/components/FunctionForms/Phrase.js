@@ -19,32 +19,32 @@ const PhraseForm = ({ setFuncArgs }) => {
       </div>
       <div className='input-div'>
         <p>
-          Search whole words (do not include results if phrase is within a larger word):
+          Search whole words (do not include results if phrase is within a larger word)?
         </p>
         <input
           type='checkbox'
           className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
-              addArg(setFuncArgs, 'separate', '')
+              addArg(setFuncArgs, 'separate', '');
             } else {
-              removeArg(setFuncArgs, 'separate')
+              removeArg(setFuncArgs, 'separate');
             }
           }}
         />
       </div>
       <div className='input-div'>
         <p>
-          Case-sensitive search:
+          Case-sensitive search?
         </p>
         <input
           type='checkbox'
           className='checkbox'
           onChange={(event) => {
             if (event.target.checked) {
-              addArg(setFuncArgs, 'case-sensitive', '')
+              addArg(setFuncArgs, 'case-sensitive', '');
             } else {
-              removeArg(setFuncArgs, 'case-sensitive')
+              removeArg(setFuncArgs, 'case-sensitive');
             }
           }}
         />

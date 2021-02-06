@@ -49,7 +49,7 @@ const AnalysisPage = ({ contacts }) => {
         </div>
         <div className='input-div'>
           <h2>Function:</h2>
-          <SelectFunction setFunc={setFunc} />
+          <SelectFunction setFunc={setFunc} setFuncArgs={setFuncArgs} />
         </div>
         {func === '' ? '' : (
           <div className='select-div'>

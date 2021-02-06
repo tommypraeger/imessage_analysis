@@ -12,16 +12,16 @@ const FrequencyForm = ({ setFuncArgs }) => (
   <div>
     <div className='input-div'>
       <p>
-        Graph each person individually (as opposed to just the total):
+        Graph each person individually (as opposed to just the total)?
       </p>
       <input
         type='checkbox'
         className='checkbox'
         onChange={(event) => {
           if (event.target.checked) {
-            addArg(setFuncArgs, 'graph-individual', '')
+            addArg(setFuncArgs, 'graph-individual', '');
           } else {
-            removeArg(setFuncArgs, 'graph-individual')
+            removeArg(setFuncArgs, 'graph-individual');
           }
         }}
       />

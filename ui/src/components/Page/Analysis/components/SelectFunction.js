@@ -1,8 +1,11 @@
-const SelectFunction = ({ setFunc }) => (
+const SelectFunction = ({ setFunc, setFuncArgs }) => (
   <select
     className='select'
     defaultValue='none'
-    onChange={(event) => setFunc(event.target.value)}
+    onChange={(event) => {
+      setFunc(event.target.value);
+      setFuncArgs({});
+    }}
   >
     <option value='none' disabled={true}>Select a function</option>
 
