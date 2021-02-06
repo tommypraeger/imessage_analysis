@@ -13,6 +13,7 @@ def get_analysis_args(args):
     parser.add_argument('--csv', action='store_true', help='messages are uploaded as a csv')
     parser.add_argument('--separate', action='store_true', help='separate phrase into words')
     parser.add_argument('--case-sensitive', action='store_true', help='make search case sensitive')
+    parser.add_argument('--regex', action='store_true', help='use RegEx')
     parser.add_argument('--print-messages', action='store_true',
                         help='print found messages')  # not currently implemented
     parser.add_argument('--graph-individual', action='store_true',

@@ -58,7 +58,6 @@ const runAnalysis = (
 ) => {
   setResponse({});
   const args = buildArgs(contactName, func, funcArgs, group, csv, startDate, endDate);
-  console.log(args)
   postFetch('analysis', args, setFetchesInProgress)
     .then(response => setResponse(response))
     .catch(err => console.log(err))

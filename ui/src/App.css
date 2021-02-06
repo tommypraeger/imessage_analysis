@@ -188,3 +188,8 @@
     display: inline-block;
     margin-left: 20px;
 }
+
+.sep-50 {
+    display: inline-block;
+    width: 50px;
+}

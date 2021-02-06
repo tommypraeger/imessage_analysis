@@ -17,11 +17,11 @@ import analysis.functions.word_length as word_length
 
 def process_df(df, args, chat_members):
     function = args.function
-    
+
     result_dict = {
         'names': []
     }
-    
+
     if function == 'total' or args.all_functions:
         total.main(result_dict, df, chat_members)
 
@@ -53,7 +53,8 @@ def process_df(df, args, chat_members):
         word_length.main(result_dict, df, chat_members, args.all_functions)
 
     if function == 'message_series' or args.all_functions:
-        message_series.main(result_dict, df, chat_members, args.all_functions, args.minutes_threshold)
+        message_series.main(result_dict, df, chat_members,
+                            args.all_functions, args.minutes_threshold)
 
     if function == 'game' or args.all_functions:
         game.main(result_dict, df, chat_members)
@@ -62,7 +63,8 @@ def process_df(df, args, chat_members):
         frequency.main(result_dict, df, chat_members, args)
 
     if function == 'phrase':
-        phrase.main(result_dict, df, chat_members, args.phrase, args.case_sensitive, args.separate)
+        phrase.main(result_dict, df, chat_members, args.phrase,
+                    args.case_sensitive, args.separate, args.regex)
 
     if function == 'mime_type':
         mime_type.main(result_dict, df, chat_members, args.mime_type)

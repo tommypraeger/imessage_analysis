@@ -48,6 +48,21 @@ const PhraseForm = ({ setFuncArgs }) => {
             }
           }}
         />
+        <div className='sep-50'></div>
+        <p>
+          Use <a href='https://regexr.com/' target='_blank' rel='noreferrer'>RegEx</a>?
+        </p>
+        <input
+          type='checkbox'
+          className='checkbox'
+          onChange={(event) => {
+            if (event.target.checked) {
+              addArg(setFuncArgs, 'regex', '');
+            } else {
+              removeArg(setFuncArgs, 'regex');
+            }
+          }}
+        />
       </div>
     </div>
   );

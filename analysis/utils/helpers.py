@@ -163,15 +163,23 @@ def is_attachment(mime):
     return mime != 'text/plain'
 
 
-def is_phrase_in(phrase, msg, case_sensitive, separate):
+def is_phrase_in(phrase, msg, case_sensitive, separate, regex):
     if is_reaction(msg):
         return False
     msg = str(msg)
+    if regex:
+        if re.match(phrase, msg):
+            return True
+        else:
+            return False
+
     if not any(char in string.punctuation for char in phrase):
         msg = msg.translate(str.maketrans('', '', string.punctuation))
+
     if not case_sensitive:
         msg = msg.lower()
         phrase = phrase.lower()
+
     if separate:
         msg = msg.split()
         phrase = phrase.split()
