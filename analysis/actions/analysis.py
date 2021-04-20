@@ -125,9 +125,9 @@ def main(args):
         return helpers.make_error_message(str(e))
 
     # Return image if necessary
-    if 'imagePath' in result_dict:
+    if 'graphData' in result_dict:
         return {
-            'imagePath': result_dict['imagePath']
+            'graphData': result_dict['graphData']
         }
 
     try:

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Loader from 'react-loader-spinner';
 import { makeTableNice } from '../utils';
+import LineGraph from './LineGraph';
 
 const LoadingGif = () => (
   <div className='loading-gif'>
@@ -39,13 +40,11 @@ const Analysis = ({ response, fetchesInProgress, fetchSeconds }) => {
           dangerouslySetInnerHTML={{ __html: response.htmlTable }}
         />
       );
-    } else if ('imagePath' in response) {
+    } else if ('graphData' in response) {
       return (
-        <img
-          src={response.imagePath}
-          alt='Analysis Table'
-          className='center-img'
-        />
+        <div className='center-content'>
+          <LineGraph data={response.graphData} />
+        </div>
       );
     } else if ('errorMessage' in response) {
       return <p className='center-content'>{response.errorMessage}</p>;

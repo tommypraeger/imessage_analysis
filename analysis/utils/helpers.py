@@ -222,9 +222,9 @@ def is_tweet(msg):
     return 'twitter.com' in msg
 
 
-def is_convo_starter(time_diff, threshold):
+def is_conversation_starter(time_diff, threshold):
     if threshold is None:
-        threshold = constants.CONVO_STARTER_THRESHOLD_MINUTES
+        threshold = constants.CONVERSATION_STARTER_THRESHOLD_MINUTES
     return time_diff.total_seconds() > (threshold * 60)
 
 

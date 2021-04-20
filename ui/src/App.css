@@ -135,6 +135,7 @@
 .center-content {
     text-align: center;
     margin: auto;
+    margin-bottom: 20px;
     max-width: 60%;
 }
 
@@ -177,11 +178,6 @@
 
 .dataTables_info {
     display: none;
-}
-
-.center-img {
-    display: block;
-    margin: auto;
 }
 
 .date-input {

@@ -1,6 +1,6 @@
 import analysis.functions.all_caps as all_caps
 import analysis.functions.attachment as attachment
-import analysis.functions.convo_starter as convo_starter
+import analysis.functions.conversation_starter as conversation_starter
 import analysis.functions.emoji as emoji
 import analysis.functions.frequency as frequency
 import analysis.functions.game as game
@@ -37,8 +37,8 @@ def process_df(df, args, chat_members):
     if function == 'all_caps' or args.all_functions:
         all_caps.main(result_dict, df, chat_members)
 
-    if function == 'convo_starter' or args.all_functions:
-        convo_starter.main(result_dict, df, chat_members, args.minutes_threshold)
+    if function == 'conversation_starter' or args.all_functions:
+        conversation_starter.main(result_dict, df, chat_members, args.minutes_threshold)
 
     if function == 'tweet' or args.all_functions:
         tweet.main(result_dict, df, chat_members)

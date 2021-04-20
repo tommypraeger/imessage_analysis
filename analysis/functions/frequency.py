@@ -3,8 +3,8 @@ import datetime
 import os
 import time
 
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+#import matplotlib.pyplot as plt
+#import matplotlib.dates as mdates
 
 from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
@@ -56,48 +56,88 @@ def main(result_dict, df, chat_members, args):
                 df[df['time_period'] == time_period]
             ))
 
-    fig, ax = plt.subplots()
+    colors = [
+        'rgba(31, 120, 180, 1)',
+        'rgba(51, 160, 44, 1)',
+        'rgba(227, 26, 28, 1)',
+        'rgba(255, 127, 0, 1)',
+        'rgba(106, 61, 154, 1)',
+        'rgba(177, 89, 40, 1)',
+        'rgba(166, 206, 227, 1)',
+        'rgba(178, 223, 138, 1)',
+        'rgba(251, 154, 153, 1)',
+        'rgba(253, 191, 111, 1)',
+        'rgba(202, 178, 214, 1)',
+        'rgba(255, 255, 153, 1)'
+    ]
 
-    x = [datetime.datetime.strptime(d, day_fmt).date() for d in time_periods]
-
-    for key in message_freqs:
-        ax.plot(x, message_freqs[key], label=key)
+    result_dict['graphData'] = {}
 
     if args.day or args.week:
-        ax.xaxis.set_major_formatter(mdates.DateFormatter(day_fmt))
-        ax.xaxis.set_major_locator(mdates.DayLocator())
+        result_dict['graphData']['labels'] = time_periods
     elif args.month:
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
-        ax.xaxis.set_major_locator(mdates.MonthLocator())
+        result_dict['graphData']['labels'] = [
+            f'{time_period.split("/")[0]}/{time_period.split("/")[2]}'
+            for time_period in time_periods
+        ]
     elif args.year:
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-        ax.xaxis.set_major_locator(mdates.YearLocator())
-        ax.xaxis.set_minor_locator(mdates.MonthLocator())
+        result_dict['graphData']['labels'] = [
+            f'20{time_period.split("/")[2]}'
+            for time_period in time_periods
+        ]
 
-    num_ticks = 16 if len(time_periods) > 16 else len(time_periods)
-    ax.xaxis.set_major_locator(plt.MaxNLocator(num_ticks))
-    fig.autofmt_xdate()
+    result_dict['graphData']['datasets'] = [
+        {
+            'label': name,
+            'data': message_freqs[name],
+            'fill': False,
+            'borderColor': colors[i % len(message_freqs)]
+        }
+        for i, name in enumerate(message_freqs)
+    ]
 
-    ax.set_title(f'{args.name}, by {time_period_name}')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('# of Messages')
-    ax.legend()
-    time_stamp = int(time.time())
-    os.system('rm ui/public/graph_*.png')
-    image_path = f'ui/public/graph_{time_stamp}.png'
-    plt.savefig(image_path, bbox_inches='tight')
-    result_dict['imagePath'] = image_path.split('/')[-1]
+    # fig, ax = plt.subplots()
 
-    message_freqs['Date'] = []
-    for time_period in time_periods:
-        message_freqs['Date'].append(time_period)
-    csv_file = 'message_frequencies.csv'
-    with open(csv_file, 'w') as f:
-        keys = message_freqs.keys()
-        w = csv.writer(f)
-        w.writerow(keys)
-        for idx in range(len(time_periods)):
-            line = []
-            for key in keys:
-                line.append(message_freqs[key][idx])
-            w.writerow(line)
+    # x = [datetime.datetime.strptime(d, day_fmt).date() for d in time_periods]
+
+    # for key in message_freqs:
+    #     ax.plot(x, message_freqs[key], label=key)
+
+    # if args.day or args.week:
+    #     ax.xaxis.set_major_formatter(mdates.DateFormatter(day_fmt))
+    #     ax.xaxis.set_major_locator(mdates.DayLocator())
+    # elif args.month:
+    #     ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+    #     ax.xaxis.set_major_locator(mdates.MonthLocator())
+    # elif args.year:
+    #     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    #     ax.xaxis.set_major_locator(mdates.YearLocator())
+    #     ax.xaxis.set_minor_locator(mdates.MonthLocator())
+
+    # num_ticks = 16 if len(time_periods) > 16 else len(time_periods)
+    # ax.xaxis.set_major_locator(plt.MaxNLocator(num_ticks))
+    # fig.autofmt_xdate()
+
+    # ax.set_title(f'{args.name}, by {time_period_name}')
+    # ax.set_xlabel('Date')
+    # ax.set_ylabel('# of Messages')
+    # ax.legend()
+    # time_stamp = int(time.time())
+    # os.system('rm ui/public/graph_*.png')
+    # image_path = f'ui/public/graph_{time_stamp}.png'
+    # plt.savefig(image_path, bbox_inches='tight')
+    # result_dict['imagePath'] = image_path.split('/')[-1]
+
+    # message_freqs['Date'] = []
+    # for time_period in time_periods:
+    #     message_freqs['Date'].append(time_period)
+    # csv_file = 'message_frequencies.csv'
+    # with open(csv_file, 'w') as f:
+    #     keys = message_freqs.keys()
+    #     w = csv.writer(f)
+    #     w.writerow(keys)
+    #     for idx in range(len(time_periods)):
+    #         line = []
+    #         for key in keys:
+    #             line.append(message_freqs[key][idx])
+    #         w.writerow(line)

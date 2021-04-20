@@ -26,7 +26,7 @@ const FunctionForm = ({ func, setFuncArgs }) => {
     case 'attachment':
       return <AttachmentForm />;
 
-    case 'convo_starter':
+    case 'conversation_starter':
       return <ConvoStarterForm setFuncArgs={setFuncArgs} />;
 
     case 'emoji':

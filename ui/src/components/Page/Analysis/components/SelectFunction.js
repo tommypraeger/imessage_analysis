@@ -21,7 +21,7 @@ const SelectFunction = ({ setFunc, setFuncArgs }) => (
       Reactions: How many messages are iMessage reactions
     </option>
 
-    <option value='convo_starter'>
+    <option value='conversation_starter'>
       Starters: How many times each person starts the conversation
     </option>
 

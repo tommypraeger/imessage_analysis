@@ -16,7 +16,7 @@ MINUTES = slice(14, 16)
 SECONDS = slice(17, 19)
 
 TIME_OFFSET = 978307200000000000
-CONVO_STARTER_THRESHOLD_MINUTES = 30
+CONVERSATION_STARTER_THRESHOLD_MINUTES = 30
 LINK_REGEX = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]'
               r'|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 FUNCTIONS_REGEX = (r'^([a-zA-Z][a-zA-Z0-9_]*).py')
