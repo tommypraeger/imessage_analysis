@@ -97,7 +97,7 @@ This is the total number of messages sent by each person. It also shows what per
 #### Frequency
 This is a graph of the number of messages over time. You can select between graphing by the number of messages per day, per week, per month, or per year. You may also select whether to graph each chat member individually, or just graph the total messages for each time period.
 
-One future feature I may consider for this is to allow graphing of specific chat members, as opposed to having to graph every chat member when graphing individually. This can make it hard to follow the line of any individual member. Another option is to do the graphing in the front-end, as opposed to to creating the graph from the back-end and just displaying it in the front-end. This could make the graph more interactive rather than being a static picture.
+One future feature I may consider is allowing graphing of other functions besides just total messages. This could turn graphs into an alternative to tables rather a completely separate function.
 
 #### Reactions
 This is the total number of iMessage reactions each person sends, along with how many of the total reactions they send. It also shows how many of each kind of reaction they send, along with what proportion each reaction is of the all of the reactions they send. The current iMessage reactions are:

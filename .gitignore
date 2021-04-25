@@ -12,5 +12,4 @@ member_data.csv
 correlation_matrix.csv
 message_frequencies.csv
 ui/public/user_data.json
-graph*.png
 messages.csv
