@@ -46,13 +46,13 @@ def clean_phone_number(phone_number):
 
 def make_error_message(msg):
     return {
-        'errorMessage': msg
+        'errorMessage': str(msg)
     }
 
 
 def make_success_message(msg):
     return {
-        'successMessage': msg
+        'successMessage': str(msg)
     }
 
 

@@ -13,73 +13,69 @@ def main(args):
     # start_time = time.time()
 
     # Get messages dataframe
-    # Using csv
+    try:
+        df = build_df(args)
+    except Exception as e:
+        return helpers.make_error_message(e)
+
+    # Default to just getting total messages
+    if args.function is None and not args.all_functions:
+        args.function = 'total'
+
+    # Always add reaction column
+    df['is reaction?'] = df['text'].apply(helpers.is_reaction)
+
+    # Get members of chat
+    try:
+        chat_members = get_chat_members(df, args)
+    except Exception as e:
+        return helpers.make_error_message(e)
+
+    # Process df based on function
+    try:
+        result_dict = functions.process_df(df, args, chat_members)
+    except Exception as e:
+        return helpers.make_error_message(e)
+
+    # Return image if necessary
+    if 'graphData' in result_dict:
+        return {
+            'graphData': result_dict['graphData']
+        }
+
+    try:
+        result_df = pd.DataFrame(data=result_dict)
+        result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
+        # print(result_df.to_string(index=False))
+    except Exception as e:
+        return helpers.make_error_message(e)
+
+    # Export to CSV
+    if args.export:
+        df.to_csv('message_data.csv', index=False)
+        result_df.to_csv('member_data.csv', index=False)
+        result_df.corr(method='pearson').round(4).to_csv('correlation_matrix.csv', index=False)
+
+    # print("--- %s seconds ---" % (time.time() - start_time))
+
+    return {
+        'htmlTable': result_df.to_html(index=False)
+    }
+
+
+def build_df(args):
     if args.csv:
-        try:
-            # Message csv must be located in this file
-            df = pd.read_csv('messages.csv')
-        except Exception as e:
-            return helpers.make_error_message(str(e))
+        df = build_df_from_csv(args)
 
-        # Make sure necessary columns are there
-        for column in ['text', 'sender']:
-            if column not in df.columns:
-                msg = f'Please make sure to include a {column} column in the csv'
-                return helpers.make_error_message(msg)
-
-        # Clean time column
-        if 'time' in df.columns:
-            if len(df.at[0, 'time']) >= 19:
-                includes_time = True
-            else:
-                includes_time = False
-
-            # Trim dataframe based on date constraints
-            df = filter_by_date(df, args.from_date, args.to_date,
-                                includes_time=includes_time, use_seconds=False)
-
-            # Set timezone and date format
-            if includes_time:
-                df['time'] = [
-                    datetime.datetime(
-                        int(t[constants.YEAR]),
-                        int(t[constants.MONTH]),
-                        int(t[constants.DAY]),
-                        int(t[constants.HOURS]),
-                        int(t[constants.MINUTES]),
-                        int(t[constants.SECONDS]),
-                    )
-                    for t in df['time']
-                ]
-            else:
-                df['time'] = [
-                    datetime.datetime(
-                        int(t[constants.YEAR]),
-                        int(t[constants.MONTH]),
-                        int(t[constants.DAY])
-                    )
-                    for t in df['time']
-                ]
-        else:
-            df['type'] = [datetime.datetime.now()] * len(df)
-
-            # Clean type column
-        if 'type' in df.columns:
-            df['type'] = [t if type(t) is str else 'text/plain' for t in df['type']]
-        else:
-            df['type'] = ['text/plain'] * len(df)
-
-    # Using contact or group chat
     else:
         try:
             df = sql.get_df(args.name, args.group)
         except KeyError:
             if args.group:
-                msg = f'Please add group chat {args.name} as a contact'
-                return helpers.make_error_message(msg)
+                error_msg = f'Please add group chat {args.name} as a contact'
             else:
-                msg = f'Please add {args.name} as a contact'
-                return helpers.make_error_message(msg)
+                error_msg = f'Please add {args.name} as a contact'
+            raise Exception(error_msg)
 
         # Trim dataframe based on date constraints
         df = filter_by_date(df, args.from_date, args.to_date)
@@ -96,14 +92,65 @@ def main(args):
     # Remove duplicate messages (happens with links sometimes)
     df = df.drop_duplicates(subset=['text', 'sender', 'time'])
 
-    # Default to just getting total messages
-    if args.function is None and not args.all_functions:
-        args.function = 'total'
+    return df
 
-    # Always add reaction column
-    df['is reaction?'] = df['text'].apply(helpers.is_reaction)
 
-    # Get members of chat
+def build_df_from_csv(args):
+    # Message csv must be located in this file
+    df = pd.read_csv('messages.csv')
+
+    # Make sure necessary columns are there
+    for column in ['text', 'sender']:
+        if column not in df.columns:
+            msg = f'Please make sure to include a {column} column in the csv'
+            return helpers.make_error_message(msg)
+
+    # Clean time column
+    if 'time' in df.columns:
+        if len(df.at[0, 'time']) >= 19:
+            includes_time = True
+        else:
+            includes_time = False
+
+        # Trim dataframe based on date constraints
+        df = filter_by_date(df, args.from_date, args.to_date,
+                            includes_time=includes_time, use_seconds=False)
+
+        # Set timezone and date format
+        if includes_time:
+            df['time'] = [
+                datetime.datetime(
+                    int(t[constants.YEAR]),
+                    int(t[constants.MONTH]),
+                    int(t[constants.DAY]),
+                    int(t[constants.HOURS]),
+                    int(t[constants.MINUTES]),
+                    int(t[constants.SECONDS]),
+                )
+                for t in df['time']
+            ]
+        else:
+            df['time'] = [
+                datetime.datetime(
+                    int(t[constants.YEAR]),
+                    int(t[constants.MONTH]),
+                    int(t[constants.DAY])
+                )
+                for t in df['time']
+            ]
+    else:
+        df['type'] = [datetime.datetime.now()] * len(df)
+
+        # Clean type column
+    if 'type' in df.columns:
+        df['type'] = [t if type(t) is str else 'text/plain' for t in df['type']]
+    else:
+        df['type'] = ['text/plain'] * len(df)
+
+    return df
+
+
+def get_chat_members(df, args):
     if args.csv:
         chat_members = list(set(df['sender']))
     else:
@@ -112,42 +159,12 @@ def main(args):
     for member in chat_members:
         if any(char.isdigit() for char in member):
             if args.group:
-                msg = f'Please add contacts for every member of {args.name}'
-                return helpers.make_error_message(msg)
+                error_msg = f'Please add contacts for every member of {args.name}'
             else:
-                msg = f'Please add {args.name} as a contact'
-                return helpers.make_error_message(msg)
+                error_msg = f'Please add {args.name} as a contact'
+            raise Exception(error_msg)
 
-    # Process df based on function
-    try:
-        result_dict = functions.process_df(df, args, chat_members)
-    except Exception as e:
-        return helpers.make_error_message(str(e))
-
-    # Return image if necessary
-    if 'graphData' in result_dict:
-        return {
-            'graphData': result_dict['graphData']
-        }
-
-    try:
-        result_df = pd.DataFrame(data=result_dict)
-        result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
-        # print(result_df.to_string(index=False))
-    except Exception as e:
-        return helpers.make_error_message(str(e))
-
-    # Export to CSV
-    if args.export:
-        df.to_csv('message_data.csv', index=False)
-        result_df.to_csv('member_data.csv', index=False)
-        result_df.corr(method='pearson').round(4).to_csv('correlation_matrix.csv', index=False)
-
-    # print("--- %s seconds ---" % (time.time() - start_time))
-
-    return {
-        'htmlTable': result_df.to_html(index=False)
-    }
+    return chat_members
 
 
 def filter_by_date(df, from_date, to_date, includes_time=False, use_seconds=True):
