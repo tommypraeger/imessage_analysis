@@ -38,22 +38,25 @@ function_to_class_map = {
 
 def process_df(df, args, chat_members):
     function = args.function
+    function_class = function_to_class_map[function]
 
     result_dict = {}
 
     if args.table:
         result_dict['names'] = []
-        function_to_class_map[function].get_table_results(result_dict, df, chat_members, args)
+        for column in function_class.get_columns():
+            result_dict[column] = []
+        function_class.get_table_results(result_dict, df, chat_members, args)
 
     elif args.graph:
         # set up
         graph_data = {}
-        set_up_graph_data(graph_data, args, chat_members, df, result_dict)
+        set_up_graph_data(graph_data, args, chat_members, df, function)
         add_time_period_to_df(df, args.graph_time_interval)
         time_periods = get_time_periods(df, args.graph_time_interval)
 
         # get graph data
-        function_to_class_map[function].get_graph_results(
+        function_class.get_graph_results(
             graph_data, df, chat_members, time_periods, args)
 
         # prepare to return data
@@ -63,12 +66,18 @@ def process_df(df, args, chat_members):
     return result_dict
 
 
-def set_up_graph_data(graph_data, args, chat_members, df, result_dict):
+def set_up_graph_data(graph_data, args, chat_members, df, function_class):
+    columns = function_class.get_columns()
+    columns_allowing_graph_total = function_class.get_columns_allowing_graph_total()
     if args.graph_individual:
-        for member in chat_members:
-            graph_data[member] = {}
+        for member_name in chat_members:
+            graph_data[member_name] = {}
+            for column in columns:
+                graph_data[member_name][column] = []
     else:
         graph_data['Total'] = {}
+        for column in columns_allowing_graph_total:
+            graph_data['Total'][column] = []
 
 
 def add_time_period_to_df(df, graph_time_interval):

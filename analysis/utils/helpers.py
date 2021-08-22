@@ -25,12 +25,20 @@ def initialize_member(member_name, df, result_dict):
         result_dict['names'].append(member_name)
 
 
-def get_total_messages_for_member(df, member_name):
-    return len(df[df['sender'] == member_name])
+def get_total_messages_for_member(df, member_name, time_period=None):
+    if time_period is None:
+        return len(df[df['sender'] == member_name])
+
+    return len(df[(df['time_period'] == time_period) & (df['sender'] == member_name)])
 
 
-def get_non_reaction_messages_for_member(df, member_name):
-    return len(df[(df['sender'] == member_name) & (~df['is reaction?'])])
+def get_non_reaction_messages_for_member(df, member_name, time_period=None):
+    if time_period is None:
+        return len(df[(df['sender'] == member_name) & (~df['is reaction?'])])
+
+    return len(df[(df['time_period'] == time_period)
+                  & (df['sender'] == member_name)
+                  & (~df['is reaction?'])])
 
 
 def contact_name_from_id(contact_id):
