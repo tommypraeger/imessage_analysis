@@ -19,7 +19,7 @@ def main(args):
         return helpers.make_error_message(e)
 
     # Default to just getting total messages
-    if args.function is None and not args.all_functions:
+    if args.function is None:
         args.function = 'total'
 
     # Always add reaction column
@@ -37,10 +37,10 @@ def main(args):
     except Exception as e:
         return helpers.make_error_message(e)
 
-    # Return image if necessary
-    if 'graphData' in result_dict:
+    # Return graph data if requested
+    if args.graph:
         return {
-            'graphData': result_dict['graphData']
+            'graphData': result_dict
         }
 
     try:

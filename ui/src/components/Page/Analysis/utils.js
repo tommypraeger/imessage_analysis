@@ -20,11 +20,7 @@ const buildArgs = (contactName, func, funcArgs, group, csv, startDate, endDate) 
     export: ''
   };
 
-  if (func === 'all_functions') {
-    args['all-functions'] = '';
-  } else {
-    args.function = func;
-  }
+  args.function = func;
 
   Object.assign(args, funcArgs);
 

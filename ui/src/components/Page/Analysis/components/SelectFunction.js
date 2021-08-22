@@ -69,10 +69,6 @@ const SelectFunction = ({ setFunc, setFuncArgs }) => (
       File Type: How many messages are of a specific file type
     </option>
 
-    <option value='all_functions'>
-      All: All functions (except a few that require more input)
-    </option>
-
   </select>
 );
 

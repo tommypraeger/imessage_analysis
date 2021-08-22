@@ -3,7 +3,8 @@ import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
 
-def main(result_dict, df, chat_members, mime_type):
+def main(result_dict, df, chat_members, args):
+    mime_type = args.mime_type
     if mime_type is None:
         raise Exception('Function is type but not given a type')
     result_dict[f'{mime_type} messages'] = []

@@ -83,7 +83,7 @@ const AnalysisPage = ({ contacts }) => {
             || !func
             || (func === 'phrase' && !funcArgs.phrase)
             || (func === 'mime_type' && !funcArgs['mime-type'])
-            || (((func === 'all_functions') || (func === 'message_series') || (func === 'conversation_starter'))
+            || (((func === 'message_series') || (func === 'conversation_starter'))
               && !funcArgs['minutes-threshold'])
             || (func === 'frequency'
               && (!('day' in funcArgs)

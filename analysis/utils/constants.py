@@ -20,6 +20,22 @@ CONVERSATION_STARTER_THRESHOLD_MINUTES = 30
 LINK_REGEX = (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]'
               r'|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 FUNCTIONS_REGEX = (r'^([a-zA-Z][a-zA-Z0-9_]*).py')
+
+GRAPH_COLORS = [
+    'rgba(31, 120, 180, 1)',
+    'rgba(51, 160, 44, 1)',
+    'rgba(227, 26, 28, 1)',
+    'rgba(255, 127, 0, 1)',
+    'rgba(106, 61, 154, 1)',
+    'rgba(177, 89, 40, 1)',
+    'rgba(166, 206, 227, 1)',
+    'rgba(178, 223, 138, 1)',
+    'rgba(251, 154, 153, 1)',
+    'rgba(253, 191, 111, 1)',
+    'rgba(202, 178, 214, 1)',
+    'rgba(255, 255, 153, 1)'
+]
+
 REACTIONS = [
     'Laughed at',
     'Emphasized',

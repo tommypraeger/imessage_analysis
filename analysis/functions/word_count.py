@@ -5,10 +5,11 @@ import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
 
-def main(result_dict, df, chat_members, running_all_functions):
+def main(result_dict, df, chat_members):
     result_dict['average word count'] = []
-    if not running_all_functions:
+    if 'is attachment?' not in df:
         df['is attachment?'] = df['type'].apply(helpers.is_attachment)
+    if 'is link?' not in df:
         df['is link?'] = df['text'].apply(helpers.is_link)
     df['word count'] = df['text'].apply(helpers.message_word_count)
     for member_name in chat_members:
