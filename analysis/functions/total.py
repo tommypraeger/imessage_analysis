@@ -19,9 +19,6 @@ def get_columns_allowing_graph_total():
 
 
 def get_table_results(result_dict, df, chat_members, args=None):
-    for column in get_columns():
-        result_dict[column] = []
-
     for member_name in chat_members:
         helpers.initialize_member(member_name, df, result_dict)
         total_messages_by_member = helpers.get_total_messages_for_member(df, member_name)
@@ -36,13 +33,8 @@ def get_table_results(result_dict, df, chat_members, args=None):
 
 def get_graph_results(graph_data, df, chat_members, time_periods, args):
     if args.graph_individual:
-        for member_name in chat_members:
-            for column in get_columns():
-                graph_data[member_name][column] = []
         get_individual_graph_data(graph_data, df, chat_members, time_periods)
     else:
-        for column in get_columns_allowing_graph_total():
-            graph_data['Total'][column] = []
         get_total_graph_data(graph_data, df, time_periods)
 
 
@@ -50,9 +42,8 @@ def get_individual_graph_data(graph_data, df, chat_members, time_periods):
     for time_period in time_periods:
         total_messages_in_period = 0
         for member_name in chat_members:
-            total_messages_by_member = len(
-                df[(df['time_period'] == time_period) & (df['sender'] == member_name)]
-            )
+            total_messages_by_member = helpers.get_total_messages_for_member(
+                df, member_name, time_period)
             graph_data[member_name][total_messages_column].append(total_messages_by_member)
             total_messages_in_period += total_messages_by_member
         for member_name in chat_members:
