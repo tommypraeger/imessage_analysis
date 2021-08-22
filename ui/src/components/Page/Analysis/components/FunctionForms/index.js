@@ -1,4 +1,3 @@
-import AllFunctionsForm from './AllFunctions';
 import AllCapsForm from './AllCaps';
 import AttachmentForm from './Attachment';
 import ConvoStarterForm from './ConvoStarter';
@@ -17,9 +16,6 @@ import WordLengthForm from './WordLength';
 
 const FunctionForm = ({ func, setFuncArgs }) => {
   switch (func) {
-    case 'all_functions':
-      return <AllFunctionsForm setFuncArgs={setFuncArgs} />
-
     case 'all_caps':
       return <AllCapsForm />;
 

@@ -3,11 +3,11 @@ import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
 
-def main(result_dict, df, chat_members, minutes_threshold):
+def main(result_dict, df, chat_members, args):
     result_dict['conversation starters'] = []
     result_dict['% of all conversation starters that are by this person'] = []
     df['is conversation starter?'] = df['time'].diff().apply(
-        lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
+        lambda diff: helpers.is_conversation_starter(diff, args.minutes_threshold)
     )
     df.iloc[0, df.columns.get_loc('is conversation starter?')] = True
     for member_name in chat_members:

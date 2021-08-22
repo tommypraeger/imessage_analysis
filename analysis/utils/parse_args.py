@@ -1,4 +1,5 @@
 import argparse
+import sys
 from analysis.utils.helpers import get_functions
 
 
@@ -23,16 +24,18 @@ def get_analysis_args(args):
     parser.add_argument('--minutes-threshold', type=int,
                         help='Threshold in minutes from last messages for a message to be considered a conversation starter')
 
-    function_group = parser.add_mutually_exclusive_group()
-    function_group.add_argument('--function', type=str,
-                                choices=get_functions(), help='name of function to call')
-    function_group.add_argument('--all-functions', action='store_true', help='call all functions')
+    parser.add_argument('--function', type=str, required=True,
+                        choices=get_functions(), help='name of function to call')
 
-    graph_time_periods = parser.add_mutually_exclusive_group()
-    graph_time_periods.add_argument('--day', action='store_true', help='graph data by day')
-    graph_time_periods.add_argument('--week', action='store_true', help='graph data by week')
-    graph_time_periods.add_argument('--month', action='store_true', help='graph data by month')
-    graph_time_periods.add_argument('--year', action='store_true', help='graph data by year')
+    output_group = parser.add_mutually_exclusive_group()
+    output_group.add_argument('--table', action='store_true',
+                              help='output results to view in a table')
+    output_group.add_argument('--graph', action='store_true',
+                              help='output results to view in a line graph')
+    parser.add_argument('--column', type=str, required='--graph' in sys.argv,
+                        help='which column to return graph data for')
+    parser.add_argument('--graph-time-interval', type=str, required='--graph' in sys.argv,
+                        choices=['day', 'week', 'month', 'year'], help='which time interval to group the data by')
 
     return parser.parse_args(args)
 

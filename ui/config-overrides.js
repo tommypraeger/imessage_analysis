@@ -10,7 +10,7 @@ module.exports = {
       const config = configFunction(proxy, allowedHost);
       config.watchOptions = {
         ignored: [
-          '**/public/graph*.png',
+          //'**/public/graph*.png',
           '**/public/user_data.json'
         ]
       };

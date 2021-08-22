@@ -5,7 +5,6 @@ import os
 import re
 import string
 from statistics import mean
-from dateutil import relativedelta
 
 import analysis.utils.constants as constants
 import analysis.utils.sql as sql
@@ -19,6 +18,19 @@ def get_functions():
         if pattern.match(file_name)
     ]
     return file_names
+
+
+def initialize_member(member_name, df, result_dict):
+    if member_name not in result_dict['names']:
+        result_dict['names'].append(member_name)
+
+
+def get_total_messages_for_member(df, member_name):
+    return len(df[df['sender'] == member_name])
+
+
+def get_non_reaction_messages_for_member(df, member_name):
+    return len(df[(df['sender'] == member_name) & (~df['is reaction?'])])
 
 
 def contact_name_from_id(contact_id):
@@ -275,30 +287,3 @@ def get_month(date):
 
 def get_year(date):
     return f'1/1/{str(date.year)[-2:]}'
-
-
-def get_time_periods(begin_date, end_date, time_period_name):
-    if time_period_name == 'day':
-        num_days = (end_date - begin_date).days
-        return [
-            get_day(begin_date + relativedelta.relativedelta(days=i))
-            for i in range(num_days + 1)
-        ]
-    if time_period_name == 'week':
-        num_weeks = (end_date - begin_date).days // 7
-        return [
-            get_week(begin_date + relativedelta.relativedelta(days=i*7))
-            for i in range(num_weeks + 1)
-        ]
-    if time_period_name == 'month':
-        num_months = (end_date.year - begin_date.year) * 12 + (end_date.month - begin_date.month)
-        return [
-            get_month(begin_date + relativedelta.relativedelta(months=i))
-            for i in range(num_months + 1)
-        ]
-    if time_period_name == 'year':
-        num_years = end_date.year - begin_date.year
-        return [
-            get_year(begin_date + relativedelta.relativedelta(years=i))
-            for i in range(num_years + 1)
-        ]
