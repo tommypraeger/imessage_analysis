@@ -35,6 +35,7 @@ GRAPH_COLORS = [
     'rgba(202, 178, 214, 1)',
     'rgba(255, 255, 153, 1)'
 ]
+GRAPH_TOTAL_KEY = 'Total'
 
 REACTIONS = [
     'Laughed at',

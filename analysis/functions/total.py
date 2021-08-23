@@ -1,8 +1,8 @@
-import analysis.utils.constants as constants
+from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-total_messages_column = 'Total Messages'
-percent_total_messages_column = 'Percent of Total Messages'
+total_messages_column = 'Total messages'
+percent_total_messages_column = 'Percent of total messages'
 
 
 def get_columns():
@@ -20,8 +20,8 @@ def get_columns_allowing_graph_total():
 
 def get_table_results(result_dict, df, chat_members, args=None):
     for member_name in chat_members:
-        helpers.initialize_member(member_name, df, result_dict)
-        total_messages_by_member = helpers.get_total_messages_for_member(df, member_name)
+        helpers.initialize_member(member_name, result_dict)
+        total_messages_by_member = helpers.get_total_messages(df, member_name)
         result_dict[total_messages_column].append(total_messages_by_member)
     total_messages = sum(result_dict[total_messages_column])
     for i in range(len(result_dict[total_messages_column])):
@@ -42,8 +42,7 @@ def get_individual_graph_data(graph_data, df, chat_members, time_periods):
     for time_period in time_periods:
         total_messages_in_period = 0
         for member_name in chat_members:
-            total_messages_by_member = helpers.get_total_messages_for_member(
-                df, member_name, time_period)
+            total_messages_by_member = helpers.get_total_messages(df, member_name, time_period)
             graph_data[member_name][total_messages_column].append(total_messages_by_member)
             total_messages_in_period += total_messages_by_member
         for member_name in chat_members:
@@ -56,6 +55,5 @@ def get_individual_graph_data(graph_data, df, chat_members, time_periods):
 
 def get_total_graph_data(graph_data, df, time_periods):
     for time_period in time_periods:
-        graph_data['Total'][total_messages_column].append(len(
-            df[df['time_period'] == time_period]
-        ))
+        graph_data[GRAPH_TOTAL_KEY][total_messages_column].append(
+            helpers.get_total_messages(df, time_period=time_period))

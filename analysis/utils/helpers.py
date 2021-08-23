@@ -20,25 +20,33 @@ def get_functions():
     return file_names
 
 
-def initialize_member(member_name, df, result_dict):
+def initialize_member(member_name, result_dict):
     if member_name not in result_dict['names']:
         result_dict['names'].append(member_name)
 
 
-def get_total_messages_for_member(df, member_name, time_period=None):
-    if time_period is None:
-        return len(df[df['sender'] == member_name])
+def get_messages(df, member_name=None, time_period=None):
+    condition = True
+    if time_period is not None:
+        condition = condition & (df['sender'] == member_name)
+    if member_name is not None:
+        condition = condition & (df['time_period'] == time_period)
 
-    return len(df[(df['time_period'] == time_period) & (df['sender'] == member_name)])
+    return df[condition]
 
 
-def get_non_reaction_messages_for_member(df, member_name, time_period=None):
-    if time_period is None:
-        return len(df[(df['sender'] == member_name) & (~df['is reaction?'])])
+def get_non_reaction_messages(df, member_name=None, time_period=None):
+    all_messages = get_messages(df, member_name, time_period)
 
-    return len(df[(df['time_period'] == time_period)
-                  & (df['sender'] == member_name)
-                  & (~df['is reaction?'])])
+    return all_messages[~all_messages['is reaction?']]
+
+
+def get_total_messages(df, member_name=None, time_period=None):
+    return len(get_messages(df, member_name, time_period))
+
+
+def get_total_non_reaction_messages(df, member_name=None, time_period=None):
+    return len(get_non_reaction_messages(df, member_name, time_period))
 
 
 def contact_name_from_id(contact_id):
