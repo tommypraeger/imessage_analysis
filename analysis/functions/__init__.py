@@ -75,9 +75,9 @@ def set_up_graph_data(graph_data, args, chat_members, df, function_class):
             for column in columns:
                 graph_data[member_name][column] = []
     else:
-        graph_data['Total'] = {}
+        graph_data[constants.GRAPH_TOTAL_KEY] = {}
         for column in columns_allowing_graph_total:
-            graph_data['Total'][column] = []
+            graph_data[constants.GRAPH_TOTAL_KEY][column] = []
 
 
 def add_time_period_to_df(df, graph_time_interval):

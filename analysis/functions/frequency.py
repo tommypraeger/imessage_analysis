@@ -15,8 +15,8 @@ def main(result_dict, df, chat_members, args):
     if args.graph_individual:
         members = []
         for member_name in chat_members:
-            helpers.initialize_member(member_name, df, result_dict)
-            if helpers.get_total_messages_for_member(df, member_name) > 0:
+            helpers.initialize_member(member_name, result_dict)
+            if helpers.get_total_messages(df, member_name) > 0:
                 members.append(member_name)
         for member in members:
             message_freqs[member] = []
