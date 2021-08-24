@@ -1,4 +1,3 @@
-from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
@@ -8,7 +7,8 @@ def main(result_dict, df, chat_members):
     result_dict['% of messages that include emoji'] = []
     df['includes emoji?'] = df['text'].apply(helpers.includes_emoji)
     for member_name in chat_members:
-        _, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
+        helpers.initialize_member(member_name, result_dict)
+        non_reaction_messages = helpers.get_total_non_reaction_messages(df, member_name)
         emoji_messages = len(
             df[(df['includes emoji?']) & (df['sender'] == member_name)]
         )

@@ -1,4 +1,4 @@
-import analysis.utils.constants as constants
+from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
 conversations_started_column = 'Conversations started'
@@ -19,8 +19,8 @@ def get_columns_allowing_graph_total():
 
 
 def main(result_dict, df, chat_members, args):
-    result_dict['conversation starters'] = []
-    result_dict['% of all conversation starters that are by this person'] = []
+    result_dict[conversations_started_column] = []
+    result_dict[percent_started_column] = []
     df['is conversation starter?'] = df['time'].diff().apply(
         lambda diff: helpers.is_conversation_starter(diff, args.minutes_threshold)
     )
@@ -32,12 +32,12 @@ def main(result_dict, df, chat_members, args):
                & (df['sender'] == member_name)
                & (~df['is reaction?'])]
         )
-        result_dict['conversation starters'].append(conversation_starters)
-    total_conversation_starters = sum(result_dict['conversation starters'])
-    for i in range(len(result_dict['conversation starters'])):
-        result_dict['% of all conversation starters that are by this person'].append(
+        result_dict[conversations_started_column].append(conversation_starters)
+    total_conversation_starters = sum(result_dict[conversations_started_column])
+    for i in range(len(result_dict[conversations_started_column])):
+        result_dict[percent_started_column].append(
             round(
-                helpers.safe_divide(result_dict['conversation starters']
+                helpers.safe_divide(result_dict[conversations_started_column]
                                     [i], total_conversation_starters) * 100,
                 2
             )

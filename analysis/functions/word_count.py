@@ -1,6 +1,5 @@
 import math
 
-from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
@@ -11,7 +10,7 @@ def main(result_dict, df, chat_members):
     df['is link?'] = df['text'].apply(helpers.is_link)
     df['word count'] = df['text'].apply(helpers.message_word_count)
     for member_name in chat_members:
-        initialize_result_dict(member_name, df, result_dict)
+        helpers.initialize_member(member_name, result_dict)
         average_message_word_count = df[
             (df['sender'] == member_name)
             & (~df['is reaction?'])

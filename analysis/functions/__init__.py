@@ -36,7 +36,7 @@ function_to_class_map = {
 }
 
 
-def process_df(df, args, chat_members):
+def run(df, args, chat_members):
     function = args.function
     function_class = function_to_class_map[function]
 
@@ -51,7 +51,7 @@ def process_df(df, args, chat_members):
     elif args.graph:
         # set up
         graph_data = {}
-        set_up_graph_data(graph_data, args, chat_members, df, function)
+        set_up_graph_data(graph_data, args, chat_members, function_class)
         add_time_period_to_df(df, args.graph_time_interval)
         time_periods = get_time_periods(df, args.graph_time_interval)
 
@@ -66,7 +66,7 @@ def process_df(df, args, chat_members):
     return result_dict
 
 
-def set_up_graph_data(graph_data, args, chat_members, df, function_class):
+def set_up_graph_data(graph_data, args, chat_members, function_class):
     columns = function_class.get_columns()
     columns_allowing_graph_total = function_class.get_columns_allowing_graph_total()
     if args.graph_individual:

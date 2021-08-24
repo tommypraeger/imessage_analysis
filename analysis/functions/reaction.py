@@ -1,4 +1,3 @@
-from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
@@ -33,7 +32,9 @@ def main(result_dict, df, chat_members):
     df['question react action'] = df['text'].apply(helpers.question_react_action)
 
     for member_name in chat_members:
-        total_messages, non_reaction_messages = initialize_result_dict(member_name, df, result_dict)
+        helpers.initialize_member(member_name, result_dict)
+        total_messages = helpers.get_total_messages(df, member_name)
+        non_reaction_messages = helpers.get_total_non_reaction_messages(df, member_name)
         result_dict['total messages'].append(total_messages)
         result_dict['reaction messages'].append(total_messages - non_reaction_messages)
         result_dict['non-reaction messages'].append(non_reaction_messages)

@@ -33,7 +33,7 @@ def main(args):
 
     # Process df based on function
     try:
-        result_dict = functions.process_df(df, args, chat_members)
+        result_dict = functions.run(df, args, chat_members)
     except Exception as e:
         return helpers.make_error_message(e)
 
