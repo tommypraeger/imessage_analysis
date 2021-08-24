@@ -19,39 +19,39 @@ def get_columns_allowing_graph_total():
     ]
 
 
-def get_table_results(result_dict, df, chat_members, args=None):
+def process_df(df):
     df['is attachment?'] = df['type'].apply(helpers.is_attachment)
+
+
+def get_results(output_dict, df, member_name=None, time_period=None):
+    nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
+    attachment_messages = len(nr_messages[nr_messages['is attachment?']])
+    output_dict[attachment_column].append(attachment_messages)
+    output_dict[percent_attachment_column].append(
+        round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2))
+
+
+def get_table_results(result_dict, df, chat_members, args=None):
+    process_df(df)
     for member_name in chat_members:
         helpers.initialize_member(member_name, result_dict)
-        nr_messages = helpers.get_non_reaction_messages(df, member_name)
-        attachment_messages = len(nr_messages[nr_messages['is attachment?']])
-        result_dict[attachment_column].append(attachment_messages)
-        result_dict[percent_attachment_column].append(
-            round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2))
+        get_results(result_dict, df, member_name)
 
 
 def get_graph_results(graph_data, df, chat_members, time_periods, args):
-    df['is attachment?'] = df['type'].apply(helpers.is_attachment)
+    process_df(df)
     if args.graph_individual:
-        get_individual_graph_data(graph_data, df, chat_members, time_periods)
+        get_individual_graph_results(graph_data, df, chat_members, time_periods)
     else:
-        get_total_graph_data(graph_data, df, time_periods)
+        get_total_graph_results(graph_data, df, time_periods)
 
 
-def get_individual_graph_data(graph_data, df, chat_members, time_periods):
+def get_individual_graph_results(graph_data, df, chat_members, time_periods):
     for time_period in time_periods:
         for member_name in chat_members:
-            nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
-            attachment_messages = len(nr_messages[nr_messages['is attachment?']])
-            graph_data[member_name][attachment_column].append(attachment_messages)
-            graph_data[member_name][percent_attachment_column].append(
-                round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2))
+            get_results(graph_data[member_name], df, member_name, time_period)
 
 
-def get_total_graph_data(graph_data, df, time_periods):
+def get_total_graph_results(graph_data, df, time_periods):
     for time_period in time_periods:
-        nr_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
-        attachment_messages = len(nr_messages[nr_messages['is attachment?']])
-        graph_data[GRAPH_TOTAL_KEY][attachment_column].append(attachment_messages)
-        graph_data[GRAPH_TOTAL_KEY][percent_attachment_column].append(
-            round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2))
+        get_results(graph_data[GRAPH_TOTAL_KEY], df, None, time_period)

@@ -1,4 +1,3 @@
-from analysis.utils.initialize_result_dict import initialize_result_dict
 import analysis.utils.constants as constants
 import analysis.utils.helpers as helpers
 
@@ -17,7 +16,8 @@ def main(result_dict, df, chat_members, args):
     )
     df.iloc[0, df.columns.get_loc('is new message series?')] = True
     for member_name in chat_members:
-        total_messages, _ = initialize_result_dict(member_name, df, result_dict)
+        helpers.initialize_member(member_name, result_dict)
+        total_messages = helpers.get_total_messages(df, member_name)
         message_series = len(
             df[((df['is new message series?'])
                 | (df['is conversation starter?']))

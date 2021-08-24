@@ -28,9 +28,9 @@ def initialize_member(member_name, result_dict):
 def get_messages(df, member_name=None, time_period=None):
     condition = True
     if time_period is not None:
-        condition = condition & (df['sender'] == member_name)
-    if member_name is not None:
         condition = condition & (df['time_period'] == time_period)
+    if member_name is not None:
+        condition = condition & (df['sender'] == member_name)
 
     return df[condition]
 
