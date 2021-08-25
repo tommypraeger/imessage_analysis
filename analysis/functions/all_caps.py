@@ -31,7 +31,7 @@ def get_results(output_dict, df, member_name=None, time_period=None):
         round(helpers.safe_divide(all_caps_messages, len(nr_messages)) * 100, 2))
 
 
-def get_table_results(result_dict, df, chat_members, args=None):
+def get_table_results(result_dict, df, chat_members, args):
     process_df(df)
     for member_name in chat_members:
         helpers.initialize_member(member_name, result_dict)
