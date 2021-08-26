@@ -51,10 +51,9 @@ def get_individual_graph_results(graph_data, df, chat_members, time_periods):
                 graph_data[member_name], df, member_name, time_period)
         for member_name in chat_members:
             graph_data[member_name][percent_total_messages_column].append(
-                round(helpers.safe_divide(graph_data[member_name][total_messages_column][-1], total_messages_in_period)
-                      * 100,
-                      2)
-            )
+                round(helpers.safe_divide(
+                    graph_data[member_name][total_messages_column][-1],
+                    total_messages_in_period) * 100, 2))
 
 
 def get_total_graph_results(graph_data, df, time_periods):
