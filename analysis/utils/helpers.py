@@ -260,12 +260,9 @@ def message_word_count(msg):
     return len(str(msg).split())
 
 
-def average_word_length(msg):
+def message_letter_count(msg):
     msg = str(msg)
-    msg = msg.translate(str.maketrans('', '', string.punctuation)).split()
-    if len(msg) == 0:
-        return 0
-    return mean([len(word) for word in msg])
+    return len(re.sub('[^a-zA-Z]+', '', msg))
 
 
 def is_link(msg):
