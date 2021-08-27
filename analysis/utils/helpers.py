@@ -277,13 +277,13 @@ def is_link(msg):
 def is_game_message(msg, mime):
     if is_reaction(msg):
         return False
-    return str(msg) in constants.GAMES and mime == 'image/jpeg' or is_game_start(msg, mime)
+    return str(msg) in constants.GAMES and (mime == 'image/jpeg' or mime == 'image/heic') or is_game_start(msg, mime)
 
 
 def is_game_start(msg, mime):
     if is_reaction(msg):
         return False
-    return str(msg) == '�￼' and mime == 'image/jpeg'
+    return str(msg) == '�￼' and (mime == 'image/jpeg' or mime == 'image/heic')
 
 
 def get_day(date):

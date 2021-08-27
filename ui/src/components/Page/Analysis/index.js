@@ -120,12 +120,6 @@ const AnalysisPage = ({ contacts }) => {
             || (func === 'mime_type' && !funcArgs['mime-type'])
             || (((func === 'message_series') || (func === 'conversation_starter'))
               && !funcArgs['minutes-threshold'])
-            || (func === 'frequency'
-              && (!('day' in funcArgs)
-                && !('week' in funcArgs)
-                && !('month' in funcArgs)
-                && !('year' in funcArgs)))
-            || !outputType
             || (outputType === 'graph'
               && (!category || !('graph-time-interval' in funcArgs)))
           }

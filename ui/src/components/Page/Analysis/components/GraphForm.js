@@ -4,7 +4,6 @@ const GraphFormSection = ({ func, outputType, setFuncArgs, setCategory, setCateg
   if (outputType === 'graph') {
     return (
       <div className='input-div'>
-        <h2>Category:</h2>
         <GraphForm
           func={func}
           setFuncArgs={setFuncArgs}
