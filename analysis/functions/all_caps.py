@@ -1,21 +1,21 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-all_caps_column = 'Messages in all caps'
-percent_all_caps_column = 'Percent of messages that are in all caps'
+all_caps_category = 'Messages in all caps'
+percent_all_caps_category = 'Percent of messages that are in all caps'
 
 
-def get_columns():
+def get_categories():
     return [
-        all_caps_column,
-        percent_all_caps_column
+        all_caps_category,
+        percent_all_caps_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        all_caps_column,
-        percent_all_caps_column
+        all_caps_category,
+        percent_all_caps_category
     ]
 
 
@@ -26,8 +26,8 @@ def process_df(df):
 def get_results(output_dict, df, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
     all_caps_messages = len(nr_messages[nr_messages['is all caps?']])
-    output_dict[all_caps_column].append(all_caps_messages)
-    output_dict[percent_all_caps_column].append(
+    output_dict[all_caps_category].append(all_caps_messages)
+    output_dict[percent_all_caps_category].append(
         round(helpers.safe_divide(all_caps_messages, len(nr_messages)) * 100, 2))
 
 

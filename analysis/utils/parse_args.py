@@ -32,8 +32,8 @@ def get_analysis_args(args):
                               help='output results to view in a table')
     output_group.add_argument('--graph', action='store_true',
                               help='output results to view in a line graph')
-    parser.add_argument('--column', type=str, required='--graph' in sys.argv,
-                        help='which column to return graph data for')
+    parser.add_argument('--category', type=str, required='--graph' in sys.argv,
+                        help='which category to return graph data for')
     parser.add_argument('--graph-time-interval', type=str, required='--graph' in sys.argv,
                         choices=['day', 'week', 'month', 'year'], help='which time interval to group the data by')
 

@@ -1,21 +1,21 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-phrase_column = 'Messages that contain the entered phrase'
-percent_phrase_column = 'Percent of messages that contain the entered phrase'
+phrase_category = 'Messages that contain the entered phrase'
+percent_phrase_category = 'Percent of messages that contain the entered phrase'
 
 
-def get_columns():
+def get_categories():
     return [
-        phrase_column,
-        percent_phrase_column
+        phrase_category,
+        percent_phrase_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        phrase_column,
-        percent_phrase_column
+        phrase_category,
+        percent_phrase_category
     ]
 
 
@@ -30,8 +30,8 @@ def process_df(df, phrase, case_sensitive, separate, regex):
 def get_results(output_dict, df, phrase, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
     phrase_messages = len(nr_messages[nr_messages[f'includes {phrase}?']])
-    output_dict[phrase_column].append(phrase_messages)
-    output_dict[percent_phrase_column].append(
+    output_dict[phrase_category].append(phrase_messages)
+    output_dict[percent_phrase_category].append(
         round(helpers.safe_divide(phrase_messages, len(nr_messages)) * 100, 2))
 
 

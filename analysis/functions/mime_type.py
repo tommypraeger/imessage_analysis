@@ -1,21 +1,21 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-type_column = 'Messages that are the selected file type'
-percent_type_column = 'Percent of messages that are the selected file type'
+type_category = 'Messages that are the selected file type'
+percent_type_category = 'Percent of messages that are the selected file type'
 
 
-def get_columns():
+def get_categories():
     return [
-        type_column,
-        percent_type_column
+        type_category,
+        percent_type_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        type_column,
-        percent_type_column
+        type_category,
+        percent_type_category
     ]
 
 
@@ -28,8 +28,8 @@ def process_df(df, mime_type):
 def get_results(output_dict, df, mime_type, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
     mime_type_messages = len(nr_messages[nr_messages[f'is file type {mime_type}?']])
-    output_dict[type_column].append(mime_type_messages)
-    output_dict[percent_type_column].append(
+    output_dict[type_category].append(mime_type_messages)
+    output_dict[percent_type_category].append(
         round(helpers.safe_divide(mime_type_messages, len(nr_messages)) * 100, 2))
 
 
