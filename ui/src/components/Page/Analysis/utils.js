@@ -88,9 +88,20 @@ const removeArg = (setFuncArgs, key) => {
   });
 };
 
+const getCategories = (func, setCategories, setFetchesInProgress) => {
+  setCategories([]);
+  postFetch('get_categories', {
+    function: func
+  }, setFetchesInProgress)
+    .then(response => setCategories(JSON.parse(response)))
+    .catch(err => console.log(err))
+    .finally(() => setFetchesInProgress(fetches => fetches - 1));
+}
+
 export {
   runAnalysis,
   makeTableNice,
   addArg,
-  removeArg
+  removeArg,
+  getCategories
 };

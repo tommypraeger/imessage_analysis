@@ -1,20 +1,19 @@
-const SelectFunction = ({ setFunc, setFuncArgs }) => (
+import { getCategories } from "../utils";
+
+const SelectFunction = ({ setFunc, setFuncArgs, setCategories, setFetchesInProgress }) => (
   <select
     className='select'
     defaultValue='none'
     onChange={(event) => {
       setFunc(event.target.value);
       setFuncArgs({});
+      getCategories(event.target.value, setCategories, setFetchesInProgress)
     }}
   >
     <option value='none' disabled={true}>Select a function</option>
 
     <option value='total'>
       Total: How many messages each person sends
-    </option>
-
-    <option value='frequency'>
-      Frequency: Graph of message frequency over time
     </option>
 
     <option value='reaction'>
