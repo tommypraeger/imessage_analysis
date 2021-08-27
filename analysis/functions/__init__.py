@@ -44,8 +44,8 @@ def run(df, args, chat_members):
 
     if args.table:
         result_dict['names'] = []
-        for column in function_class.get_columns():
-            result_dict[column] = []
+        for category in function_class.get_categories():
+            result_dict[category] = []
         function_class.get_table_results(result_dict, df, chat_members, args)
 
     elif args.graph:
@@ -61,23 +61,23 @@ def run(df, args, chat_members):
 
         # prepare to return data
         format_graph_data(result_dict, graph_data, time_periods,
-                          args.column, args.graph_time_interval)
+                          args.category, args.graph_time_interval)
 
     return result_dict
 
 
 def set_up_graph_data(graph_data, args, chat_members, function_class):
-    columns = function_class.get_columns()
-    columns_allowing_graph_total = function_class.get_columns_allowing_graph_total()
+    categories = function_class.get_categories()
+    categories_allowing_graph_total = function_class.get_categories_allowing_graph_total()
     if args.graph_individual:
         for member_name in chat_members:
             graph_data[member_name] = {}
-            for column in columns:
-                graph_data[member_name][column] = []
+            for category in categories:
+                graph_data[member_name][category] = []
     else:
         graph_data[constants.GRAPH_TOTAL_KEY] = {}
-        for column in columns_allowing_graph_total:
-            graph_data[constants.GRAPH_TOTAL_KEY][column] = []
+        for category in categories_allowing_graph_total:
+            graph_data[constants.GRAPH_TOTAL_KEY][category] = []
 
 
 def add_time_period_to_df(df, graph_time_interval):
@@ -91,7 +91,7 @@ def add_time_period_to_df(df, graph_time_interval):
         df['time_period'] = df['time'].apply(helpers.get_year)
 
 
-def format_graph_data(result_dict, graph_data, time_periods, column, graph_time_interval):
+def format_graph_data(result_dict, graph_data, time_periods, category, graph_time_interval):
     if graph_time_interval == 'day' or graph_time_interval == 'week':
         result_dict['labels'] = time_periods
     elif graph_time_interval == 'month':
@@ -108,7 +108,7 @@ def format_graph_data(result_dict, graph_data, time_periods, column, graph_time_
     result_dict['datasets'] = [
         {
             'label': name,
-            'data': graph_data[name][column],
+            'data': graph_data[name][category],
             'fill': False,
             'borderColor': constants.GRAPH_COLORS[i % len(graph_data)]
         }

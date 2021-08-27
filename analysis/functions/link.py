@@ -1,21 +1,21 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-links_column = 'Messages that are links'
-percent_links_column = 'Percent of messages that are links'
+links_category = 'Messages that are links'
+percent_links_category = 'Percent of messages that are links'
 
 
-def get_columns():
+def get_categories():
     return [
-        links_column,
-        percent_links_column
+        links_category,
+        percent_links_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        links_column,
-        percent_links_column
+        links_category,
+        percent_links_category
     ]
 
 
@@ -26,8 +26,8 @@ def process_df(df):
 def get_results(output_dict, df, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
     link_messages = len(nr_messages[nr_messages['is link?']])
-    output_dict[links_column].append(link_messages)
-    output_dict[percent_links_column].append(
+    output_dict[links_category].append(link_messages)
+    output_dict[percent_links_category].append(
         round(helpers.safe_divide(link_messages, len(nr_messages)) * 100, 2))
 
 

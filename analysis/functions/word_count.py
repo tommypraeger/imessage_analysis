@@ -3,18 +3,18 @@ import math
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-average_word_count_column = 'Average word count per message'
+average_word_count_category = 'Average word count per message'
 
 
-def get_columns():
+def get_categories():
     return [
-        average_word_count_column
+        average_word_count_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        average_word_count_column
+        average_word_count_category
     ]
 
 
@@ -31,7 +31,7 @@ def get_results(output_dict, df, member_name=None, time_period=None):
     ]['word count'].mean()
     if math.isnan(average_message_word_count):
         average_message_word_count = 0
-    output_dict[average_word_count_column].append(round(average_message_word_count, 1))
+    output_dict[average_word_count_category].append(round(average_message_word_count, 1))
 
 
 def get_table_results(result_dict, df, chat_members, args):

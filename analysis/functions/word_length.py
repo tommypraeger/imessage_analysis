@@ -3,18 +3,18 @@ import math
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-average_word_length_column = 'Average letters per word'
+average_word_length_category = 'Average letters per word'
 
 
-def get_columns():
+def get_categories():
     return [
-        average_word_length_column
+        average_word_length_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        average_word_length_column
+        average_word_length_category
     ]
 
 
@@ -36,7 +36,7 @@ def get_results(output_dict, df, member_name=None, time_period=None):
     average_word_length = round(helpers.safe_divide(total_letters, total_words), 1)
     if math.isnan(average_word_length):
         average_word_length = 0
-    output_dict[average_word_length_column].append(average_word_length)
+    output_dict[average_word_length_category].append(average_word_length)
 
 
 def get_table_results(result_dict, df, chat_members, args):

@@ -1,21 +1,21 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-emoji_column = 'Messages that contain emoji'
-percent_emoji_column = 'Percent of messages that contain emoji'
+emoji_category = 'Messages that contain emoji'
+percent_emoji_category = 'Percent of messages that contain emoji'
 
 
-def get_columns():
+def get_categories():
     return [
-        emoji_column,
-        percent_emoji_column
+        emoji_category,
+        percent_emoji_category
     ]
 
 
-def get_columns_allowing_graph_total():
+def get_categories_allowing_graph_total():
     return [
-        emoji_column,
-        percent_emoji_column
+        emoji_category,
+        percent_emoji_category
     ]
 
 
@@ -26,8 +26,8 @@ def process_df(df):
 def get_results(output_dict, df, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
     emoji_messages = len(nr_messages[nr_messages['includes emoji?']])
-    output_dict[emoji_column].append(emoji_messages)
-    output_dict[percent_emoji_column].append(
+    output_dict[emoji_category].append(emoji_messages)
+    output_dict[percent_emoji_category].append(
         round(helpers.safe_divide(emoji_messages, len(nr_messages)) * 100, 2))
 
 
