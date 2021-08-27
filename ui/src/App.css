@@ -135,6 +135,7 @@
 .center-content {
     text-align: center;
     margin: auto;
+    margin-top: 20px;
     margin-bottom: 20px;
     max-width: 60%;
 }
@@ -146,13 +147,13 @@
 .input-div h2 {
     vertical-align: middle;
     display: inline-block;
-    margin-right: 10px;
+    margin: 10px 10px 10px 0;
 }
 
 .input-div p {
     vertical-align: middle;
     display: inline-block;
-    margin-right: 10px;
+    margin: 8px 10px 8px 0;
 }
 
 .select {

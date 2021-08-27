@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DateForm from './components/DateForm';
 import FunctionForm from './components/FunctionForms';
+import SelectCategory from './components/SelectCategory';
 import SelectContact from './components/SelectContact';
 import SelectFunction from './components/SelectFunction';
+import SelectOutput from './components/SelectOutput';
 import Analysis from './components/Analysis';
 import { runAnalysis } from './utils';
 
@@ -12,6 +14,9 @@ const AnalysisPage = ({ contacts }) => {
   const [csv, setCsv] = useState(false);
   const [func, setFunc] = useState('');
   const [funcArgs, setFuncArgs] = useState({});
+  const [outputType, setOutputType] = useState('table');
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [response, setResponse] = useState({});
@@ -49,13 +54,32 @@ const AnalysisPage = ({ contacts }) => {
         </div>
         <div className='input-div'>
           <h2>Function:</h2>
-          <SelectFunction setFunc={setFunc} setFuncArgs={setFuncArgs} />
+          <SelectFunction
+            setFunc={setFunc}
+            setFuncArgs={setFuncArgs}
+            setCategories={setCategories}
+            setFetchesInProgress={setFetchesInProgress}
+          />
         </div>
         {func === '' ? '' : (
           <div className='select-div'>
             <FunctionForm func={func} setFuncArgs={setFuncArgs} />
           </div>
         )}
+        <div className='input-div'>
+          <h2>Output:</h2>
+          <SelectOutput
+            outputType={outputType}
+            setOutputType={setOutputType}
+            setCategory={setCategory}
+            categories={categories}
+          />
+        </div>
+        <SelectCategory
+          outputType={outputType}
+          setCategory={setCategory}
+          categories={categories}
+        />
         <DateForm
           startDate={startDate}
           endDate={endDate}
