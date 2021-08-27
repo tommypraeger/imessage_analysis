@@ -32,6 +32,11 @@ try:
 
     if action == 'get_all_phone_numbers':
         response = actions.get_all_phone_numbers.main()
+
+    if action == 'get_categories':
+        args = parse_args.get_get_categories_args(args)
+        response = actions.get_categories.main(args.function, args.graph_individual)
+
 except OperationalError:
     response = helpers.make_error_message('Database permissions not set up correctly')
 

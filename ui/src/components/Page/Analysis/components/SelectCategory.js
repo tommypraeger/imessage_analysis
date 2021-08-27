@@ -4,7 +4,6 @@ const SelectCategory = ({ outputType, setCategory, categories }) => {
       <div className='input-div'>
         <h2>Category:</h2>
         <SelectCategoryForm
-          outputType={outputType}
           setCategory={setCategory}
           categories={categories}
         />
@@ -14,14 +13,14 @@ const SelectCategory = ({ outputType, setCategory, categories }) => {
   return <div />;
 };
 
-const SelectCategoryForm = ({ outputType, setCategory, categories }) => (
+const SelectCategoryForm = ({ setCategory, categories }) => (
   <select
     className='select'
     onChange={(event) => setCategory(event.target.value)}
   >
     {
       categories.map(category => (
-        <option value={category}>
+        <option key={category} value={category}>
           {category}
         </option>
       ))

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DateForm from './components/DateForm';
 import FunctionForm from './components/FunctionForms';
+import GraphFormSection from './components/GraphForm';
 import SelectCategory from './components/SelectCategory';
 import SelectContact from './components/SelectContact';
 import SelectFunction from './components/SelectFunction';
@@ -55,10 +56,11 @@ const AnalysisPage = ({ contacts }) => {
         <div className='input-div'>
           <h2>Function:</h2>
           <SelectFunction
+            funcArgs={funcArgs}
             setFunc={setFunc}
             setFuncArgs={setFuncArgs}
+            setCategory={setCategory}
             setCategories={setCategories}
-            setFetchesInProgress={setFetchesInProgress}
           />
         </div>
         {func === '' ? '' : (
@@ -80,6 +82,13 @@ const AnalysisPage = ({ contacts }) => {
           setCategory={setCategory}
           categories={categories}
         />
+        <GraphFormSection
+          func={func}
+          outputType={outputType}
+          setFuncArgs={setFuncArgs}
+          setCategory={setCategory}
+          setCategories={setCategories}
+        />
         <DateForm
           startDate={startDate}
           endDate={endDate}
@@ -94,6 +103,8 @@ const AnalysisPage = ({ contacts }) => {
               contactName,
               func,
               funcArgs,
+              outputType,
+              category,
               group,
               csv,
               startDate,
@@ -114,6 +125,9 @@ const AnalysisPage = ({ contacts }) => {
                 && !('week' in funcArgs)
                 && !('month' in funcArgs)
                 && !('year' in funcArgs)))
+            || !outputType
+            || (outputType === 'graph'
+              && (!category || !('graph-time-interval' in funcArgs)))
           }
         >Analyze
         </button>
@@ -121,6 +135,7 @@ const AnalysisPage = ({ contacts }) => {
       <div>
         <Analysis
           response={response}
+          category={category}
           fetchesInProgress={fetchesInProgress}
           fetchSeconds={fetchSeconds}
         />

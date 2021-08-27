@@ -14,7 +14,17 @@ const formatDate = (date) => {
   return strDate;
 };
 
-const buildArgs = (contactName, func, funcArgs, group, csv, startDate, endDate) => {
+const buildArgs = (
+  contactName,
+  func,
+  funcArgs,
+  outputType,
+  category,
+  group,
+  csv,
+  startDate,
+  endDate
+) => {
   const args = {
     name: contactName,
     export: ''
@@ -23,6 +33,12 @@ const buildArgs = (contactName, func, funcArgs, group, csv, startDate, endDate) 
   args.function = func;
 
   Object.assign(args, funcArgs);
+
+  args[outputType] = '';
+
+  if (category) {
+    args.category = category;
+  }
 
   if (group) {
     args.group = '';
@@ -45,6 +61,8 @@ const runAnalysis = (
   contactName,
   func,
   funcArgs,
+  outputType,
+  category,
   group,
   csv,
   startDate,
@@ -53,7 +71,7 @@ const runAnalysis = (
   setResponse
 ) => {
   setResponse({});
-  const args = buildArgs(contactName, func, funcArgs, group, csv, startDate, endDate);
+  const args = buildArgs(contactName, func, funcArgs, outputType, category, group, csv, startDate, endDate);
   postFetch('analysis', args, setFetchesInProgress)
     .then(response => setResponse(response))
     .catch(err => console.log(err))
@@ -88,14 +106,22 @@ const removeArg = (setFuncArgs, key) => {
   });
 };
 
-const getCategories = (func, setCategories, setFetchesInProgress) => {
-  setCategories([]);
-  postFetch('get_categories', {
+const getCategories = (func, graphIndividual, setCategories, setCategory) => {
+  const args = {
     function: func
-  }, setFetchesInProgress)
-    .then(response => setCategories(JSON.parse(response)))
-    .catch(err => console.log(err))
-    .finally(() => setFetchesInProgress(fetches => fetches - 1));
+  }
+  if (graphIndividual) {
+    args['graph-individual'] = ''
+  }
+
+  setCategories([]);
+  postFetch('get_categories', args)
+    .then(response => {
+      const categories = JSON.parse(response);
+      setCategories(categories);
+      setCategory(categories[0]);
+    })
+    .catch(err => console.log(err));
 }
 
 export {

@@ -72,3 +72,14 @@ def get_edit_contact_args(args):
     group.add_argument('--group', action='store_true', help='desired contact is a group chat')
 
     return parser.parse_args(args)
+
+
+def get_get_categories_args(args):
+    parser = argparse.ArgumentParser(description='get possible categories for function')
+
+    parser.add_argument('--function', type=str, required=True,
+                        choices=get_functions(), help='name of function to call')
+    parser.add_argument('--graph-individual', action='store_true',
+                        help='graph lines for each person in group')
+
+    return parser.parse_args(args)

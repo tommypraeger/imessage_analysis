@@ -36,7 +36,7 @@ def get_results(output_dict, df, member_name=None, time_period=None):
     game_starts = len(nr_messages[nr_messages['is game start?']])
     output_dict[games_category].append(game_messages)
     output_dict[percent_games_category].append(
-        round(helpers.safe_divide(game_messages, nr_messages) * 100, 2))
+        round(helpers.safe_divide(game_messages, len(nr_messages)) * 100, 2))
     output_dict[game_starts_category].append(game_starts)
     return game_starts
 
