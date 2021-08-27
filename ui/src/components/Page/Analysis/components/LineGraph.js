@@ -1,12 +1,13 @@
 import { Line } from 'react-chartjs-2';
-const LineGraph = ({ data }) => {
+
+const LineGraph = ({ data, category }) => {
   return (
     <Line
       data={data}
       options={{
         title: {
           display: true,
-          text: 'Messages Sent Over Time',
+          text: category,
           fontSize: 24,
           fontStyle: 'normal'
         }

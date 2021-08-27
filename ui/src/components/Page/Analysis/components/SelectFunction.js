@@ -1,13 +1,14 @@
 import { getCategories } from "../utils";
 
-const SelectFunction = ({ setFunc, setFuncArgs, setCategories, setFetchesInProgress }) => (
+const SelectFunction = ({ funcArgs, setFunc, setFuncArgs, setCategory, setCategories }) => (
   <select
     className='select'
     defaultValue='none'
     onChange={(event) => {
       setFunc(event.target.value);
-      setFuncArgs({});
-      getCategories(event.target.value, setCategories, setFetchesInProgress)
+      //setFuncArgs({});
+      setCategory('');
+      getCategories(event.target.value, funcArgs['graph-individual'], setCategories, setCategory);
     }}
   >
     <option value='none' disabled={true}>Select a function</option>

@@ -2,7 +2,6 @@ import AllCapsForm from './AllCaps';
 import AttachmentForm from './Attachment';
 import ConvoStarterForm from './ConvoStarter';
 import EmojiForm from './Emoji';
-import FrequencyForm from './Frequency';
 import GameForm from './Game';
 import LinkForm from './Link';
 import MessageSeriesForm from './MessageSeries';
@@ -27,9 +26,6 @@ const FunctionForm = ({ func, setFuncArgs }) => {
 
     case 'emoji':
       return <EmojiForm />;
-
-    case 'frequency':
-      return <FrequencyForm setFuncArgs={setFuncArgs} />;
 
     case 'game':
       return <GameForm />;

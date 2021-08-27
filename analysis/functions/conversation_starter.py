@@ -22,7 +22,7 @@ def process_df(df, minutes_threshold):
     df['is conversation starter?'] = df['time'].diff().apply(
         lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
     )
-    df.iloc[0, df.categories.get_loc('is conversation starter?')] = True
+    df.iloc[0, df.columns.get_loc('is conversation starter?')] = True
 
 
 def get_results(output_dict, df, member_name=None, time_period=None):

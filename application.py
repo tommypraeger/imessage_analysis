@@ -1,6 +1,7 @@
 # Flask web server
 import json
 import subprocess
+import traceback
 from flask import Flask, request
 from flask_restful import (
     Resource,
@@ -44,12 +45,14 @@ class Application(Resource):
             # Get exception from stack trace
             error = str(e.output).split('\\n')[-2][11:]
             print(error)
+            traceback.print_exc()
             return self.error_msg(error['message'], 400)
 
         try:
             output = json.loads(output)
         except json.decoder.JSONDecodeError:
             print(output)
+            traceback.print_exc()
             return self.error_msg(output, 400)
 
         if 'errorMessage' in output:

@@ -4,6 +4,7 @@ import json
 import os
 import re
 import string
+import traceback
 from statistics import mean
 
 import analysis.utils.constants as constants
@@ -74,7 +75,7 @@ def clean_phone_number(phone_number):
 
 def make_error_message(msg):
     return {
-        'errorMessage': str(msg)
+        'errorMessage': f'{str(msg)}\n{traceback.format_exc()}'
     }
 
 
