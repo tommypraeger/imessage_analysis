@@ -130,6 +130,8 @@ const AnalysisPage = ({ contacts }) => {
         <Analysis
           response={response}
           category={category}
+          func={func}
+          funcArgs={funcArgs}
           fetchesInProgress={fetchesInProgress}
           fetchSeconds={fetchSeconds}
         />
