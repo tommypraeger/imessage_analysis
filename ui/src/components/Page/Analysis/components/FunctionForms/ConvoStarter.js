@@ -3,7 +3,7 @@ import { addArg } from '../../utils';
 
 const ConvoStarterForm = ({ setFuncArgs }) => {
   useEffect(() => {
-    setFuncArgs({ 'minutes-threshold': 60 })
+    addArg(setFuncArgs, 'minutes-threshold', 60)
   }, [setFuncArgs]);
 
   return (

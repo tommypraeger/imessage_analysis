@@ -3,7 +3,7 @@ import { addArg } from '../../utils';
 
 const MimeTypeForm = ({ setFuncArgs }) => {
   useEffect(() => {
-    setFuncArgs({ 'mime-type': 'image/png' })
+    addArg(setFuncArgs, 'mime-type', 'image/png')
   }, [setFuncArgs]);
 
   const mimeTypes = [

@@ -3,7 +3,7 @@ import { addArg, removeArg } from '../../utils';
 
 const PhraseForm = ({ setFuncArgs }) => {
   useEffect(() => {
-    setFuncArgs({ 'phrase': '' })
+    addArg(setFuncArgs, 'phrase', '')
   }, [setFuncArgs]);
 
   return (

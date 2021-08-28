@@ -28,7 +28,7 @@ const AnalysisPage = ({ contacts }) => {
 
   useEffect(() => {
     setResponse({});
-  }, [contactName, func]);
+  }, [contactName, func, funcArgs, category]);
 
   useEffect(() => {
     if (fetchesInProgress > 0 && !isCounterSet) {
