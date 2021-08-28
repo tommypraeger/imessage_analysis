@@ -1,6 +1,12 @@
+import React, { useEffect } from 'react';
 import { addArg, removeArg, getCategories } from '../utils';
 
 const GraphFormSection = ({ func, outputType, setFuncArgs, setCategory, setCategories }) => {
+  useEffect(() => {
+    if (outputType === 'graph') {
+      addArg(setFuncArgs, 'graph-time-interval', 'month')
+    }
+  }, [setFuncArgs, outputType]);
   if (outputType === 'graph') {
     return (
       <div className='input-div'>
@@ -59,6 +65,7 @@ const GraphForm = ({ func, setFuncArgs, setCategory, setCategories }) => (
         type='radio'
         value='month'
         name='time-period'
+        defaultChecked={true}
         onChange={(event) => addArg(setFuncArgs, 'graph-time-interval', event.target.value)}
       />Month
       <input
