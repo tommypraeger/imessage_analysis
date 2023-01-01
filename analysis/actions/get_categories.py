@@ -1,10 +1,11 @@
 import json
-from analysis.functions import function_to_class_map
+from analysis.functions import get_function_class_by_name
 
 
-def main(function, graph_individual):
+def main(function_name, graph_individual):
+    function = get_function_class_by_name(function_name)
     if graph_individual:
-        return json.dumps(function_to_class_map[function].get_categories())
-    return json.dumps(
-        function_to_class_map[function].get_categories_allowing_graph_total()
-    )
+        categories = function.get_categories()
+    else:
+        categories = function.get_categories_allowing_graph_total()
+    return json.dumps(categories)
