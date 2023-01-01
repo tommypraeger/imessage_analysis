@@ -1,21 +1,16 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-total_messages_category = 'Total messages'
-percent_total_messages_category = 'Percent of total messages'
+total_messages_category = "Total messages"
+percent_total_messages_category = "Percent of total messages"
 
 
 def get_categories():
-    return [
-        total_messages_category,
-        percent_total_messages_category
-    ]
+    return [total_messages_category, percent_total_messages_category]
 
 
 def get_categories_allowing_graph_total():
-    return [
-        total_messages_category
-    ]
+    return [total_messages_category]
 
 
 def get_results(output_dict, df, member_name=None, time_period=None):
@@ -31,8 +26,13 @@ def get_table_results(result_dict, df, chat_members, args):
     total_messages = sum(result_dict[total_messages_category])
     for i in range(len(result_dict[total_messages_category])):
         result_dict[percent_total_messages_category].append(
-            round(helpers.safe_divide(
-                result_dict[total_messages_category][i], total_messages) * 100, 2)
+            round(
+                helpers.safe_divide(
+                    result_dict[total_messages_category][i], total_messages
+                )
+                * 100,
+                2,
+            )
         )
 
 
@@ -48,12 +48,19 @@ def get_individual_graph_results(graph_data, df, chat_members, time_periods):
         total_messages_in_period = 0
         for member_name in chat_members:
             total_messages_in_period += get_results(
-                graph_data[member_name], df, member_name, time_period)
+                graph_data[member_name], df, member_name, time_period
+            )
         for member_name in chat_members:
             graph_data[member_name][percent_total_messages_category].append(
-                round(helpers.safe_divide(
-                    graph_data[member_name][total_messages_category][-1],
-                    total_messages_in_period) * 100, 2))
+                round(
+                    helpers.safe_divide(
+                        graph_data[member_name][total_messages_category][-1],
+                        total_messages_in_period,
+                    )
+                    * 100,
+                    2,
+                )
+            )
 
 
 def get_total_graph_results(graph_data, df, time_periods):

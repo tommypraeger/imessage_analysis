@@ -154,6 +154,7 @@ This shows how many messages are of a specific file type. The only file types th
 This runs all functions and puts them in a table except for Frequency, Word/Phrase, and File Type, because they take special input.
 
 ## Contributing
+- Python formatting is done using [black](https://github.com/psf/black) using the default configuration. 
 - Add unit tests to make sure this actually works.
 - Add more functions. Be creative!
 

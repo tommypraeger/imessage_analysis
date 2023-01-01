@@ -1,38 +1,33 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-phrase_category = 'Messages that contain the entered phrase'
-percent_phrase_category = 'Percent of messages that contain the entered phrase'
+phrase_category = "Messages that contain the entered phrase"
+percent_phrase_category = "Percent of messages that contain the entered phrase"
 
 
 def get_categories():
-    return [
-        phrase_category,
-        percent_phrase_category
-    ]
+    return [phrase_category, percent_phrase_category]
 
 
 def get_categories_allowing_graph_total():
-    return [
-        phrase_category,
-        percent_phrase_category
-    ]
+    return [phrase_category, percent_phrase_category]
 
 
 def process_df(df, phrase, case_sensitive, separate, regex):
     if phrase is None:
-        raise Exception('Function is phrase but not given a phrase')
-    df[f'includes {phrase}?'] = df['text'].apply(
+        raise Exception("Function is phrase but not given a phrase")
+    df[f"includes {phrase}?"] = df["text"].apply(
         lambda msg: helpers.is_phrase_in(phrase, msg, case_sensitive, separate, regex)
     )
 
 
 def get_results(output_dict, df, phrase, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
-    phrase_messages = len(nr_messages[nr_messages[f'includes {phrase}?']])
+    phrase_messages = len(nr_messages[nr_messages[f"includes {phrase}?"]])
     output_dict[phrase_category].append(phrase_messages)
     output_dict[percent_phrase_category].append(
-        round(helpers.safe_divide(phrase_messages, len(nr_messages)) * 100, 2))
+        round(helpers.safe_divide(phrase_messages, len(nr_messages)) * 100, 2)
+    )
 
 
 def get_table_results(result_dict, df, chat_members, args):

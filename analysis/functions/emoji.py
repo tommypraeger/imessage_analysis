@@ -1,34 +1,29 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-emoji_category = 'Messages that contain emoji'
-percent_emoji_category = 'Percent of messages that contain emoji'
+emoji_category = "Messages that contain emoji"
+percent_emoji_category = "Percent of messages that contain emoji"
 
 
 def get_categories():
-    return [
-        emoji_category,
-        percent_emoji_category
-    ]
+    return [emoji_category, percent_emoji_category]
 
 
 def get_categories_allowing_graph_total():
-    return [
-        emoji_category,
-        percent_emoji_category
-    ]
+    return [emoji_category, percent_emoji_category]
 
 
 def process_df(df):
-    df['includes emoji?'] = df['text'].apply(helpers.includes_emoji)
+    df["includes emoji?"] = df["text"].apply(helpers.includes_emoji)
 
 
 def get_results(output_dict, df, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
-    emoji_messages = len(nr_messages[nr_messages['includes emoji?']])
+    emoji_messages = len(nr_messages[nr_messages["includes emoji?"]])
     output_dict[emoji_category].append(emoji_messages)
     output_dict[percent_emoji_category].append(
-        round(helpers.safe_divide(emoji_messages, len(nr_messages)) * 100, 2))
+        round(helpers.safe_divide(emoji_messages, len(nr_messages)) * 100, 2)
+    )
 
 
 def get_table_results(result_dict, df, chat_members):

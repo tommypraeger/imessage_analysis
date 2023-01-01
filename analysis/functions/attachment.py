@@ -1,34 +1,29 @@
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
-attachment_category = 'Messages that are attachments'
-percent_attachment_category = 'Percent of messages that are attachments'
+attachment_category = "Messages that are attachments"
+percent_attachment_category = "Percent of messages that are attachments"
 
 
 def get_categories():
-    return [
-        attachment_category,
-        percent_attachment_category
-    ]
+    return [attachment_category, percent_attachment_category]
 
 
 def get_categories_allowing_graph_total():
-    return [
-        attachment_category,
-        percent_attachment_category
-    ]
+    return [attachment_category, percent_attachment_category]
 
 
 def process_df(df):
-    df['is attachment?'] = df['type'].apply(helpers.is_attachment)
+    df["is attachment?"] = df["type"].apply(helpers.is_attachment)
 
 
 def get_results(output_dict, df, member_name=None, time_period=None):
     nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
-    attachment_messages = len(nr_messages[nr_messages['is attachment?']])
+    attachment_messages = len(nr_messages[nr_messages["is attachment?"]])
     output_dict[attachment_category].append(attachment_messages)
     output_dict[percent_attachment_category].append(
-        round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2))
+        round(helpers.safe_divide(attachment_messages, len(nr_messages)) * 100, 2)
+    )
 
 
 def get_table_results(result_dict, df, chat_members):

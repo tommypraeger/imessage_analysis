@@ -7,14 +7,14 @@ import analysis.utils.helpers as helpers
 
 # Create SQL connection
 def connect_to_db():
-    conn = sqlite3.connect(f'/Users/{constants.USERNAME}/Library/Messages/chat.db')
+    conn = sqlite3.connect(f"/Users/{constants.USERNAME}/Library/Messages/chat.db")
     return conn.cursor()
 
 
 # Test DB
 def test_db():
     c = connect_to_db()
-    cmd = 'SELECT * FROM handle'
+    cmd = "SELECT * FROM handle"
     c.execute(cmd)
 
 
@@ -25,7 +25,7 @@ def get_df(name, group):
     else:
         df_msg, df_att = get_individual_df(name)
 
-    return df_msg.set_index('id').join(df_att.set_index('id'))
+    return df_msg.set_index("id").join(df_att.set_index("id"))
 
 
 def get_group_df(name):
@@ -40,9 +40,9 @@ def get_group_df(name):
                     AND T1.ROWID=T2.message_id \
                 ORDER BY T1.date'
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=['id', 'text', 'sender', 'time'])
-    df_msg['sender'] = [
-        helpers.contact_name_from_id(sender) for sender in df_msg['sender']
+    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time"])
+    df_msg["sender"] = [
+        helpers.contact_name_from_id(sender) for sender in df_msg["sender"]
     ]
 
     # Get attachment history
@@ -56,7 +56,7 @@ def get_group_df(name):
                 WHERE T4.message_id=T1.ROWID \
                 AND (T3.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}))'
     c.execute(cmd2)
-    df_att = pd.DataFrame(c.fetchall(), columns=['id', 'type'])
+    df_att = pd.DataFrame(c.fetchall(), columns=["id", "type"])
 
     return df_msg, df_att
 
@@ -75,10 +75,12 @@ def get_individual_df(name):
                     AND T1.ROWID=T2.message_id \
                 ORDER BY T1.date'
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=['id', 'text', 'sender', 'time'])
-    df_msg['sender'] = [
-        helpers.contact_name_from_id(0) if sender == 1 else helpers.contact_name_from_id(contact_id)
-        for sender in df_msg['sender']
+    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time"])
+    df_msg["sender"] = [
+        helpers.contact_name_from_id(0)
+        if sender == 1
+        else helpers.contact_name_from_id(contact_id)
+        for sender in df_msg["sender"]
     ]
 
     # Get attachment history
@@ -92,7 +94,7 @@ def get_individual_df(name):
                 WHERE T4.message_id=T1.ROWID \
                 AND (T3.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}))'
     c.execute(cmd2)
-    df_att = pd.DataFrame(c.fetchall(), columns=['id', 'type'])
+    df_att = pd.DataFrame(c.fetchall(), columns=["id", "type"])
 
     return df_msg, df_att
 
@@ -142,9 +144,9 @@ def get_chat_ids_from_chat_name(chat_name):
 
 def get_phone_number_from_contact_id(contact_id):
     c = connect_to_db()
-    cmd = f'SELECT id \
+    cmd = f"SELECT id \
             FROM handle \
-            WHERE ROWID={contact_id}'
+            WHERE ROWID={contact_id}"
     c.execute(cmd)
     return str(c.fetchone())
 
