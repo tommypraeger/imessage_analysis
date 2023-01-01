@@ -1,4 +1,3 @@
-from analysis.functions import total
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
@@ -43,7 +42,7 @@ def process_df(df, minutes_threshold):
 def get_results(output_dict, df, member_name=None, time_period=None):
     messages = helpers.get_messages(df, member_name, time_period)
     message_series = len(messages[(messages['is new message series?'])
-                         | (messages['is conversation starter?'])])
+                                  | (messages['is conversation starter?'])])
     output_dict[message_series_category].append(message_series)
     output_dict[average_messages_category].append(
         round(helpers.safe_divide(len(messages), message_series), 2)

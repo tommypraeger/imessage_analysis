@@ -41,7 +41,7 @@ def get_results(output_dict, df, member_name=None, time_period=None):
     return game_starts
 
 
-def get_table_results(result_dict, df, chat_members, args):
+def get_table_results(result_dict, df, chat_members):
     process_df(df)
     for member_name in chat_members:
         helpers.initialize_member(member_name, result_dict)

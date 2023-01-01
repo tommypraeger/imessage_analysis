@@ -1,5 +1,4 @@
 import datetime
-import time
 
 import pandas as pd
 
@@ -92,6 +91,9 @@ def build_df(args):
     # Remove duplicate messages (happens with links sometimes)
     df = df.drop_duplicates(subset=['text', 'sender', 'time'])
 
+    # Sort by date (sometimes the order gets messed up)
+    df.sort_values(by='time', inplace=True)
+
     return df
 
 
@@ -108,16 +110,12 @@ def build_df_from_csv(args):
     # Clean time column
     if 'time' in df.columns:
         if len(df.at[0, 'time']) >= 19:
-            includes_time = True
+            includes_time_of_day = True
         else:
-            includes_time = False
-
-        # Trim dataframe based on date constraints
-        df = filter_by_date(df, args.from_date, args.to_date,
-                            includes_time=includes_time, use_seconds=False)
+            includes_time_of_day = False
 
         # Set timezone and date format
-        if includes_time:
+        if includes_time_of_day:
             df['time'] = [
                 datetime.datetime(
                     int(t[constants.YEAR]),
@@ -139,9 +137,13 @@ def build_df_from_csv(args):
                 for t in df['time']
             ]
     else:
-        df['type'] = [datetime.datetime.now()] * len(df)
+        df['time'] = [datetime.datetime.now()] * len(df)
 
-        # Clean type column
+    # Trim dataframe based on date constraints
+    df = filter_by_date(df, args.from_date, args.to_date,
+                        includes_time_of_day=includes_time_of_day, use_seconds=False)
+
+    # Clean type column
     if 'type' in df.columns:
         df['type'] = [t if type(t) is str else 'text/plain' for t in df['type']]
     else:
@@ -167,7 +169,7 @@ def get_chat_members(df, args):
     return chat_members
 
 
-def filter_by_date(df, from_date, to_date, includes_time=False, use_seconds=True):
+def filter_by_date(df, from_date, to_date, includes_time_of_day=False, use_seconds=True):
     offset = constants.TIME_OFFSET
 
     if from_date:
@@ -177,7 +179,7 @@ def filter_by_date(df, from_date, to_date, includes_time=False, use_seconds=True
             ]
         else:
             df = df[
-                df.apply(lambda msg: helpers.date_to_time(msg.time, includes_time), axis=1)
+                df.apply(lambda msg: helpers.date_to_time(msg.time, includes_time_of_day), axis=1)
                 >=
                 helpers.date_to_time(from_date)
             ]
@@ -189,7 +191,7 @@ def filter_by_date(df, from_date, to_date, includes_time=False, use_seconds=True
             ]
         else:
             df = df[
-                df.apply(lambda msg: helpers.date_to_time(msg.time, includes_time), axis=1)
+                df.apply(lambda msg: helpers.date_to_time(msg.time, includes_time_of_day), axis=1)
                 <=
                 helpers.date_to_time(to_date, end=True)
             ]
