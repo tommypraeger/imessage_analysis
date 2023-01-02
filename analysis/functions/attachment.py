@@ -21,7 +21,9 @@ class Attachment(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is attachment?"] = df["type"].apply(helpers.is_attachment)
+        df["is attachment?"] = df.apply(
+            lambda msg: helpers.is_attachment(msg.text, msg.type), axis=1
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

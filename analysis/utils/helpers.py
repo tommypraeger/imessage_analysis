@@ -197,8 +197,12 @@ def is_not_reaction(msg):
     return not is_reaction(msg)
 
 
-def is_attachment(mime):
-    return mime != "text/plain"
+def is_attachment(msg, mime):
+    return (
+        mime != "text/plain"
+        and not is_game_message(msg, mime)
+        and not is_game_start(msg, mime)
+    )
 
 
 def is_phrase_in(phrase, msg, case_sensitive, separate, regex):
