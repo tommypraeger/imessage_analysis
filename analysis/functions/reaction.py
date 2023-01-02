@@ -74,7 +74,8 @@ class Reaction(Function):
             percent_questions_category,
         ]
 
-    def process_df(self, df):
+    @staticmethod
+    def process_messages_df(df, args):
         df["reaction action"] = df["text"].apply(helpers.reaction_action)
         df["like react action"] = df["text"].apply(helpers.like_react_action)
         df["love react action"] = df["text"].apply(helpers.love_react_action)
@@ -83,17 +84,41 @@ class Reaction(Function):
         df["emphasis react action"] = df["text"].apply(helpers.emphasis_react_action)
         df["question react action"] = df["text"].apply(helpers.question_react_action)
 
-    def get_results(self, output_dict, df, member_name=None, time_period=None):
-        total_messages = helpers.get_total_messages(df, member_name, time_period)
-        nr_messages = helpers.get_total_non_reaction_messages(
+    @staticmethod
+    def get_results(output_dict, df, args, member_name=None, time_period=None):
+        total_messages_by_member = helpers.get_total_messages(
             df, member_name, time_period
         )
-        output_dict[total_messages_category].append(total_messages)
-        reaction_messages = total_messages - nr_messages
-        output_dict[reactions_messages_category].append(reaction_messages)
-        output_dict[non_reaction_messages_category].append(nr_messages)
+        nr_messages_by_member = helpers.get_total_non_reaction_messages(
+            df, member_name, time_period
+        )
+        output_dict[total_messages_category].append(total_messages_by_member)
+        reaction_messages_by_member = total_messages_by_member - nr_messages_by_member
+        output_dict[reactions_messages_category].append(reaction_messages_by_member)
+        output_dict[non_reaction_messages_category].append(nr_messages_by_member)
         output_dict[percent_reactions_category].append(
-            round((1 - helpers.safe_divide(nr_messages, total_messages)) * 100, 2)
+            helpers.safe_divide_as_pct(
+                reaction_messages_by_member, total_messages_by_member
+            )
+        )
+
+        total_messages = helpers.get_total_messages(time_period=time_period)
+        total_non_reaction_messages = helpers.get_total_non_reaction_messages(
+            time_period=time_period
+        )
+        total_reaction_messages = total_messages - total_non_reaction_messages
+        output_dict[percent_all_reactions_category].append(
+            helpers.safe_divide_as_pct(
+                reaction_messages_by_member,
+                total_reaction_messages,
+            )
+        )
+
+        output_dict[percent_all_non_reaction_category].append(
+            helpers.safe_divide_as_pct(
+                nr_messages_by_member,
+                total_non_reaction_messages,
+            )
         )
 
         messages = helpers.get_messages(df, member_name, time_period)
@@ -109,109 +134,30 @@ class Reaction(Function):
 
         output_dict[likes_category].append(like_reacts)
         output_dict[percent_likes_category].append(
-            round(helpers.safe_divide(like_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(like_reacts, reactions)
         )
 
         output_dict[loves_category].append(love_reacts)
         output_dict[percent_loves_category].append(
-            round(helpers.safe_divide(love_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(love_reacts, reactions)
         )
 
         output_dict[dislikes_category].append(dislike_reacts)
         output_dict[percent_dislikes_category].append(
-            round(helpers.safe_divide(dislike_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(dislike_reacts, reactions)
         )
 
         output_dict[laughs_category].append(laugh_reacts)
         output_dict[percent_laugh_category].append(
-            round(helpers.safe_divide(laugh_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(laugh_reacts, reactions)
         )
 
         output_dict[emphasis_category].append(emphasis_reacts)
         output_dict[percent_emphasis_category].append(
-            round(helpers.safe_divide(emphasis_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(emphasis_reacts, reactions)
         )
 
         output_dict[questions_category].append(question_reacts)
         output_dict[percent_questions_category].append(
-            round(helpers.safe_divide(question_reacts, reactions) * 100, 2)
+            helpers.safe_divideas_pct(question_reacts, reactions)
         )
-
-        return reaction_messages, nr_messages
-
-    def get_table_results(self, result_dict, df, chat_members, args):
-        self.process_df(df)
-        for member_name in chat_members:
-            helpers.initialize_member(member_name, result_dict)
-            self.get_results(result_dict, df, member_name)
-        total_reaction_messages = sum(result_dict[reactions_messages_category])
-        total_non_reaction_messages = sum(result_dict[non_reaction_messages_category])
-        for i in range(len(result_dict[total_messages_category])):
-            result_dict[percent_all_reactions_category].append(
-                round(
-                    helpers.safe_divide(
-                        result_dict[reactions_messages_category][i],
-                        total_reaction_messages,
-                    )
-                    * 100,
-                    2,
-                )
-            )
-            result_dict[percent_all_non_reaction_category].append(
-                round(
-                    helpers.safe_divide(
-                        result_dict[non_reaction_messages_category][i],
-                        total_non_reaction_messages,
-                    )
-                    * 100,
-                    2,
-                )
-            )
-
-    def get_graph_results(self, graph_data, df, chat_members, time_periods, args):
-        self.process_df(df)
-        if args.graph_individual:
-            self.get_individual_graph_results(
-                graph_data, df, chat_members, time_periods
-            )
-        else:
-            self.get_total_graph_results(graph_data, df, time_periods)
-
-    def get_individual_graph_results(self, graph_data, df, chat_members, time_periods):
-        for time_period in time_periods:
-            total_reaction_messages_in_period = 0
-            total_non_reaction_messages_in_period = 0
-            for member_name in chat_members:
-                (
-                    member_reaction_messages_in_period,
-                    member_nr_messages_in_period,
-                ) = self.get_results(
-                    graph_data[member_name], df, member_name, time_period
-                )
-                total_reaction_messages_in_period += member_reaction_messages_in_period
-                total_non_reaction_messages_in_period += member_nr_messages_in_period
-            for member_name in chat_members:
-                graph_data[member_name][percent_all_reactions_category].append(
-                    round(
-                        helpers.safe_divide(
-                            graph_data[member_name][reactions_messages_category][-1],
-                            total_reaction_messages_in_period,
-                        )
-                        * 100,
-                        2,
-                    )
-                )
-                graph_data[member_name][percent_all_non_reaction_category].append(
-                    round(
-                        helpers.safe_divide(
-                            graph_data[member_name][non_reaction_messages_category][-1],
-                            total_non_reaction_messages_in_period,
-                        )
-                        * 100,
-                        2,
-                    )
-                )
-
-    def get_total_graph_results(self, graph_data, df, time_periods):
-        for time_period in time_periods:
-            self.get_results(graph_data[GRAPH_TOTAL_KEY], df, None, time_period)
