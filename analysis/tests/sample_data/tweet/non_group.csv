@@ -1,0 +1,7 @@
+time,sender,text
+01/01/2000 12:00:00,A,https://twitter.com/jack/status/20
+01/01/2000 12:00:01,B,b
+01/01/2000 12:00:02,A,https://twitter.com/jack
+01/02/2000 12:00:00,A,https://github.com/tommypraeger
+01/02/2000 12:00:01,B,https://twitter.com/jack/status/20
+01/02/2000 12:00:02,A,a

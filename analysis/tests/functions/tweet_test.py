@@ -1,24 +1,20 @@
-from analysis.functions.all_caps import (
-    AllCaps,
-    all_caps_category,
-    percent_all_caps_category,
-)
+from analysis.functions.tweet import Tweet, tweets_category, percent_tweets_category
 from analysis.tests.testutils import *
 
 
-def test_all_caps():
-    fn = AllCaps()
+def test_tweet():
+    fn = Tweet()
     table_actual = [
         result
         for result in generate_table_test_result(
-            fn, "all_caps", csvs=["group", "non_group"], fn_args_combos=[[]]
+            fn, "tweet", csvs=["group", "non_group"], fn_args_combos=[[]]
         )
     ]
     graph_actual = [
         result
         for result in generate_graph_test_result(
             fn,
-            "all_caps",
+            "tweet",
             csvs=["group", "non_group"],
             graph_total_categories=fn.get_categories_allowing_graph_total(),
             graph_individual_categories=fn.get_categories(),
@@ -29,14 +25,14 @@ def test_all_caps():
         {
             "description": "group",
             "names": ["A", "B", "C"],
-            all_caps_category: [2, 1, 0],
-            percent_all_caps_category: [66.67, 25.0, 0],
+            tweets_category: [1, 1, 0],
+            percent_tweets_category: [50.0, 50.0, 0],
         },
         {
             "description": "non-group",
             "names": ["A", "B"],
-            all_caps_category: [2, 1],
-            percent_all_caps_category: [50.0, 25.0],
+            tweets_category: [1, 1],
+            percent_tweets_category: [25.0, 50.0],
         },
     ]
     graph_expected = [
@@ -45,7 +41,7 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "Total",
-                    "data": [2, 1],
+                    "data": [1, 1],
                 }
             ],
             "labels": ["1/1/00", "1/2/00"],
@@ -55,7 +51,7 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "Total",
-                    "data": [40.0, 33.33],
+                    "data": [33.33, 33.33],
                 }
             ],
             "labels": ["1/1/00", "1/2/00"],
@@ -65,11 +61,11 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "A",
-                    "data": [1, 1],
+                    "data": [1, 0],
                 },
                 {
                     "label": "B",
-                    "data": [1, 0],
+                    "data": [0, 1],
                 },
                 {
                     "label": "C",
@@ -83,11 +79,11 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "A",
-                    "data": [50.0, 100.0],
+                    "data": [100.0, 0],
                 },
                 {
                     "label": "B",
-                    "data": [33.33, 0],
+                    "data": [0, 100.0],
                 },
                 {
                     "label": "C",
@@ -101,7 +97,7 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "Total",
-                    "data": [2, 1],
+                    "data": [1, 1],
                 }
             ],
             "labels": ["1/1/00", "1/2/00"],
@@ -111,7 +107,7 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "Total",
-                    "data": [40.0, 33.33],
+                    "data": [33.33, 33.33],
                 }
             ],
             "labels": ["1/1/00", "1/2/00"],
@@ -121,11 +117,11 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "A",
-                    "data": [1, 1],
+                    "data": [1, 0],
                 },
                 {
                     "label": "B",
-                    "data": [1, 0],
+                    "data": [0, 1],
                 },
             ],
             "labels": ["1/1/00", "1/2/00"],
@@ -135,11 +131,11 @@ def test_all_caps():
             "datasets": [
                 {
                     "label": "A",
-                    "data": [50.0, 50.0],
+                    "data": [50.0, 0],
                 },
                 {
                     "label": "B",
-                    "data": [33.33, 0],
+                    "data": [0, 100.0],
                 },
             ],
             "labels": ["1/1/00", "1/2/00"],
