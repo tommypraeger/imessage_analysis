@@ -1,7 +1,6 @@
 import math
 
 from analysis.functions import Function
-from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
 average_word_length_category = "Average letters per word"

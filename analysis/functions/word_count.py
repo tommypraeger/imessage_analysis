@@ -4,6 +4,7 @@ from analysis.functions import Function
 from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
+# TODO: total word count
 average_word_count_category = "Average word count per message"
 
 

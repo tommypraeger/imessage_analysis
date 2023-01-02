@@ -1,5 +1,4 @@
 from analysis.functions import Function
-from analysis.utils.constants import GRAPH_TOTAL_KEY
 from analysis.utils import helpers
 
 all_caps_category = "Messages in all caps"

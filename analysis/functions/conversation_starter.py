@@ -1,5 +1,4 @@
 from analysis.functions import Function
-from analysis.utils.constants import GRAPH_TOTAL_KEY
 import analysis.utils.helpers as helpers
 
 conversations_started_category = "Conversations started"
