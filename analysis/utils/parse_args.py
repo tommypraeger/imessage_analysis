@@ -71,7 +71,6 @@ def get_analysis_args(args):
         choices=["day", "week", "month", "year"],
         help="which time interval to group the data by",
     )
-
     return parser.parse_args(args)
 
 

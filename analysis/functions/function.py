@@ -7,38 +7,39 @@ import analysis.utils.helpers as helpers
 
 class Function(abc.ABC):
     @abc.abstractmethod
-    def get_function_name(self):
+    def get_function_name():
         """
         Return function argument name
         """
         pass
 
     @abc.abstractmethod
-    def get_categories(self):
+    def get_categories():
         """
         Return list of categories (i.e. table columns, graph choices) for this function
         """
         pass
 
     @abc.abstractmethod
-    def get_categories_allowing_graph_total(self):
+    def get_categories_allowing_graph_total():
         """
         Return list of categories (i.e. table columns, graph choices) for this function
-        that can be used when not graphing individual members
+        that can be used when not graphing individual members. Some categories do not make sense
+        when just graphing the total line.
         """
         pass
 
     @abc.abstractmethod
-    def get_table_results(self, result_dict, df, chat_members, args):
+    def process_messages_df(self, df, args):
         """
-        Return table data
+        Process messages in data frame and add necessary aggregate columns to the data frame
         """
         pass
 
     @abc.abstractmethod
-    def get_graph_results(self, graph_data, df, chat_members, time_periods, args):
+    def get_results(self, output_dict, df, args, time_period=None, member_name=None):
         """
-        Return graph data
+        Fill in results from analysis into output dictionary using processed data frame
         """
         pass
 
@@ -59,7 +60,13 @@ class Function(abc.ABC):
             time_periods = self.get_time_periods(df, args.graph_time_interval)
 
             # get graph data
-            self.get_graph_results(graph_data, df, chat_members, time_periods, args)
+            self.get_graph_results(
+                graph_data,
+                df,
+                chat_members,
+                time_periods,
+                args.graph_individual,
+            )
 
             # prepare to return data
             self.format_graph_data(
@@ -71,6 +78,56 @@ class Function(abc.ABC):
             )
 
         return result_dict
+
+    def get_table_results(self, result_dict, df, chat_members, args):
+        self.process_messages_df(df, args)
+        for member_name in chat_members:
+            helpers.initialize_member(member_name, result_dict)
+            self.get_results(result_dict, df, args, member_name=member_name)
+
+    def get_graph_results(
+        self,
+        graph_data,
+        df,
+        chat_members,
+        time_periods,
+        graph_individual,
+        args,
+    ):
+        self.process_messages_df(df, args)
+        if graph_individual:
+            self.get_individual_graph_results(
+                graph_data, df, chat_members, time_periods, args
+            )
+        else:
+            self.get_total_graph_results(graph_data, df, time_periods, args)
+
+    def get_individual_graph_results(
+        self,
+        graph_data,
+        df,
+        args,
+        chat_members,
+        time_periods,
+    ):
+        for time_period in time_periods:
+            for member_name in chat_members:
+                self.get_results(
+                    graph_data[member_name],
+                    df,
+                    args,
+                    time_period=time_period,
+                    member_name=member_name,
+                )
+
+    def get_total_graph_results(self, graph_data, df, args, time_periods):
+        for time_period in time_periods:
+            self.get_results(
+                graph_data[constants.GRAPH_TOTAL_KEY],
+                df,
+                args,
+                time_period=time_period,
+            )
 
     def set_up_graph_data(self, graph_data, args, chat_members):
         categories = self.get_categories()

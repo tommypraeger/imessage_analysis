@@ -28,7 +28,7 @@ def initialize_member(member_name, result_dict):
 
 
 def get_messages(df, member_name=None, time_period=None):
-    condition = True
+    condition = [True] * len(df)
     if time_period is not None:
         condition = condition & (df["time_period"] == time_period)
     if member_name is not None:
@@ -82,11 +82,21 @@ def make_success_message(msg):
     return {"successMessage": str(msg)}
 
 
-def safe_divide(num, denom):
+def safe_divide(numerator, denominator):
+    """
+    Does division but returns 0 if denominator is 0
+    """
     try:
-        return num / denom
+        return numerator / denominator
     except ZeroDivisionError:
         return 0
+
+
+def safe_divide_as_pct(numerator, denominator):
+    return round(
+        safe_divide(numerator, denominator) * 100,
+        2,
+    )
 
 
 def date_to_time(date, time=False, end=False):

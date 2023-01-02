@@ -19,7 +19,12 @@ class Phrase(Function):
     def get_categories_allowing_graph_total():
         return [phrase_category, percent_phrase_category]
 
-    def process_df(self, df, phrase, case_sensitive, separate, regex):
+    @staticmethod
+    def process_messages_df(df, args):
+        phrase = args.phrase
+        case_sensitive = args.case_sensitive
+        separate = args.separate
+        regex = args.regex
         if phrase is None:
             raise Exception("Function is phrase but not given a phrase")
         df[f"includes {phrase}?"] = df["text"].apply(
@@ -28,40 +33,12 @@ class Phrase(Function):
             )
         )
 
-    def get_results(self, output_dict, df, phrase, member_name=None, time_period=None):
+    @staticmethod
+    def get_results(output_dict, df, args, member_name=None, time_period=None):
+        phrase = args.phrase
         nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
         phrase_messages = len(nr_messages[nr_messages[f"includes {phrase}?"]])
         output_dict[phrase_category].append(phrase_messages)
         output_dict[percent_phrase_category].append(
             round(helpers.safe_divide(phrase_messages, len(nr_messages)) * 100, 2)
         )
-
-    def get_table_results(self, result_dict, df, chat_members, args):
-        phrase = args.phrase
-        self.process_df(df, phrase, args.case_sensitive, args.separate, args.regex)
-        for member_name in chat_members:
-            helpers.initialize_member(member_name, result_dict)
-            self.get_results(result_dict, df, phrase, member_name)
-
-    def get_graph_results(self, graph_data, df, chat_members, time_periods, args):
-        phrase = args.phrase
-        self.process_df(df, phrase, args.case_sensitive, args.separate, args.regex)
-        if args.graph_individual:
-            self.get_individual_graph_results(
-                graph_data, df, phrase, chat_members, time_periods
-            )
-        else:
-            self.get_total_graph_results(graph_data, df, phrase, time_periods)
-
-    def get_individual_graph_results(
-       self, graph_data, df, phrase, chat_members, time_periods
-    ):
-        for time_period in time_periods:
-            for member_name in chat_members:
-                self.get_results(
-                    graph_data[member_name], df, phrase, member_name, time_period
-                )
-
-    def get_total_graph_results(self, graph_data, df, phrase, time_periods):
-        for time_period in time_periods:
-            self.get_results(graph_data[GRAPH_TOTAL_KEY], df, phrase, None, time_period)
