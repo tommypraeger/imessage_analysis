@@ -61,11 +61,7 @@ class Function(abc.ABC):
 
             # get graph data
             self.get_graph_results(
-                graph_data,
-                df,
-                chat_members,
-                time_periods,
-                args.graph_individual,
+                graph_data, df, chat_members, time_periods, args.graph_individual, args
             )
 
             # prepare to return data
@@ -106,9 +102,9 @@ class Function(abc.ABC):
         self,
         graph_data,
         df,
-        args,
         chat_members,
         time_periods,
+        args,
     ):
         for time_period in time_periods:
             for member_name in chat_members:
@@ -120,7 +116,7 @@ class Function(abc.ABC):
                     member_name=member_name,
                 )
 
-    def get_total_graph_results(self, graph_data, df, args, time_periods):
+    def get_total_graph_results(self, graph_data, df, time_periods, args):
         for time_period in time_periods:
             self.get_results(
                 graph_data[constants.GRAPH_TOTAL_KEY],
