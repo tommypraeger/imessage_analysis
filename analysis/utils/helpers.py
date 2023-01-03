@@ -86,10 +86,10 @@ def safe_divide(numerator, denominator):
     """
     Does division but returns 0 if denominator is 0
     """
-    try:
-        return numerator / denominator
-    except ZeroDivisionError:
+    if denominator == 0:
         return 0
+
+    return numerator / denominator
 
 
 def safe_divide_as_pct(numerator, denominator):

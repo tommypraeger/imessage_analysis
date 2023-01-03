@@ -48,7 +48,9 @@ def get_chat_members(df):
 
 
 def load_csv(function, csv_name):
-    df = pd.read_csv(f"analysis/tests/sample_data/{function}/{csv_name}.csv")
+    df = pd.read_csv(
+        f"analysis/tests/sample_data/{function}/{csv_name}.csv", keep_default_na=False
+    )
     df["is reaction?"] = df["text"].apply(is_reaction)
     df["time"] = [
         datetime(

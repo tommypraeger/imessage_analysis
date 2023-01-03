@@ -98,7 +98,8 @@ def build_df(args):
 
 def build_df_from_csv(args):
     # Message csv must be located in this file
-    df = pd.read_csv("messages.csv")
+    # keep_default_na=False prevents empty string from being read as NaN
+    df = pd.read_csv("messages.csv", keep_default_na=False)
 
     # Make sure necessary columns are there
     for column in ["text", "sender"]:

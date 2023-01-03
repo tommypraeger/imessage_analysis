@@ -23,7 +23,6 @@ class WordCount(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is attachment?"] = df["type"].apply(helpers.is_attachment)
         df["is link?"] = df["text"].apply(helpers.is_link)
         df["word count"] = df["text"].apply(helpers.message_word_count)
 
@@ -31,10 +30,10 @@ class WordCount(Function):
     def get_results(output_dict, df, args, member_name=None, time_period=None):
         nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
         average_message_word_count = nr_messages[
-            (~nr_messages["is attachment?"]) & (~nr_messages["is link?"])
+            (nr_messages["word count"] != 0) & (~nr_messages["is link?"])
         ]["word count"].mean()
         if math.isnan(average_message_word_count):
             average_message_word_count = 0
         output_dict[average_word_count_category].append(
-            round(average_message_word_count, 1)
+            round(average_message_word_count, 2)
         )

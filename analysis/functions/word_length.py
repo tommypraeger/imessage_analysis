@@ -21,7 +21,6 @@ class WordLength(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is attachment?"] = df["type"].apply(helpers.is_attachment)
         df["is link?"] = df["text"].apply(helpers.is_link)
         df["word count"] = df["text"].apply(helpers.message_word_count)
         df["letter count"] = df["text"].apply(helpers.message_letter_count)
@@ -30,12 +29,12 @@ class WordLength(Function):
     def get_results(output_dict, df, args, member_name=None, time_period=None):
         nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
         total_words = nr_messages[
-            (~nr_messages["is attachment?"]) & (~nr_messages["is link?"])
+            (nr_messages["word count"] != 0) & (~nr_messages["is link?"])
         ]["word count"].sum()
         total_letters = nr_messages[
-            (~nr_messages["is attachment?"]) & (~nr_messages["is link?"])
+            (nr_messages["word count"] != 0) & (~nr_messages["is link?"])
         ]["letter count"].sum()
-        average_word_length = round(helpers.safe_divide(total_letters, total_words), 1)
+        average_word_length = round(helpers.safe_divide(total_letters, total_words), 2)
         if math.isnan(average_word_length):
             average_word_length = 0
         output_dict[average_word_length_category].append(average_word_length)

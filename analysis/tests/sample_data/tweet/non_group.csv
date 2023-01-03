@@ -1,7 +1,8 @@
-time,sender,text
-01/01/2000 12:00:00,A,https://twitter.com/jack/status/20
-01/01/2000 12:00:01,B,b
-01/01/2000 12:00:02,A,https://twitter.com/jack
-01/02/2000 12:00:00,A,https://github.com/tommypraeger
-01/02/2000 12:00:01,B,https://twitter.com/jack/status/20
-01/02/2000 12:00:02,A,a
+time,sender,text,note
+01/01/2000 12:00:00,A,https://twitter.com/jack/status/20,this is a tweet
+01/01/2000 12:00:01,B,b,not a tweet
+01/01/2000 12:00:02,A,https://twitter.com/jack,not a tweet - link to profile
+01/02/2000 12:00:00,A,https://github.com/tommypraeger,not a tweet link
+01/02/2000 12:00:01,B,https://twitter.com/jack/status/20,this is a tweet
+01/02/2000 12:00:02,A,Loved "https://twitter.com/jack/status/20",reaction message - ignore
+01/02/2000 12:00:03,A,a,not a tweet
