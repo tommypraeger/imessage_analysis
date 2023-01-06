@@ -1,0 +1,11 @@
+time,sender,text,type,note
+01/01/2000 12:00:00,A,aa,text/plain
+01/01/2000 12:00:01,A,aa,text/plain
+01/01/2000 12:00:02,B,bb bb,text/plain
+01/01/2000 12:00:03,B,bb bb bb,text/plain
+01/01/2000 12:00:04,A,Loved "bb bb bb",text/plain,reactions count
+01/02/2000 12:00:00,A,aa,text/plain
+01/02/2000 12:00:01,B,bb,text/plain
+01/02/2000 12:00:01,B,bb,text/plain
+01/02/2000 12:00:02,A,aa,text/plain
+01/02/2000 12:00:04,B,,image/png,wordless attachments count

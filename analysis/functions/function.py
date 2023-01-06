@@ -30,14 +30,14 @@ class Function(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def process_messages_df(self, df, args):
+    def process_messages_df(df, args):
         """
         Process messages in data frame and add necessary aggregate columns to the data frame
         """
         pass
 
     @abc.abstractmethod
-    def get_results(self, output_dict, df, args, time_period=None, member_name=None):
+    def get_results(output_dict, df, args, time_period=None, member_name=None):
         """
         Fill in results from analysis into output dictionary using processed data frame
         """
@@ -127,7 +127,6 @@ class Function(abc.ABC):
 
     def set_up_graph_data(self, graph_data, args, chat_members):
         categories = self.get_categories()
-        categories_allowing_graph_total = self.get_categories_allowing_graph_total()
         if args.graph_individual:
             for member_name in chat_members:
                 graph_data[member_name] = {}
@@ -135,7 +134,10 @@ class Function(abc.ABC):
                     graph_data[member_name][category] = []
         else:
             graph_data[constants.GRAPH_TOTAL_KEY] = {}
-            for category in categories_allowing_graph_total:
+            # add all categories
+            # however, categories not in get_categories_allowing_graph_total()
+            # will not be meaningful nor allowed to be selected from the UI
+            for category in categories:
                 graph_data[constants.GRAPH_TOTAL_KEY][category] = []
 
     def add_time_period_to_df(self, df, graph_time_interval):
