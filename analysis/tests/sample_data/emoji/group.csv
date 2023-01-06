@@ -1,0 +1,14 @@
+time,sender,text,type,note
+01/01/2000 12:00:00,A,🤪,text/plain
+01/01/2000 12:00:01,A,aa,text/plain
+01/01/2000 12:00:02,B,bb bb 🧌,text/plain
+01/01/2000 12:00:03,C,cc cc,text/plain
+01/02/2000 12:00:00,A,Loved "bb bb 🧌",text/plain,reactions don't count as emojis or for total message count
+01/02/2000 12:00:01,A,aa,text/plain
+01/02/2000 12:00:02,B,🐣,text/plain
+01/02/2000 12:00:03,C,cc,text/plain
+01/02/2000 12:00:04,B,bb,text/plain
+01/02/2000 12:00:05,C,,image/png,wordless attachments count as messages (not emojis obv)
+01/02/2000 12:00:06,A,aa,text/plain
+01/02/2000 12:00:07,A,aa,text/plain
+01/02/2000 12:00:08,A,aa,text/plain
