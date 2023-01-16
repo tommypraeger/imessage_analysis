@@ -198,11 +198,7 @@ def is_not_reaction(msg):
 
 
 def is_attachment(msg, mime):
-    return (
-        mime != "text/plain"
-        and not is_game_message(msg, mime)
-        and not is_game_start(msg, mime)
-    )
+    return mime != "text/plain" and not is_game_message(msg, mime)
 
 
 def is_phrase_in(phrase, msg, case_sensitive, separate, regex):
@@ -289,16 +285,17 @@ def is_link(msg):
 
 
 def is_game_message(msg, mime):
+    msg = str(msg)
     if is_reaction(msg):
         return False
-    return (
-        str(msg) in constants.GAMES
-        and (mime == "image/jpeg" or mime == "image/heic")
-        or is_game_start(msg, mime)
+    return (msg in constants.GAMES or msg == "�￼") and (
+        mime == "image/jpeg" or mime == "image/heic"
     )
 
 
-def is_game_start(msg, mime):
+# unfortunately this is not accurate :/
+# regular game messages also use "�￼" now
+def _is_game_start(msg, mime):
     if is_reaction(msg):
         return False
     return str(msg) == "�￼" and (mime == "image/jpeg" or mime == "image/heic")
