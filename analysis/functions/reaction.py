@@ -21,6 +21,8 @@ percent_emphasis_category = "Percent of reactions that are emphasis reacts"
 questions_category = "Question reacts"
 percent_questions_category = "Percent of reactions that are question reacts"
 
+# TODO: accept reaction list as arg
+
 
 class Reaction(Function):
     @staticmethod

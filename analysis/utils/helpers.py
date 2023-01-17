@@ -11,6 +11,7 @@ import analysis.utils.constants as constants
 import analysis.utils.sql as sql
 
 
+# TODO: refactor to use Function.get_function_name while avoiding circular imports
 def get_functions():
     pattern = re.compile(constants.FUNCTIONS_REGEX)
     _, _, file_names = next(os.walk("./analysis/functions"))
