@@ -1,0 +1,18 @@
+time,sender,text,type,note
+01/01/2000 12:00:00,A,�￼,image/heic,new game message format - games don't count towards type
+01/01/2000 12:00:01,A,�￼,image/heic,new game message format - games don't count towards type
+01/01/2000 12:00:02,B,�￼,image/heic,new game message format - games don't count towards type
+01/01/2000 12:00:03,C,cc cc,text/plain
+01/01/2000 12:00:04,C,cc cc,image/png
+01/01/2000 12:00:05,C,cc,text/plain
+01/02/2000 12:00:00,A,Loved "cc cc",text/plain,reactions don't count towards type or total message count
+01/02/2000 12:00:01,A,aa,text/plain
+01/02/2000 12:00:02,B,🐣,text/plain
+01/02/2000 12:00:03,C,Anagrams,image/jpeg,old game message format - games don't count towards type
+01/02/2000 12:00:04,B,Anagrams,image/jpeg,old game message format - games don't count towards type
+01/02/2000 12:00:05,C,�￼,image/jpeg,old game message format - games don't count towards type
+01/02/2000 12:00:06,A,aa,text/plain
+01/02/2000 12:00:07,A,aa,image/heic
+01/02/2000 12:00:08,A,aa,text/plain
+01/02/2000 12:00:09,B,bbb,image/new
+01/02/2000 12:00:10,C,,new/attachment
