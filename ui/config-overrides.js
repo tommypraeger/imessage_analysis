@@ -8,12 +8,7 @@ module.exports = {
   devServer: function (configFunction) {
     return function (proxy, allowedHost) {
       const config = configFunction(proxy, allowedHost);
-      config.watchOptions = {
-        ignored: [
-          //'**/public/graph*.png',
-          '**/public/user_data.json'
-        ]
-      };
+      config.static.watch.ignored = '**/public/user_data.json';
       return config;
     }
   },

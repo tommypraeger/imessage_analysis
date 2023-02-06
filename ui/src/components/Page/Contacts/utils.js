@@ -1,5 +1,5 @@
 import { postFetch, verifySuccessOrAlert } from '../utils';
-import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const addContact = (name, number, setFetchesInProgress, setUpdateContacts) => {
   postFetch('add_contact', {

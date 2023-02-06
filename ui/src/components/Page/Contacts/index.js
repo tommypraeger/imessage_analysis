@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from 'react-loader-spinner';
+import { Oval } from 'react-loader-spinner';
 import AddContactModal from './components/AddContactModal';
 import AddGroupChatModal from './components/AddGroupChatModal';
 import Contact from './components/Contact';
@@ -36,8 +36,7 @@ const ContactsPage = ({ contacts, setContacts }) => {
   if (fetchesInProgress > 0) {
     return (
       <div className='loading-gif'>
-        <Loader
-          type='Oval'
+        <Oval
           color='#1982fc'
           height={200}
           width={200}

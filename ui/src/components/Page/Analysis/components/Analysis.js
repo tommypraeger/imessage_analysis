@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import Loader from 'react-loader-spinner';
+import { Oval } from 'react-loader-spinner';
 import { makeTableNice } from '../utils';
 import LineGraph from './LineGraph';
 
 const LoadingGif = () => (
   <div className='loading-gif'>
-    <Loader
-      type='Oval'
+    <Oval
       color='#1982fc'
       height={200}
       width={200}

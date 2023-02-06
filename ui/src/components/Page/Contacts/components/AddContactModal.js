@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import {
+  TextField,
+  Autocomplete
+ } from '@mui/material';
 import { addContact, phoneNumberFilterOptions } from '../utils';
 Modal.setAppElement('#root');
 
