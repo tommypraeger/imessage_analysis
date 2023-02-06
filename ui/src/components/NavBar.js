@@ -1,19 +1,16 @@
 const NavBar = ({ page, setPage }) => {
-  const pages = [
-    'contacts',
-    'analysis'
-  ];
+  const pages = ["contacts", "analysis"];
   const urlParams = new URLSearchParams(window.location.search);
 
   return (
-    <ul id='nav-bar'>
-      {pages.map(pageName => (
+    <ul id="nav-bar">
+      {pages.map((pageName) => (
         <li
           key={pageName}
-          className={page === pageName ? 'active' : ''}
+          className={page === pageName ? "active" : ""}
           onClick={() => {
             setPage(pageName);
-            urlParams.set('page', pageName);
+            urlParams.set("page", pageName);
             window.location.search = urlParams.toString();
           }}
         >

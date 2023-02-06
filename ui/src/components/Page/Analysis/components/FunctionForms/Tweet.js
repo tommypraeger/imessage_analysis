@@ -1,5 +1,3 @@
-const TweetForm = () => (
-  <div />
-);
+const TweetForm = () => <div />;
 
 export default TweetForm;

@@ -1,65 +1,65 @@
-import AllCapsForm from './AllCaps';
-import AttachmentForm from './Attachment';
-import ConvoStarterForm from './ConvoStarter';
-import EmojiForm from './Emoji';
-import GameForm from './Game';
-import LinkForm from './Link';
-import MessageSeriesForm from './MessageSeries';
-import MimeTypeForm from './MimeType';
-import PhraseForm from './Phrase';
-import ReactionForm from './Reaction';
-import TotalForm from './Total';
-import TweetForm from './Tweet';
-import WordCountForm from './WordCount';
-import WordLengthForm from './WordLength';
+import AllCapsForm from "./AllCaps";
+import AttachmentForm from "./Attachment";
+import ConvoStarterForm from "./ConvoStarter";
+import EmojiForm from "./Emoji";
+import GameForm from "./Game";
+import LinkForm from "./Link";
+import MessageSeriesForm from "./MessageSeries";
+import MimeTypeForm from "./MimeType";
+import PhraseForm from "./Phrase";
+import ReactionForm from "./Reaction";
+import TotalForm from "./Total";
+import TweetForm from "./Tweet";
+import WordCountForm from "./WordCount";
+import WordLengthForm from "./WordLength";
 
 const FunctionForm = ({ func, setFuncArgs }) => {
   switch (func) {
-    case 'all_caps':
+    case "all_caps":
       return <AllCapsForm />;
 
-    case 'attachment':
+    case "attachment":
       return <AttachmentForm />;
 
-    case 'conversation_starter':
+    case "conversation_starter":
       return <ConvoStarterForm setFuncArgs={setFuncArgs} />;
 
-    case 'emoji':
+    case "emoji":
       return <EmojiForm />;
 
-    case 'game':
+    case "game":
       return <GameForm />;
 
-    case 'link':
+    case "link":
       return <LinkForm />;
 
-    case 'message_series':
+    case "message_series":
       return <MessageSeriesForm setFuncArgs={setFuncArgs} />;
 
-    case 'mime_type':
+    case "mime_type":
       return <MimeTypeForm setFuncArgs={setFuncArgs} />;
 
-    case 'phrase':
+    case "phrase":
       return <PhraseForm setFuncArgs={setFuncArgs} />;
 
-    case 'reaction':
+    case "reaction":
       return <ReactionForm />;
 
-    case 'total':
+    case "total":
       return <TotalForm />;
 
-    case 'tweet':
+    case "tweet":
       return <TweetForm />;
 
-    case 'word_count':
+    case "word_count":
       return <WordCountForm />;
 
-    case 'word_length':
+    case "word_length":
       return <WordLengthForm />;
 
     default:
       return <TotalForm />;
-  };
+  }
 };
 
 export default FunctionForm;

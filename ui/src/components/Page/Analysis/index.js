@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import DateForm from './components/DateForm';
-import FunctionForm from './components/FunctionForms';
-import GraphFormSection from './components/GraphForm';
-import SelectCategory from './components/SelectCategory';
-import SelectContact from './components/SelectContact';
-import SelectFunction from './components/SelectFunction';
-import SelectOutput from './components/SelectOutput';
-import Analysis from './components/Analysis';
-import { runAnalysis } from './utils';
+import React, { useState, useEffect } from "react";
+import DateForm from "./components/DateForm";
+import FunctionForm from "./components/FunctionForms";
+import GraphFormSection from "./components/GraphForm";
+import SelectCategory from "./components/SelectCategory";
+import SelectContact from "./components/SelectContact";
+import SelectFunction from "./components/SelectFunction";
+import SelectOutput from "./components/SelectOutput";
+import Analysis from "./components/Analysis";
+import { runAnalysis } from "./utils";
 
 const AnalysisPage = ({ contacts }) => {
-  const [contactName, setContactName] = useState('');
+  const [contactName, setContactName] = useState("");
   const [group, setGroup] = useState(false);
   const [csv, setCsv] = useState(false);
-  const [func, setFunc] = useState('');
+  const [func, setFunc] = useState("");
   const [funcArgs, setFuncArgs] = useState({});
-  const [outputType, setOutputType] = useState('table');
+  const [outputType, setOutputType] = useState("table");
   const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [category, setCategory] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [response, setResponse] = useState({});
   const [fetchesInProgress, setFetchesInProgress] = useState(0);
   const [fetchSeconds, setFetchSeconds] = useState(0);
@@ -43,8 +43,8 @@ const AnalysisPage = ({ contacts }) => {
 
   return (
     <div>
-      <div className='center-content'>
-        <div className='input-div'>
+      <div className="center-content">
+        <div className="input-div">
           <h2>Analysis for:</h2>
           <SelectContact
             contacts={contacts}
@@ -53,7 +53,7 @@ const AnalysisPage = ({ contacts }) => {
             setCsv={setCsv}
           />
         </div>
-        <div className='input-div'>
+        <div className="input-div">
           <h2>Function:</h2>
           <SelectFunction
             funcArgs={funcArgs}
@@ -63,12 +63,14 @@ const AnalysisPage = ({ contacts }) => {
             setCategories={setCategories}
           />
         </div>
-        {func === '' ? '' : (
-          <div className='select-div'>
+        {func === "" ? (
+          ""
+        ) : (
+          <div className="select-div">
             <FunctionForm func={func} setFuncArgs={setFuncArgs} />
           </div>
         )}
-        <div className='input-div'>
+        <div className="input-div">
           <h2>Output:</h2>
           <SelectOutput
             outputType={outputType}
@@ -77,11 +79,7 @@ const AnalysisPage = ({ contacts }) => {
             categories={categories}
           />
         </div>
-        <SelectCategory
-          outputType={outputType}
-          setCategory={setCategory}
-          categories={categories}
-        />
+        <SelectCategory outputType={outputType} setCategory={setCategory} categories={categories} />
         <GraphFormSection
           func={func}
           outputType={outputType}
@@ -96,7 +94,7 @@ const AnalysisPage = ({ contacts }) => {
           setEndDate={setEndDate}
         />
         <button
-          className='center-btn'
+          className="center-btn"
           onClick={() => {
             setResponse({});
             runAnalysis(
@@ -114,16 +112,16 @@ const AnalysisPage = ({ contacts }) => {
             );
           }}
           disabled={
-            !contactName
-            || !func
-            || (func === 'phrase' && !funcArgs.phrase)
-            || (func === 'mime_type' && !funcArgs['mime-type'])
-            || (((func === 'message_series') || (func === 'conversation_starter'))
-              && !funcArgs['minutes-threshold'])
-            || (outputType === 'graph'
-              && (!category || !('graph-time-interval' in funcArgs)))
+            !contactName ||
+            !func ||
+            (func === "phrase" && !funcArgs.phrase) ||
+            (func === "mime_type" && !funcArgs["mime-type"]) ||
+            ((func === "message_series" || func === "conversation_starter") &&
+              !funcArgs["minutes-threshold"]) ||
+            (outputType === "graph" && (!category || !("graph-time-interval" in funcArgs)))
           }
-        >Analyze
+        >
+          Analyze
         </button>
       </div>
       <div>

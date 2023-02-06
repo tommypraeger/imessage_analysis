@@ -1,5 +1,3 @@
-const WordLengthForm = () => (
-  <div />
-);
+const WordLengthForm = () => <div />;
 
 export default WordLengthForm;

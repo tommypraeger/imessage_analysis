@@ -1,5 +1,3 @@
-const TotalForm = () => (
-  <div />
-);
+const TotalForm = () => <div />;
 
 export default TotalForm;

@@ -1,5 +1,3 @@
-const WordCountForm = () => (
-  <div />
-);
+const WordCountForm = () => <div />;
 
 export default WordCountForm;

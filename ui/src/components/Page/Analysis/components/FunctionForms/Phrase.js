@@ -1,65 +1,63 @@
-import React, { useEffect } from 'react';
-import { addArg, removeArg } from '../../utils';
+import React, { useEffect } from "react";
+import { addArg, removeArg } from "../../utils";
 
 const PhraseForm = ({ setFuncArgs }) => {
   useEffect(() => {
-    addArg(setFuncArgs, 'phrase', '');
+    addArg(setFuncArgs, "phrase", "");
   }, [setFuncArgs]);
 
   return (
     <div>
-      <div className='input-div'>
-        <p>
-          Phrase to search for:
-        </p>
+      <div className="input-div">
+        <p>Phrase to search for:</p>
         <input
-          type='text'
-          onChange={(event) => addArg(setFuncArgs, 'phrase', event.target.value)}
+          type="text"
+          onChange={(event) => addArg(setFuncArgs, "phrase", event.target.value)}
         />
       </div>
-      <div className='input-div'>
-        <p>
-          Search whole words (do not include results if phrase is within a larger word)?
-        </p>
+      <div className="input-div">
+        <p>Search whole words (do not include results if phrase is within a larger word)?</p>
         <input
-          type='checkbox'
-          className='checkbox'
+          type="checkbox"
+          className="checkbox"
           onChange={(event) => {
             if (event.target.checked) {
-              addArg(setFuncArgs, 'separate', '');
+              addArg(setFuncArgs, "separate", "");
             } else {
-              removeArg(setFuncArgs, 'separate');
+              removeArg(setFuncArgs, "separate");
             }
           }}
         />
       </div>
-      <div className='input-div'>
-        <p>
-          Case-sensitive search?
-        </p>
+      <div className="input-div">
+        <p>Case-sensitive search?</p>
         <input
-          type='checkbox'
-          className='checkbox'
+          type="checkbox"
+          className="checkbox"
           onChange={(event) => {
             if (event.target.checked) {
-              addArg(setFuncArgs, 'case-sensitive', '');
+              addArg(setFuncArgs, "case-sensitive", "");
             } else {
-              removeArg(setFuncArgs, 'case-sensitive');
+              removeArg(setFuncArgs, "case-sensitive");
             }
           }}
         />
-        <div className='sep-50'></div>
+        <div className="sep-50"></div>
         <p>
-          Use <a href='https://regexr.com/' target='_blank' rel='noreferrer'>RegEx</a>?
+          Use{" "}
+          <a href="https://regexr.com/" target="_blank" rel="noreferrer">
+            RegEx
+          </a>
+          ?
         </p>
         <input
-          type='checkbox'
-          className='checkbox'
+          type="checkbox"
+          className="checkbox"
           onChange={(event) => {
             if (event.target.checked) {
-              addArg(setFuncArgs, 'regex', '');
+              addArg(setFuncArgs, "regex", "");
             } else {
-              removeArg(setFuncArgs, 'regex');
+              removeArg(setFuncArgs, "regex");
             }
           }}
         />

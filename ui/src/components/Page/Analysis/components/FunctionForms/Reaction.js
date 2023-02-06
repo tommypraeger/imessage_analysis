@@ -1,5 +1,3 @@
-const ReactionForm = () => (
-  <div />
-);
+const ReactionForm = () => <div />;
 
 export default ReactionForm;

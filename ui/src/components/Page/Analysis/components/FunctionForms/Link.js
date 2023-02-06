@@ -1,5 +1,3 @@
-const LinkForm = () => (
-  <div />
-);
+const LinkForm = () => <div />;
 
 export default LinkForm;

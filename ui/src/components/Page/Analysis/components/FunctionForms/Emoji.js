@@ -1,5 +1,3 @@
-const EmojiForm = () => (
-  <div />
-);
+const EmojiForm = () => <div />;
 
 export default EmojiForm;

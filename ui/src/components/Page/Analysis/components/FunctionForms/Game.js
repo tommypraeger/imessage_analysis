@@ -1,5 +1,3 @@
-const GameForm = () => (
-  <div />
-);
+const GameForm = () => <div />;
 
 export default GameForm;

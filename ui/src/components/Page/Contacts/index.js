@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Oval } from 'react-loader-spinner';
-import AddContactModal from './components/AddContactModal';
-import AddGroupChatModal from './components/AddGroupChatModal';
-import Contact from './components/Contact';
-import { getFetch, formatNumbers } from '../utils';
+import React, { useState, useEffect } from "react";
+import { Oval } from "react-loader-spinner";
+import AddContactModal from "./components/AddContactModal";
+import AddGroupChatModal from "./components/AddGroupChatModal";
+import Contact from "./components/Contact";
+import { getFetch, formatNumbers } from "../utils";
 
 const ContactsPage = ({ contacts, setContacts }) => {
   const [addContactModalOpen, setAddContactModalOpen] = useState(false);
@@ -15,38 +15,34 @@ const ContactsPage = ({ contacts, setContacts }) => {
   const [updateContacts, setUpdateContacts] = useState(0);
 
   useEffect(() => {
-    getFetch('get_all_chat_names', setFetchesInProgress)
-      .then(chatNames => setAllChatNames(JSON.parse(chatNames)))
-      .catch(err => console.log(err))
-      .finally(() => setFetchesInProgress(fetches => fetches - 1));
+    getFetch("get_all_chat_names", setFetchesInProgress)
+      .then((chatNames) => setAllChatNames(JSON.parse(chatNames)))
+      .catch((err) => console.log(err))
+      .finally(() => setFetchesInProgress((fetches) => fetches - 1));
 
-    getFetch('get_all_phone_numbers', setFetchesInProgress)
-      .then(phoneNumbers => setAllPhoneNumbers(formatNumbers(JSON.parse(phoneNumbers))))
-      .catch(err => console.log(err))
-      .finally(() => setFetchesInProgress(fetches => fetches - 1));
+    getFetch("get_all_phone_numbers", setFetchesInProgress)
+      .then((phoneNumbers) => setAllPhoneNumbers(formatNumbers(JSON.parse(phoneNumbers))))
+      .catch((err) => console.log(err))
+      .finally(() => setFetchesInProgress((fetches) => fetches - 1));
   }, []);
 
   useEffect(() => {
-    fetch('user_data.json')
-      .then(response => response.json())
-      .then(userData => setContacts(userData.contacts))
-      .catch(err => console.log(err));
+    fetch("user_data.json")
+      .then((response) => response.json())
+      .then((userData) => setContacts(userData.contacts))
+      .catch((err) => console.log(err));
   }, [setContacts, updateContacts]);
 
   if (fetchesInProgress > 0) {
     return (
-      <div className='loading-gif'>
-        <Oval
-          color='#1982fc'
-          height={200}
-          width={200}
-        />
+      <div className="loading-gif">
+        <Oval color="#1982fc" height={200} width={200} />
       </div>
     );
-  };
+  }
 
   return (
-    <div className='page'>
+    <div className="page">
       <AddContactModal
         open={addContactModalOpen}
         setOpen={setAddContactModalOpen}
@@ -62,42 +58,35 @@ const ContactsPage = ({ contacts, setContacts }) => {
         setUpdateContacts={setUpdateContacts}
       />
       <div>
-        <div className='contacts-section-header'>
-          <h3>
-            Group Chats
-          </h3>
-          <p onClick={() => setAddGroupChatModalOpen(true)}>
-            &#x2795; Add Group Chat
-          </p>
+        <div className="contacts-section-header">
+          <h3>Group Chats</h3>
+          <p onClick={() => setAddGroupChatModalOpen(true)}>&#x2795; Add Group Chat</p>
         </div>
-        <ul className='contact-list'>
-          {
-            Object.keys(contacts).filter(name => contacts[name] === 'group')
-              .map(name =>
-                <Contact
-                  key={name}
-                  name={name}
-                  allChatNames={allChatNames}
-                  allPhoneNumbers={allPhoneNumbers}
-                  setFetchesInProgress={setFetchesInProgress}
-                  setUpdateContacts={setUpdateContacts}
-                />)
-          }
+        <ul className="contact-list">
+          {Object.keys(contacts)
+            .filter((name) => contacts[name] === "group")
+            .map((name) => (
+              <Contact
+                key={name}
+                name={name}
+                allChatNames={allChatNames}
+                allPhoneNumbers={allPhoneNumbers}
+                setFetchesInProgress={setFetchesInProgress}
+                setUpdateContacts={setUpdateContacts}
+              />
+            ))}
         </ul>
-      </div >
+      </div>
       <div>
-        <div className='contacts-section-header'>
-          <h3>
-            Contacts
-          </h3>
-          <p onClick={() => setAddContactModalOpen(true)} >
-            &#x2795; Add Contact
-          </p>
+        <div className="contacts-section-header">
+          <h3>Contacts</h3>
+          <p onClick={() => setAddContactModalOpen(true)}>&#x2795; Add Contact</p>
         </div>
-        <ul className='contact-list'>
-          {
-            Object.keys(contacts).filter(name => contacts[name] !== 'group')
-              .map(name => <Contact
+        <ul className="contact-list">
+          {Object.keys(contacts)
+            .filter((name) => contacts[name] !== "group")
+            .map((name) => (
+              <Contact
                 key={name}
                 name={name}
                 number={contacts[name]}
@@ -105,11 +94,11 @@ const ContactsPage = ({ contacts, setContacts }) => {
                 allPhoneNumbers={allPhoneNumbers}
                 setFetchesInProgress={setFetchesInProgress}
                 setUpdateContacts={setUpdateContacts}
-              />)
-          }
+              />
+            ))}
         </ul>
       </div>
-    </div >
+    </div>
   );
 };
 

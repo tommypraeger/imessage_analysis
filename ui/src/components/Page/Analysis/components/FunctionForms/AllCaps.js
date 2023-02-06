@@ -1,5 +1,3 @@
-const AllCapsForm = () => (
-  <div />
-);
+const AllCapsForm = () => <div />;
 
 export default AllCapsForm;
