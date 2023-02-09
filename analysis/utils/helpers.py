@@ -207,7 +207,7 @@ def is_phrase_in(phrase, msg, case_sensitive, separate, regex):
         return False
     msg = str(msg)
     if regex:
-        if re.match(phrase, msg):
+        if re.search(phrase, msg):
             return True
         else:
             return False

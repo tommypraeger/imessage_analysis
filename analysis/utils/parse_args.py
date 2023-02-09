@@ -18,6 +18,9 @@ def get_analysis_args(args):
     parser.add_argument(
         "--csv", action="store_true", help="messages are uploaded as a csv"
     )
+
+    # phrase args
+    parser.add_argument("--phrase", type=str, help="phrase to search for")
     parser.add_argument(
         "--separate", action="store_true", help="separate phrase into words"
     )
@@ -25,6 +28,7 @@ def get_analysis_args(args):
         "--case-sensitive", action="store_true", help="make search case sensitive"
     )
     parser.add_argument("--regex", action="store_true", help="use RegEx")
+
     parser.add_argument(
         "--print-messages", action="store_true", help="print found messages"
     )  # not currently implemented
@@ -33,7 +37,6 @@ def get_analysis_args(args):
         action="store_true",
         help="graph lines for each person in group",
     )
-    parser.add_argument("--phrase", type=str, help="phrase to search for")
     parser.add_argument(
         "--mime-type", type=str, help="MIME type of message to search for"
     )

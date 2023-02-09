@@ -97,7 +97,11 @@ def generate_table_test_result(
                 parse_fn_args(fn_name, "table", *fn_args),
                 get_chat_members(df),
             )
-            result = fn_class.run(*test_args)
+            try:
+                result = fn_class.run(*test_args)
+            except Exception as e:
+                print(e)
+                result = {}
             result["test args"] = build_printable_test_args(
                 fn_name, csv, fn_args, "table"
             )
@@ -131,7 +135,11 @@ def generate_graph_test_result(
                     ),
                     get_chat_members(df),
                 )
-                result = fn_class.run(*test_args)
+                try:
+                    result = fn_class.run(*test_args)
+                except Exception as e:
+                    print(e)
+                    result = {}
                 result["test args"] = build_printable_test_args(
                     fn_name, csv, fn_args, "graph", category, indvidual=False
                 )
@@ -151,7 +159,11 @@ def generate_graph_test_result(
                     ),
                     get_chat_members(df),
                 )
-                result = fn_class.run(*test_args)
+                try:
+                    result = fn_class.run(*test_args)
+                except Exception as e:
+                    print(e)
+                    result = {}
                 result["test args"] = build_printable_test_args(
                     fn_name, csv, fn_args, "graph", category, indvidual=True
                 )
