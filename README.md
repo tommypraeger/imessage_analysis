@@ -12,8 +12,6 @@ Open up Terminal (or wherever you gave permissions in the prerequisites), and th
 - `cd Documents` or whichever your preferred directory for this stuff is
 - `git clone https://github.com/tommypraeger/imessage_analysis.git`
 - `cd imessage_analysis`
-- `python3 -m venv venv`
-- `source venv/bin/activate`
 - `python3 install.py`
 
 If you are having an issue, make sure the prerequisites have been met.
@@ -88,7 +86,7 @@ You may optionally also include a column titled `type`, which contains the mime 
 - message/rfc82
 
 ### Running Tests
-- Active the virtual environment `source venv/bin/activate`
+- Active the virtual environment: `source venv/bin/activate`
 - Run pytest: `pytest`
 
 ## Notes

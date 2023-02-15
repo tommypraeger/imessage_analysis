@@ -52,7 +52,7 @@ def main(args):
     if args.export:
         df.to_csv("message_data.csv", index=False)
         result_df.to_csv("member_data.csv", index=False)
-        result_df.corr(method="pearson").round(4).to_csv(
+        result_df.corr(method="pearson", numeric_only=True).round(4).to_csv(
             "correlation_matrix.csv", index=False
         )
 
