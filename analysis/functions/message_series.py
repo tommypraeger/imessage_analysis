@@ -45,9 +45,7 @@ class MessageSeries(Function):
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
-        messages_by_member = helpers.get_non_reaction_messages(
-            df, member_name, time_period
-        )
+        messages_by_member = helpers.get_messages(df, member_name, time_period)
         message_series = len(
             messages_by_member[
                 (messages_by_member["is new message series?"])
@@ -58,7 +56,7 @@ class MessageSeries(Function):
         output_dict[average_messages_category].append(
             round(helpers.safe_divide(len(messages_by_member), message_series), 2)
         )
-        all_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
+        all_messages = helpers.get_messages(df, time_period=time_period)
         total_message_series = len(
             all_messages[
                 (all_messages["is new message series?"])
