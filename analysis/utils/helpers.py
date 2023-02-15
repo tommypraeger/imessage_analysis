@@ -1,6 +1,7 @@
 import datetime
 import emoji
 import json
+import math
 import os
 import re
 import string
@@ -264,8 +265,13 @@ def is_tweet(msg):
 
 def is_conversation_starter(time_diff, threshold):
     if threshold is None:
-        threshold = constants.CONVERSATION_STARTER_THRESHOLD_MINUTES
-    return time_diff.total_seconds() > (threshold * 60)
+        threshold = constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
+    time_diff_in_seconds = time_diff.total_seconds()
+
+    # shouldn't actually be necessary to check for nan
+    # because I already set the first message as a conversation starter
+    # but might as well
+    return math.isnan(time_diff_in_seconds) or time_diff_in_seconds > (threshold * 60)
 
 
 def message_word_count(msg):

@@ -32,14 +32,12 @@ class ConversationStarter(Function):
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
-        messages_by_member = helpers.get_non_reaction_messages(
-            df, member_name, time_period
-        )
+        messages_by_member = helpers.get_messages(df, member_name, time_period)
         conversation_starters = len(
             messages_by_member[messages_by_member["is conversation starter?"]]
         )
         output_dict[conversations_started_category].append(conversation_starters)
-        all_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
+        all_messages = helpers.get_messages(df, time_period=time_period)
         total_conversation_starters = len(
             all_messages[all_messages["is conversation starter?"]]
         )
