@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 from sqlite3 import OperationalError
 import analysis.actions as actions
@@ -48,4 +47,8 @@ except NameError:
     pass
 
 if action == "test_db":
-    print(actions.test_db.main())
+    status_code, message = actions.test_db.main()
+    if status_code == 0:
+        print(message)
+    else:
+        raise Exception(message)

@@ -87,6 +87,10 @@ You may optionally also include a column titled `type`, which contains the mime 
 - application/vnd.openxmlformats-officedocument.presentationml.presentation
 - message/rfc82
 
+### Running Tests
+- Active the virtual environment `source venv/bin/activate`
+- Run pytest: `pytest`
+
 ## Notes
 
 ### Functions
@@ -154,8 +158,8 @@ This shows how many messages are of a specific file type. The only file types th
 This runs all functions and puts them in a table except for Frequency, Word/Phrase, and File Type, because they take special input.
 
 ## Contributing
-- Python formatting is done using [black](https://github.com/psf/black) using the default configuration. 
-- Add unit tests to make sure this actually works.
+- Python formatting is done using [black](https://github.com/psf/black) using the default configuration. Run `black .` from the application directory to formatting before committing.
+- Improve testing. Currently, there are just basic unit tests for the analysis functions to make sure they work.
 - Add more functions. Be creative!
 
 ## Acknowledgements
