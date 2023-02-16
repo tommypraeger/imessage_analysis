@@ -6,124 +6,106 @@ from analysis.functions.total import (
 from analysis.tests.testutils import *
 
 
-def test_total():
-    fn = Total()
-    table_actual = [
-        result
-        for result in generate_table_test_result(
-            fn, "total", csvs=["group", "non_group"], fn_args_combos=[[]]
-        )
-    ]
-    graph_actual = [
-        result
-        for result in generate_graph_test_result(
-            fn,
-            "total",
-            csvs=["group", "non_group"],
-            graph_total_categories=fn.get_categories_allowing_graph_total(),
-            graph_individual_categories=fn.get_categories(),
-            fn_args_combos=[[]],
-        )
-    ]
-    table_expected = [
-        {
-            "description": "group",
+total_test = FunctionTest(Total(), "total")
+
+
+def test_table__group():
+    total_test.run_table_test(
+        csv="group",
+        fn_args=[],
+        expected_result={
             "names": ["A", "B", "C"],
             total_messages_category: [6, 3, 3],
             percent_total_messages_category: [50, 25, 25],
         },
-        {
-            "description": "non-group",
+    )
+
+
+def test_table__non_group():
+    total_test.run_table_test(
+        csv="non_group",
+        fn_args=[],
+        expected_result={
             "names": ["A", "B"],
             total_messages_category: [5, 5],
             percent_total_messages_category: [50, 50],
         },
-    ]
-    graph_expected = [
-        {
-            "description": "group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [4, 8],
-                }
-            ],
+    )
+
+
+def test_graph__group__total__total_messages():
+    total_test.run_graph_test(
+        csv="group",
+        fn_args=[],
+        category=total_messages_category,
+        graph_individual=False,
+        expected_result={
+            "datasets": {"Total": [4, 8]},
             "labels": ["1/1/00", "1/2/00"],
         },
-        {
-            "description": "group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [2, 4],
-                },
-                {
-                    "label": "B",
-                    "data": [1, 2],
-                },
-                {
-                    "label": "C",
-                    "data": [1, 2],
-                },
-            ],
+    )
+
+
+def test_graph__group__individual__total_messages():
+    total_test.run_graph_test(
+        csv="group",
+        fn_args=[],
+        category=total_messages_category,
+        graph_individual=True,
+        expected_result={
+            "datasets": {"A": [2, 4], "B": [1, 2], "C": [1, 2]},
             "labels": ["1/1/00", "1/2/00"],
         },
-        {
-            "description": "group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [50, 50],
-                },
-                {
-                    "label": "B",
-                    "data": [25, 25],
-                },
-                {
-                    "label": "C",
-                    "data": [25, 25],
-                },
-            ],
+    )
+
+
+def test_graph__group__individual__percent_messages():
+    total_test.run_graph_test(
+        csv="group",
+        fn_args=[],
+        category=percent_total_messages_category,
+        graph_individual=True,
+        expected_result={
+            "datasets": {"A": [50, 50], "B": [25, 25], "C": [25, 25]},
             "labels": ["1/1/00", "1/2/00"],
         },
-        {
-            "description": "non-group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [5, 5],
-                }
-            ],
+    )
+
+
+def test_graph__non_group__total__total_messages():
+    total_test.run_graph_test(
+        csv="non_group",
+        fn_args=[],
+        category=total_messages_category,
+        graph_individual=False,
+        expected_result={
+            "datasets": {"Total": [5, 5]},
             "labels": ["1/1/00", "1/2/00"],
         },
-        {
-            "description": "non-group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [3, 2],
-                },
-                {
-                    "label": "B",
-                    "data": [2, 3],
-                },
-            ],
+    )
+
+
+def test_graph__non_group__individual__total_messages():
+    total_test.run_graph_test(
+        csv="non_group",
+        fn_args=[],
+        category=total_messages_category,
+        graph_individual=True,
+        expected_result={
+            "datasets": {"A": [3, 2], "B": [2, 3]},
             "labels": ["1/1/00", "1/2/00"],
         },
-        {
-            "description": "non-group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [60, 40],
-                },
-                {
-                    "label": "B",
-                    "data": [40, 60],
-                },
-            ],
+    )
+
+
+def test_graph__non_group__individual__percent_messages():
+    total_test.run_graph_test(
+        csv="non_group",
+        fn_args=[],
+        category=percent_total_messages_category,
+        graph_individual=True,
+        expected_result={
+            "datasets": {"A": [60, 40], "B": [40, 60]},
             "labels": ["1/1/00", "1/2/00"],
         },
-    ]
-    assert_table_results_correct(table_actual, table_expected)
-    assert_graph_results_correct(graph_actual, graph_expected)
+    )

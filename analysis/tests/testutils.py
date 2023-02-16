@@ -1,8 +1,61 @@
 from datetime import datetime
 import pandas as pd
 import analysis.utils.constants as constants
+import pytest
 from analysis.utils.helpers import is_reaction
 from analysis.utils.parse_args import get_analysis_args
+
+
+class FunctionTest:
+    def __init__(self, fn_class, fn_name):
+        self.fn_class = fn_class
+        self.fn_name = fn_name
+
+    def run_table_test(self, csv, fn_args, expected_result):
+        df = load_csv(self.fn_name, csv)
+        test_args = (
+            df,
+            parse_fn_args(self.fn_name, "table", *fn_args),
+            get_chat_members(df),
+        )
+        result = self.fn_class.run(*test_args)
+        try:
+            assert result == expected_result
+        except AssertionError:
+            print(f"actual: {result}")
+            print(f"expected: {expected_result}")
+            raise AssertionError
+
+    def run_graph_test(self, csv, fn_args, category, graph_individual, expected_result):
+        df = load_csv(self.fn_name, csv)
+        if graph_individual:
+            fn_args.append("--graph-individual")
+        test_args = (
+            df,
+            parse_fn_args(
+                self.fn_name,
+                "graph",
+                "--graph-time-interval",
+                "day",
+                "--category",
+                category,
+                *fn_args,
+            ),
+            get_chat_members(df),
+        )
+        result = self.fn_class.run(*test_args)
+        try:
+            assert result["labels"] == expected_result["labels"]
+            for label, data in expected_result["datasets"].items():
+                found = False
+                for dataset in result["datasets"]:
+                    if dataset["label"] == label and dataset["data"] == data:
+                        found = True
+                assert found
+        except AssertionError:
+            print(f"actual: {result}")
+            print(f"expected: {expected_result}")
+            raise AssertionError
 
 
 def assert_equal(actual, expected, description, test_args):
@@ -169,40 +222,3 @@ def generate_graph_test_result(
                 )
                 results.append(result)
     return results
-
-
-'''
-not used, should delete when i'm confident it will never be used
-
-def generate_sample_messages(
-    all_caps_messages=0,
-    days=1,
-    messages_per_series=1,
-    chat_members=3,
-):
-    """
-    Days are used to separate conversations. Each messsage in a day is 1 second after the last (max 1440 messages per day). All days have the same messages.
-    """
-    start_time="01/01/2000 12:00:00"
-    chat_member_names = [chr(member_idx + 65) for member_idx in range(chat_members)]
-    while days > 0:
-        for member_idx in range(chat_members):
-            pass
-
-
-
-def generate_sample_message(
-    word_count=5,
-    word_length=5,
-    all_caps=False,
-    link=False,
-    tweet=False,
-    include_emoji=False,
-    game_start=False,
-    game=False,
-    image=False,
-    reaction_for=None,
-    reaction_type=None,
-):
-    pass
-'''
