@@ -1,145 +1,123 @@
+import pytest
 from analysis.functions.emoji import Emoji, emoji_category, percent_emoji_category
 from analysis.tests.testutils import *
 
 
-def test_emoji():
-    fn = Emoji()
-    table_actual = [
-        result
-        for result in generate_table_test_result(
-            fn, "emoji", csvs=["group", "non_group"], fn_args_combos=[[]]
-        )
-    ]
-    graph_actual = [
-        result
-        for result in generate_graph_test_result(
-            fn,
-            "emoji",
-            csvs=["group", "non_group"],
-            graph_total_categories=fn.get_categories_allowing_graph_total(),
-            graph_individual_categories=fn.get_categories(),
-            fn_args_combos=[[]],
-        )
-    ]
-    table_expected = [
-        {
-            "description": "group",
-            "names": ["A", "B", "C"],
-            emoji_category: [1, 2, 0],
-            percent_emoji_category: [16.67, 66.67, 0],
-        },
-        {
-            "description": "non-group",
-            "names": ["A", "B"],
-            emoji_category: [1, 1],
-            percent_emoji_category: [25, 20],
-        },
-    ]
-    graph_expected = [
-        {
-            "description": "group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [2, 1],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, total, percent messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [50, 12.5],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [1, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [1, 1],
-                },
-                {
-                    "label": "C",
-                    "data": [0, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [50, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [100, 50],
-                },
-                {
-                    "label": "C",
-                    "data": [0, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [2, 0],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, percent messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [50, 0],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [1, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [1, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [50.0, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [50, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-    ]
-    assert_table_results_correct(table_actual, table_expected)
-    assert_graph_results_correct(graph_actual, graph_expected)
+@pytest.mark.parametrize(
+    "csv,fn_args,expected_result",
+    [
+        (
+            "group",
+            [],
+            {
+                "names": ["A", "B", "C"],
+                emoji_category: [1, 2, 0],
+                percent_emoji_category: [16.67, 66.67, 0],
+            },
+        ),
+        (
+            "non_group",
+            [],
+            {
+                "names": ["A", "B"],
+                emoji_category: [1, 1],
+                percent_emoji_category: [25, 20],
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_table(csv, fn_args, expected_result):
+    run_table_test(Emoji(), "emoji", csv, fn_args, expected_result)
+
+
+@pytest.mark.parametrize(
+    "csv,fn_args,category,graph_individual,expected_result",
+    [
+        (
+            "group",
+            [],
+            emoji_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [2, 1]},
+            },
+        ),
+        (
+            "group",
+            [],
+            percent_emoji_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [50, 12.5]},
+            },
+        ),
+        (
+            "group",
+            [],
+            emoji_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [1, 0], "B": [1, 1], "C": [0, 0]},
+            },
+        ),
+        (
+            "group",
+            [],
+            percent_emoji_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [50, 0], "B": [100, 50], "C": [0, 0]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            emoji_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [2, 0]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            percent_emoji_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [50, 0]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            emoji_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [1, 0], "B": [1, 0]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            percent_emoji_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [50, 0], "B": [50, 0]},
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_graph(csv, fn_args, category, graph_individual, expected_result):
+    run_graph_test(
+        Emoji(), "emoji", csv, fn_args, category, graph_individual, expected_result
+    )
