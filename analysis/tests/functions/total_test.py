@@ -74,8 +74,8 @@ def test_table(csv, fn_args, expected_result):
             total_messages_category,
             False,
             {
-                "datasets": {"Total": [5, 5]},
                 "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [5, 5]},
             },
         ),
         (
@@ -84,8 +84,8 @@ def test_table(csv, fn_args, expected_result):
             total_messages_category,
             True,
             {
-                "datasets": {"A": [3, 2], "B": [2, 3]},
                 "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [3, 2], "B": [2, 3]},
             },
         ),
         (
@@ -94,8 +94,8 @@ def test_table(csv, fn_args, expected_result):
             percent_total_messages_category,
             True,
             {
-                "datasets": {"A": [60, 40], "B": [40, 60]},
                 "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [60, 40], "B": [40, 60]},
             },
         ),
     ],
