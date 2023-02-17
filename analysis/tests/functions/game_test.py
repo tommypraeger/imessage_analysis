@@ -1,3 +1,4 @@
+import pytest
 from analysis.functions.game import (
     Game,
     games_category,
@@ -6,144 +7,121 @@ from analysis.functions.game import (
 from analysis.tests.testutils import *
 
 
-def test_game():
-    fn = Game()
-    table_actual = [
-        result
-        for result in generate_table_test_result(
-            fn, "game", csvs=["group", "non_group"], fn_args_combos=[[]]
-        )
-    ]
-    graph_actual = [
-        result
-        for result in generate_graph_test_result(
-            fn,
-            "game",
-            csvs=["group", "non_group"],
-            graph_total_categories=fn.get_categories_allowing_graph_total(),
-            graph_individual_categories=fn.get_categories(),
-            fn_args_combos=[[]],
-        )
-    ]
-    table_expected = [
-        {
-            "description": "group",
-            "names": ["A", "B", "C"],
-            games_category: [2, 2, 2],
-            percent_games_category: [33.33, 66.67, 66.67],
-        },
-        {
-            "description": "non-group",
-            "names": ["A", "B"],
-            games_category: [4, 2],
-            percent_games_category: [80, 50],
-        },
-    ]
-    graph_expected = [
-        {
-            "description": "group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [3, 3],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, total, percent messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [75, 37.5],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [2, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [1, 1],
-                },
-                {
-                    "label": "C",
-                    "data": [0, 2],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [100, 0],
-                },
-                {
-                    "label": "B",
-                    "data": [100, 50],
-                },
-                {
-                    "label": "C",
-                    "data": [0, 100],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, total messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [3, 3],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, percent messages",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [75, 60],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, total messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [2, 2],
-                },
-                {
-                    "label": "B",
-                    "data": [1, 1],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, percent messsages",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [100, 66.67],
-                },
-                {
-                    "label": "B",
-                    "data": [50, 50],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-    ]
-    assert_table_results_correct(table_actual, table_expected)
-    assert_graph_results_correct(graph_actual, graph_expected)
+@pytest.mark.parametrize(
+    "csv,fn_args,expected_result",
+    [
+        (
+            "group",
+            [],
+            {
+                "names": ["A", "B", "C"],
+                games_category: [2, 2, 2],
+                percent_games_category: [33.33, 66.67, 66.67],
+            },
+        ),
+        (
+            "non_group",
+            [],
+            {
+                "names": ["A", "B"],
+                games_category: [4, 2],
+                percent_games_category: [80, 50],
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_table(csv, fn_args, expected_result):
+    run_table_test(Game(), "game", csv, fn_args, expected_result)
+
+
+@pytest.mark.parametrize(
+    "csv,fn_args,category,graph_individual,expected_result",
+    [
+        (
+            "group",
+            [],
+            games_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [3, 3]},
+            },
+        ),
+        (
+            "group",
+            [],
+            percent_games_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [75, 37.5]},
+            },
+        ),
+        (
+            "group",
+            [],
+            games_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [2, 0], "B": [1, 1], "C": [0, 2]},
+            },
+        ),
+        (
+            "group",
+            [],
+            percent_games_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [100, 0], "B": [100, 50], "C": [0, 100]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            games_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [3, 3]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            percent_games_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [75, 60]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            games_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [2, 2], "B": [1, 1]},
+            },
+        ),
+        (
+            "non_group",
+            [],
+            percent_games_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [100, 66.67], "B": [50, 50]},
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_graph(csv, fn_args, category, graph_individual, expected_result):
+    run_graph_test(
+        Game(), "game", csv, fn_args, category, graph_individual, expected_result
+    )
