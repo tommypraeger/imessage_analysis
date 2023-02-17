@@ -1,3 +1,4 @@
+import pytest
 from analysis.functions.phrase import (
     Phrase,
     phrase_category,
@@ -6,230 +7,229 @@ from analysis.functions.phrase import (
 from analysis.tests.testutils import *
 
 
-def test_phrase():
-    fn = Phrase()
-    table_actual = [
-        result
-        for result in generate_table_test_result(
-            fn,
-            "phrase",
-            csvs=["group", "non_group"],
-            fn_args_combos=[
-                ["--phrase", "aa"],
-                ["--phrase", "aa aa"],
-                ["--phrase", "AA", "--case-sensitive"],
-                ["--phrase", "aa", "--separate"],
-                ["--phrase", "aa aa", "--separate"],
-                ["--phrase", "aa aa", "--separate", "--case-sensitive"],
-                ["--phrase", r"[Aa]\s+[Aa]", "--regex"],
-            ],
-        )
-    ]
-    graph_actual = [
-        result
-        for result in generate_graph_test_result(
-            fn,
-            "phrase",
-            csvs=["group", "non_group"],
-            graph_total_categories=fn.get_categories_allowing_graph_total(),
-            graph_individual_categories=fn.get_categories(),
-            # not testing as much for graph lol
-            fn_args_combos=[
-                ["--phrase", "aa"],
-            ],
-        )
-    ]
-    table_expected = [
-        {
-            "description": "group, single word phrase",
-            "names": ["A", "B", "C"],
-            phrase_category: [2, 3, 1],
-            percent_phrase_category: [100, 100, 50],
-        },
-        {
-            "description": "group, multi-word phrase",
-            "names": ["A", "B", "C"],
-            phrase_category: [0, 2, 1],
-            percent_phrase_category: [0, 66.67, 50],
-        },
-        {
-            "description": "group, case sensitive",
-            "names": ["A", "B", "C"],
-            phrase_category: [0, 1, 1],
-            percent_phrase_category: [0, 33.33, 50],
-        },
-        {
-            "description": "group, separate words, one word phrase",
-            "names": ["A", "B", "C"],
-            phrase_category: [1, 2, 1],
-            percent_phrase_category: [50, 66.67, 50],
-        },
-        {
-            "description": "group, separate words, multi-word phrase",
-            "names": ["A", "B", "C"],
-            phrase_category: [0, 1, 1],
-            percent_phrase_category: [0, 33.33, 50],
-        },
-        {
-            "description": "group, separate words, multi-word phrase, case sensitive",
-            "names": ["A", "B", "C"],
-            phrase_category: [0, 1, 0],
-            percent_phrase_category: [0, 33.33, 0],
-        },
-        {
-            "description": "group, regex",
-            "names": ["A", "B", "C"],
-            phrase_category: [0, 2, 1],
-            percent_phrase_category: [0, 66.67, 50],
-        },
-        {
-            "description": "non-group, single word phrase",
-            "names": ["A", "B"],
-            phrase_category: [2, 4],
-            percent_phrase_category: [100, 80],
-        },
-        {
-            "description": "non-group, multi-word phrase",
-            "names": ["A", "B"],
-            phrase_category: [0, 3],
-            percent_phrase_category: [0, 60],
-        },
-        {
-            "description": "non-group, case sensitive",
-            "names": ["A", "B"],
-            phrase_category: [0, 2],
-            percent_phrase_category: [0, 40],
-        },
-        {
-            "description": "non-group, separate words, one word phrase",
-            "names": ["A", "B"],
-            phrase_category: [1, 3],
-            percent_phrase_category: [50, 60],
-        },
-        {
-            "description": "non-group, separate words, multi-word phrase",
-            "names": ["A", "B"],
-            phrase_category: [0, 2],
-            percent_phrase_category: [0, 40],
-        },
-        {
-            "description": "non-group, separate words, multi-word phrase, case sensitive",
-            "names": ["A", "B"],
-            phrase_category: [0, 1],
-            percent_phrase_category: [0, 20],
-        },
-        {
-            "description": "non-group, regex",
-            "names": ["A", "B"],
-            phrase_category: [0, 3],
-            percent_phrase_category: [0, 60],
-        },
-    ]
-    graph_expected = [
-        {
-            "description": "group, total, total messages, single word phrase",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [4, 2],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, total, percent messages, single word phrase",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [100, 66.67],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, total messsages, single word phrase",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [1, 1],
-                },
-                {
-                    "label": "B",
-                    "data": [2, 1],
-                },
-                {
-                    "label": "C",
-                    "data": [1, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "group, individual, percent messsages, single word phrase",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [100, 100],
-                },
-                {
-                    "label": "B",
-                    "data": [100, 100],
-                },
-                {
-                    "label": "C",
-                    "data": [100, 0],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, total messages, single word phrase",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [4, 2],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, total, percent messages, single word phrase",
-            "datasets": [
-                {
-                    "label": "Total",
-                    "data": [100, 66.67],
-                }
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, total messsages, single word phrase",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [1, 1],
-                },
-                {
-                    "label": "B",
-                    "data": [3, 1],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-        {
-            "description": "non-group, individual, percent messsages, single word phrase",
-            "datasets": [
-                {
-                    "label": "A",
-                    "data": [100, 100],
-                },
-                {
-                    "label": "B",
-                    "data": [100, 50],
-                },
-            ],
-            "labels": ["1/1/00", "1/2/00"],
-        },
-    ]
-    assert_table_results_correct(table_actual, table_expected)
-    assert_graph_results_correct(graph_actual, graph_expected)
+@pytest.mark.parametrize(
+    "csv,fn_args,expected_result",
+    [
+        (
+            "group",
+            ["--phrase", "aa"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [2, 3, 1],
+                percent_phrase_category: [100, 100, 50],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa aa"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [0, 2, 1],
+                percent_phrase_category: [0, 66.67, 50],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "AA", "--case-sensitive"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [0, 1, 1],
+                percent_phrase_category: [0, 33.33, 50],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa", "--separate"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [1, 2, 1],
+                percent_phrase_category: [50, 66.67, 50],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa aa", "--separate"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [0, 1, 1],
+                percent_phrase_category: [0, 33.33, 50],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa aa", "--separate", "--case-sensitive"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [0, 1, 0],
+                percent_phrase_category: [0, 33.33, 0],
+            },
+        ),
+        (
+            "group",
+            ["--phrase", r"[Aa]\s+[Aa]", "--regex"],
+            {
+                "names": ["A", "B", "C"],
+                phrase_category: [0, 2, 1],
+                percent_phrase_category: [0, 66.67, 50],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [2, 4],
+                percent_phrase_category: [100, 80],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa aa"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [0, 3],
+                percent_phrase_category: [0, 60],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "AA", "--case-sensitive"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [0, 2],
+                percent_phrase_category: [0, 40],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa", "--separate"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [1, 3],
+                percent_phrase_category: [50, 60],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa aa", "--separate"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [0, 2],
+                percent_phrase_category: [0, 40],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa aa", "--separate", "--case-sensitive"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [0, 1],
+                percent_phrase_category: [0, 20],
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", r"[Aa]\s+[Aa]", "--regex"],
+            {
+                "names": ["A", "B"],
+                phrase_category: [0, 3],
+                percent_phrase_category: [0, 60],
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_table(csv, fn_args, expected_result):
+    run_table_test(Phrase(), "phrase", csv, fn_args, expected_result)
+
+
+@pytest.mark.parametrize(
+    "csv,fn_args,category,graph_individual,expected_result",
+    [
+        (
+            "group",
+            ["--phrase", "aa"],
+            phrase_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [4, 2]},
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa"],
+            percent_phrase_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [100, 66.67]},
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa"],
+            phrase_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [1, 1], "B": [2, 1], "C": [1, 0]},
+            },
+        ),
+        (
+            "group",
+            ["--phrase", "aa"],
+            percent_phrase_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [100, 100], "B": [100, 100], "C": [100, 0]},
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa"],
+            phrase_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [4, 2]},
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa"],
+            percent_phrase_category,
+            False,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"Total": [100, 66.67]},
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa"],
+            phrase_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [1, 1], "B": [3, 1]},
+            },
+        ),
+        (
+            "non_group",
+            ["--phrase", "aa"],
+            percent_phrase_category,
+            True,
+            {
+                "labels": ["1/1/00", "1/2/00"],
+                "datasets": {"A": [100, 100], "B": [100, 50]},
+            },
+        ),
+    ],
+    ids=format_param,
+)
+def test_graph(csv, fn_args, category, graph_individual, expected_result):
+    run_graph_test(
+        Phrase(), "phrase", csv, fn_args, category, graph_individual, expected_result
+    )
