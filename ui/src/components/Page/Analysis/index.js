@@ -116,7 +116,9 @@ const AnalysisPage = ({ contacts }) => {
             !func ||
             (func === "phrase" && !funcArgs.phrase) ||
             (func === "mime_type" && !funcArgs["mime-type"]) ||
-            ((func === "message_series" || func === "conversation_starter") &&
+            ((func === "message_series" ||
+              func === "conversation_starter" ||
+              func === "participation") &&
               !funcArgs["minutes-threshold"]) ||
             (outputType === "graph" && (!category || !("graph-time-interval" in funcArgs)))
           }

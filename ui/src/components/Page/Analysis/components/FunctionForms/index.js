@@ -6,6 +6,7 @@ import GameForm from "./Game";
 import LinkForm from "./Link";
 import MessageSeriesForm from "./MessageSeries";
 import MimeTypeForm from "./MimeType";
+import ParticipationForm from "./Participation";
 import PhraseForm from "./Phrase";
 import ReactionForm from "./Reaction";
 import TotalForm from "./Total";
@@ -38,6 +39,9 @@ const FunctionForm = ({ func, setFuncArgs }) => {
 
     case "mime_type":
       return <MimeTypeForm setFuncArgs={setFuncArgs} />;
+
+    case "participation":
+      return <ParticipationForm setFuncArgs={setFuncArgs} />;
 
     case "phrase":
       return <PhraseForm setFuncArgs={setFuncArgs} />;

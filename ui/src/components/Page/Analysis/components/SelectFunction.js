@@ -19,6 +19,8 @@ const SelectFunction = ({ funcArgs, setFunc, setFuncArgs, setCategory, setCatego
 
     <option value="reaction">Reactions: How many messages are iMessage reactions</option>
 
+    <option value="participation">Participation: How often each person participates</option>
+
     <option value="conversation_starter">
       Starters: How many times each person starts the conversation
     </option>
