@@ -3,18 +3,12 @@ import os
 import subprocess
 import sys
 
-user_data_file_name = "./ui/public/user_data.json"
+user_data_file_name = "user_data.json"
 venv_dir_name = "venv"
 
 
 def print_cmd(cmd_args):
     print(f"Running command: {' '.join(cmd_args)}")
-
-
-# Ask for name in beginning
-name = input("Type your name as you would like it to appear: ")
-while len(name) == 0:
-    name = input("Looks like you didn't type your name. Type it here: ")
 
 
 # Create virtual environment
@@ -33,11 +27,24 @@ except subprocess.CalledProcessError:
 try:
     with open(user_data_file_name, "x") as user_data_file:
         print("\nUser data file does not already exist. Creating one.")
+        # Create empty user data
         json.dump(
             {"contacts": {}, "chat_ids": {}, "contact_ids": {}},
             user_data_file,
             indent=4,
         )
+    # Ask for name if no previous user data exists
+    name = input("Type your name as you would like it to appear: ")
+    while len(name) == 0:
+        name = input("Looks like you didn't type your name. Type it here: ")
+
+    # Add contact for self
+    print(f"\nAdding contact for {name}")
+    with open(user_data_file_name, "r") as user_data_file:
+        user_data = json.load(user_data_file)
+        user_data["contact_ids"][name] = [0]
+    with open(user_data_file_name, "w") as user_data_file:
+        json.dump(user_data, user_data_file, indent=4)
 except FileExistsError:
     print("\nUser data file already exists.")
 
@@ -81,13 +88,5 @@ try:
 except subprocess.CalledProcessError as e:
     print(e)
     sys.exit(1)
-
-# Add contact for self
-print(f"\nAdding contact for {name}")
-with open(user_data_file_name, "r") as user_data_file:
-    user_data = json.load(user_data_file)
-    user_data["contact_ids"][name] = [0]
-with open(user_data_file_name, "w") as user_data_file:
-    json.dump(user_data, user_data_file, indent=4)
 
 print("\nSet up successfully.")

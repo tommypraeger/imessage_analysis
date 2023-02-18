@@ -9,7 +9,7 @@ import SelectOutput from "./components/SelectOutput";
 import Analysis from "./components/Analysis";
 import { runAnalysis } from "./utils";
 
-const AnalysisPage = ({ contacts }) => {
+const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => {
   const [contactName, setContactName] = useState("");
   const [group, setGroup] = useState(false);
   const [csv, setCsv] = useState(false);
@@ -21,7 +21,6 @@ const AnalysisPage = ({ contacts }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [response, setResponse] = useState({});
-  const [fetchesInProgress, setFetchesInProgress] = useState(0);
   const [fetchSeconds, setFetchSeconds] = useState(0);
   const [counterId, setCounterId] = useState(0);
   const [isCounterSet, setIsCounterSet] = useState(false);

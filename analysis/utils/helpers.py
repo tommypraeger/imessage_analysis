@@ -61,13 +61,13 @@ def contact_name_from_id(contact_id):
 
 
 def load_user_data():
-    with open("./ui/public/user_data.json", "r") as user_data_file:
+    with open("user_data.json", "r") as user_data_file:
         user_data = json.load(user_data_file)
     return user_data
 
 
 def save_user_data(user_data):
-    with open("./ui/public/user_data.json", "w") as user_data_file:
+    with open("user_data.json", "w") as user_data_file:
         json.dump(user_data, user_data_file, indent=4)
 
 

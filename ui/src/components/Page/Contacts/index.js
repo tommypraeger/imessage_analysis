@@ -5,14 +5,11 @@ import AddGroupChatModal from "./components/AddGroupChatModal";
 import Contact from "./components/Contact";
 import { getFetch, formatNumbers } from "../utils";
 
-const ContactsPage = ({ contacts, setContacts }) => {
+const ContactsPage = ({ contacts, fetchesInProgress, setFetchesInProgress, setUpdateContacts }) => {
   const [addContactModalOpen, setAddContactModalOpen] = useState(false);
   const [addGroupChatModalOpen, setAddGroupChatModalOpen] = useState(false);
   const [allChatNames, setAllChatNames] = useState([]);
   const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
-  const [fetchesInProgress, setFetchesInProgress] = useState(0);
-  // Meaningless variable changed to update contacts
-  const [updateContacts, setUpdateContacts] = useState(0);
 
   useEffect(() => {
     getFetch("get_all_chat_names", setFetchesInProgress)
@@ -24,14 +21,7 @@ const ContactsPage = ({ contacts, setContacts }) => {
       .then((phoneNumbers) => setAllPhoneNumbers(formatNumbers(JSON.parse(phoneNumbers))))
       .catch((err) => console.log(err))
       .finally(() => setFetchesInProgress((fetches) => fetches - 1));
-  }, []);
-
-  useEffect(() => {
-    fetch("user_data.json")
-      .then((response) => response.json())
-      .then((userData) => setContacts(userData.contacts))
-      .catch((err) => console.log(err));
-  }, [setContacts, updateContacts]);
+  }, [setFetchesInProgress]);
 
   if (fetchesInProgress > 0) {
     return (
