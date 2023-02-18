@@ -90,6 +90,9 @@ def build_df(args):
     # Remove duplicate messages (happens with links sometimes)
     df = df.drop_duplicates(subset=["text", "sender", "time"])
 
+    # Remove messages that are empty and plain text or completely empty
+    df = df[(~df.text.isna()) | (df.type != "text/plain")]
+
     # Sort by date (sometimes the order gets messed up)
     df.sort_values(by="time", inplace=True)
 
@@ -109,7 +112,7 @@ def build_df_from_csv(args):
 
     # Clean time column
     if "time" in df.columns:
-        if len(df.at[0, "time"]) >= 19:
+        if len(df.at[df.index[0], "time"]) >= 19:
             includes_time_of_day = True
         else:
             includes_time_of_day = False

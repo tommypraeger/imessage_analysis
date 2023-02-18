@@ -9,6 +9,7 @@ from analysis.functions.game import Game
 from analysis.functions.link import Link
 from analysis.functions.message_series import MessageSeries
 from analysis.functions.mime_type import MimeType
+from analysis.functions.participation import Participation
 from analysis.functions.phrase import Phrase
 from analysis.functions.reaction import Reaction
 from analysis.functions.total import Total

@@ -28,7 +28,7 @@ class ConversationStarter(Function):
                 lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
             )
         )
-        df.iloc[0, df.columns.get_loc("is conversation starter?")] = True
+        df.at[df.index[0], "is conversation starter?"] = True
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
