@@ -130,6 +130,12 @@ def is_reaction(msg):
     return False
 
 
+# TODO: use this
+def is_edit(msg):
+    msg = str(msg)
+    return msg.startswith("Edited to")
+
+
 def reaction_action(msg):
     msg = str(msg)
     for reaction in constants.REACTIONS[:6]:

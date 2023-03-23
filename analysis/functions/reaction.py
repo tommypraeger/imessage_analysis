@@ -135,30 +135,30 @@ class Reaction(Function):
 
         output_dict[likes_category].append(like_reacts)
         output_dict[percent_likes_category].append(
-            helpers.safe_divideas_pct(like_reacts, reactions)
+            helpers.safe_divide_as_pct(like_reacts, reactions)
         )
 
         output_dict[loves_category].append(love_reacts)
         output_dict[percent_loves_category].append(
-            helpers.safe_divideas_pct(love_reacts, reactions)
+            helpers.safe_divide_as_pct(love_reacts, reactions)
         )
 
         output_dict[dislikes_category].append(dislike_reacts)
         output_dict[percent_dislikes_category].append(
-            helpers.safe_divideas_pct(dislike_reacts, reactions)
+            helpers.safe_divide_as_pct(dislike_reacts, reactions)
         )
 
         output_dict[laughs_category].append(laugh_reacts)
         output_dict[percent_laugh_category].append(
-            helpers.safe_divideas_pct(laugh_reacts, reactions)
+            helpers.safe_divide_as_pct(laugh_reacts, reactions)
         )
 
         output_dict[emphasis_category].append(emphasis_reacts)
         output_dict[percent_emphasis_category].append(
-            helpers.safe_divideas_pct(emphasis_reacts, reactions)
+            helpers.safe_divide_as_pct(emphasis_reacts, reactions)
         )
 
         output_dict[questions_category].append(question_reacts)
         output_dict[percent_questions_category].append(
-            helpers.safe_divideas_pct(question_reacts, reactions)
+            helpers.safe_divide_as_pct(question_reacts, reactions)
         )
