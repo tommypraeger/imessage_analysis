@@ -101,23 +101,28 @@ def safe_divide_as_pct(numerator, denominator):
     )
 
 
-def date_to_time(date, time=False, end=False):
-    month = int(date[constants.MONTH])
-    day = int(date[constants.DAY])
-    year = int(date[constants.YEAR])
+def parse_date(date_str):
+    # remove fractions of second
+    # assuming dates are not using dots
+    date_str = date_str.split(".")[0]
+    for fmt in constants.DATE_FORMATS:
+        try:
+            return datetime.datetime.strptime(date_str, fmt)
+        except ValueError:
+            pass
+    raise ValueError("invalid date format")
 
-    if time:
-        hours = int(date[constants.HOURS])
-        minutes = int(date[constants.MINUTES])
-        seconds = int(date[constants.SECONDS])
+
+def date_to_time(date, end_of_day=None):
+    date = parse_date(date)
+    if end_of_day is None:
+        timestamp = date.timestamp()
+    if end_of_day:
         timestamp = datetime.datetime(
-            year, month, day, hours, minutes, seconds
+            date.year, date.month, date.day, 23, 59, 59
         ).timestamp()
     else:
-        if end:
-            timestamp = datetime.datetime(year, month, day, 23, 59, 59).timestamp()
-        else:
-            timestamp = datetime.datetime(year, month, day).timestamp()
+        timestamp = datetime.datetime(date.year, date.month, date.day).timestamp()
 
     return timestamp * 1e9
 

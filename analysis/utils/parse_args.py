@@ -18,6 +18,12 @@ def get_analysis_args(args):
     parser.add_argument(
         "--csv", action="store_true", help="messages are uploaded as a csv"
     )
+    parser.add_argument(
+        "--csv-file-path",
+        type=str,
+        help="path to messages csv file",
+        required="--csv" in sys.argv,
+    )
 
     # phrase args
     parser.add_argument("--phrase", type=str, help="phrase to search for")

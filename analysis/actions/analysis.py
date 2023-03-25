@@ -1,4 +1,5 @@
 import datetime
+import os
 
 import pandas as pd
 
@@ -94,52 +95,35 @@ def build_df(args):
     df = df[(~df.text.isna()) | (df.type != "text/plain")]
 
     # Sort by date (sometimes the order gets messed up)
-    df.sort_values(by="time", inplace=True)
+    # not sorting for now because
+    # need to check that times are real and not just filled in as all right now (for csv)
+    # df.sort_values(by="time", inplace=True)
 
     return df
 
 
 def build_df_from_csv(args):
-    # Message csv must be located in this file
+    if not os.path.isfile(args.csv_file_path):
+        raise Exception(f"File not found at {args.csv_file_path}")
+
     # keep_default_na=False prevents empty string from being read as NaN
-    df = pd.read_csv("messages.csv", keep_default_na=False)
+    df = pd.read_csv(args.csv_file_path, keep_default_na=False)
 
     # Make sure necessary columns are there
     for column in ["text", "sender"]:
         if column not in df.columns:
-            msg = f"Please make sure to include a {column} column in the csv"
-            return helpers.make_error_message(msg)
+            raise Exception(f"Please make sure to include a {column} column in the csv")
 
     # Clean time column
     if "time" in df.columns:
-        if len(df.at[df.index[0], "time"]) >= 19:
-            includes_time_of_day = True
-        else:
-            includes_time_of_day = False
-
         # Set timezone and date format
-        if includes_time_of_day:
-            df["time"] = [
-                datetime.datetime(
-                    int(t[constants.YEAR]),
-                    int(t[constants.MONTH]),
-                    int(t[constants.DAY]),
-                    int(t[constants.HOURS]),
-                    int(t[constants.MINUTES]),
-                    int(t[constants.SECONDS]),
-                )
-                for t in df["time"]
-            ]
-        else:
-            df["time"] = [
-                datetime.datetime(
-                    int(t[constants.YEAR]),
-                    int(t[constants.MONTH]),
-                    int(t[constants.DAY]),
-                )
-                for t in df["time"]
-            ]
+        try:
+            df["time"] = [helpers.parse_date(t) for t in df["time"]]
+        except ValueError:
+            # default to using now for all dates
+            df["time"] = [datetime.datetime.now()] * len(df)
     else:
+        # default to using now for all dates
         df["time"] = [datetime.datetime.now()] * len(df)
 
     # Trim dataframe based on date constraints
@@ -147,7 +131,6 @@ def build_df_from_csv(args):
         df,
         args.from_date,
         args.to_date,
-        includes_time_of_day=includes_time_of_day,
         use_seconds=False,
     )
 
@@ -171,39 +154,41 @@ def get_chat_members(df, args):
             if args.group:
                 error_msg = f"Please add contacts for every member of {args.name}"
             else:
-                error_msg = f"Please add {args.name} as a contact"
+                error_msg = f"Please add {member} as a contact"
             raise Exception(error_msg)
 
     return chat_members
 
 
-def filter_by_date(
-    df, from_date, to_date, includes_time_of_day=False, use_seconds=True
-):
+def filter_by_date(df, from_date, to_date, use_seconds=True):
     offset = constants.TIME_OFFSET
 
     if from_date:
         if use_seconds:
-            df = df[df["time"] >= helpers.date_to_time(from_date) - offset]
+            df = df[
+                df["time"] >= helpers.date_to_time(from_date, end_of_day=False) - offset
+            ]
         else:
             df = df[
                 df.apply(
-                    lambda msg: helpers.date_to_time(msg.time, includes_time_of_day),
+                    lambda msg: helpers.date_to_time(msg.time),
                     axis=1,
                 )
-                >= helpers.date_to_time(from_date)
+                >= helpers.date_to_time(from_date, end_of_day=False)
             ]
 
     if to_date:
         if use_seconds:
-            df = df[df["time"] <= helpers.date_to_time(to_date, end=True) - offset]
+            df = df[
+                df["time"] <= helpers.date_to_time(to_date, end_of_day=True) - offset
+            ]
         else:
             df = df[
                 df.apply(
-                    lambda msg: helpers.date_to_time(msg.time, includes_time_of_day),
+                    lambda msg: helpers.date_to_time(msg.time),
                     axis=1,
                 )
-                <= helpers.date_to_time(to_date, end=True)
+                <= helpers.date_to_time(to_date, end_of_day=True)
             ]
 
     return df

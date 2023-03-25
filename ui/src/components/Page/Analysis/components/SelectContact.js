@@ -28,7 +28,7 @@ const SelectContact = ({ contacts, setContactName, setGroup, setCsv }) => {
         } else {
           setGroup(false);
         }
-        if (event.target.value === "messages.csv") {
+        if (event.target.value === "messages_csv") {
           setCsv(true);
         } else {
           setCsv(false);
@@ -40,7 +40,7 @@ const SelectContact = ({ contacts, setContactName, setGroup, setCsv }) => {
       </option>
 
       <optgroup label="Messages CSV">
-        <option value="messages.csv">messages.csv</option>
+        <option value="messages_csv">Choose a message CSV file</option>
       </optgroup>
 
       <optgroup label="Group Chats">{groupOptions}</optgroup>

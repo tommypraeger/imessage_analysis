@@ -150,6 +150,12 @@
     margin: 10px 10px 10px 0;
 }
 
+.input-div h4 {
+    vertical-align: middle;
+    display: inline-block;
+    margin: 10px 10px 10px 0;
+}
+
 .input-div p {
     vertical-align: middle;
     display: inline-block;

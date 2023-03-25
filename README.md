@@ -45,15 +45,23 @@ Choose which contact or group chat to run analysis, choose the function to run, 
 
 
 ### Using a CSV
-**To use a CSV of messages, you can place a CSV file called `messages.csv` at the root of the `imessage_analysis` directory (i.e. the directory that the `run.sh` file is in).** When choosing who to run analysis for, choose `messages.csv`.
+**To use a CSV of messages, you can place a CSV file at the root of the `imessage_analysis` directory (i.e. the directory that the `run.sh` file is in).** The directory limitation is for security reasons (when choosing a file from a browser, the browser does not have access to the absolute path).
 
 The CSV file must contain at least the following columns:
 - A column titled `text`, which contains the text of the message
 - A column titled `sender`, which contains the name of the person that sent the message
 
-You may optionally also include a column titled `time`, which contains the time of the message. The time must be in the format `mm/dd/yyyy` or `mm/dd/yyyy HH:MM:SS`, where `mm` is the month as 2 digits, `dd` is the day as 2 digits, `yyyy` is the year as 4 digits, `HH` is the hour on a 24-hour clock as 2 digits, `MM` is the minutes as 2 digits, and `SS` is the seconds as 2 digits. Please be consistent with which date format you use.
+You may optionally also include a column titled `time`, which contains the time of the message. The time must be in one of the following formats, where `mm` is the month as 2 digits, `dd` is the day as 2 digits, `yyyy` is the year as 4 digits, `HH` is the hour on a 24-hour clock as 2 digits, `MM` is the minutes as 2 digits, and `SS` is the seconds as 2 digits:
+- `mm/dd/yyyy`
+  - e.g `12/31/2020`
+- `mm/dd/yyyy HH:MM:SS`
+  - e.g. `12/31/2020 23:59:59`
+- `yyyy/mm/dd`
+  - e.g. `2020-12-31`
+- `yyyy/mm/dd HH:MM:SS`
+  - e.g. `2020-12-31 23:59:59`
 
-Example dates for the two formats: `01/01/2020` and `01/01/2020 18:30:45`.
+If fractions of a second are included, they will be ignored.
 
 You may optionally also include a column titled `type`, which contains the mime type of the message. The mime types should be limited to the following list:
 - image/png

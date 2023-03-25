@@ -7,9 +7,5 @@ venv
 __pycache__
 
 # my stuff
-message_data.csv
-member_data.csv
-correlation_matrix.csv
-message_frequencies.csv
+*.csv
 user_data.json
-messages.csv

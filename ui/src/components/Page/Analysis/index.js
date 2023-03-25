@@ -13,6 +13,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
   const [contactName, setContactName] = useState("");
   const [group, setGroup] = useState(false);
   const [csv, setCsv] = useState(false);
+  const [csvFileName, setCsvFileName] = useState("");
   const [func, setFunc] = useState("");
   const [funcArgs, setFuncArgs] = useState({});
   const [outputType, setOutputType] = useState("table");
@@ -52,6 +53,24 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
             setCsv={setCsv}
           />
         </div>
+        {csv ? (
+          <div className="input-div">
+            <h4>Messages CSV: </h4>
+            <input
+              type="file"
+              accept="text/csv"
+              onChange={(event) => {
+                if (event.target.files.length === 1) {
+                  setCsvFileName(event.target.files[0].name);
+                } else {
+                  setCsvFileName("");
+                }
+              }}
+            />
+          </div>
+        ) : (
+          ""
+        )}
         <div className="input-div">
           <h2>Function:</h2>
           <SelectFunction
@@ -104,6 +123,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
               category,
               group,
               csv,
+              csvFileName,
               startDate,
               endDate,
               setFetchesInProgress,
@@ -119,7 +139,8 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
               func === "conversation_starter" ||
               func === "participation") &&
               !funcArgs["minutes-threshold"]) ||
-            (outputType === "graph" && (!category || !("graph-time-interval" in funcArgs)))
+            (outputType === "graph" && (!category || !("graph-time-interval" in funcArgs))) ||
+            (csv && csvFileName === "")
           }
         >
           Analyze

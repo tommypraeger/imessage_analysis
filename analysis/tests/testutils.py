@@ -1,7 +1,7 @@
 from datetime import datetime
 import pandas as pd
 import analysis.utils.constants as constants
-from analysis.utils.helpers import is_reaction
+from analysis.utils.helpers import is_reaction, parse_date
 from analysis.utils.parse_args import get_analysis_args
 
 
@@ -65,17 +65,7 @@ def load_csv(function, csv_name):
         f"analysis/tests/sample_data/{function}/{csv_name}.csv", keep_default_na=False
     )
     df["is reaction?"] = df["text"].apply(is_reaction)
-    df["time"] = [
-        datetime(
-            int(t[constants.YEAR]),
-            int(t[constants.MONTH]),
-            int(t[constants.DAY]),
-            int(t[constants.HOURS]),
-            int(t[constants.MINUTES]),
-            int(t[constants.SECONDS]),
-        )
-        for t in df["time"]
-    ]
+    df["time"] = [parse_date(t) for t in df["time"]]
     return df
 
 

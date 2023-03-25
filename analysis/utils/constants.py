@@ -8,12 +8,12 @@ CONTACTS = user_data["contacts"]
 CHAT_IDS = user_data["chat_ids"]
 CONTACT_IDS = user_data["contact_ids"]
 
-MONTH = slice(0, 2)
-DAY = slice(3, 5)
-YEAR = slice(6, 10)
-HOURS = slice(11, 13)
-MINUTES = slice(14, 16)
-SECONDS = slice(17, 19)
+DATE_FORMATS = [
+    "%Y-%m-%d",
+    "%Y-%m-%d %H:%M:%S",
+    "%m/%d/%Y",
+    "%m/%d/%Y %H:%M:%S",
+]
 
 TIME_OFFSET = 978307200000000000
 DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES = 30

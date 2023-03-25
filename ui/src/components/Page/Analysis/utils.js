@@ -22,6 +22,7 @@ const buildArgs = (
   category,
   group,
   csv,
+  csvFileName,
   startDate,
   endDate
 ) => {
@@ -40,11 +41,13 @@ const buildArgs = (
     args.category = category;
   }
 
+  // group and csv shouldn't be set at the same time
+  // group has priority to cover cases where group chat name matches csv default value
   if (group) {
     args.group = "";
   } else if (csv) {
-    // Don't set csv if a group chat is named 'messages.csv' lol
     args.csv = "";
+    args["csv-file-path"] = csvFileName;
   }
 
   if (startDate) {
@@ -66,6 +69,7 @@ const runAnalysis = (
   category,
   group,
   csv,
+  csvFileName,
   startDate,
   endDate,
   setFetchesInProgress,
@@ -80,6 +84,7 @@ const runAnalysis = (
     category,
     group,
     csv,
+    csvFileName,
     startDate,
     endDate
   );
