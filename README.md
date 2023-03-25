@@ -1,11 +1,12 @@
 # iMessage Analysis
 
 ## Prerequisites
-- Mac (or you can use messages in a csv format, details below)
+- Mac
+  - If you are not using a Mac and/or don't want to access the messages database on your Mac, you can provide messages in a csv format.
 - Python 3.9 (Install from [here](https://www.python.org/downloads/))
 - Node.js 14 (Install from [here](https://nodejs.org/en/))
-- Permissions to access your messages database
-  - To do this, open System Preferences > Security and Privacy > Privacy > Full Disk Access > and give Terminal (or a Terminal replacement, such as [iTerm2](https://iterm2.com/)) full disk access
+- If you want to access messages from your Mac, set up permissions to access your messages database:
+  - Open System Preferences > Security and Privacy > Privacy > Full Disk Access > and give Terminal (or a Terminal replacement, such as [iTerm2](https://iterm2.com/)) full disk access
 
 ## Installation and Setup
 Open up Terminal (or wherever you gave permissions in the prerequisites), and then run the following:
@@ -13,6 +14,7 @@ Open up Terminal (or wherever you gave permissions in the prerequisites), and th
 - `git clone https://github.com/tommypraeger/imessage_analysis.git`
 - `cd imessage_analysis`
 - `python3 install.py`
+  - If you are not using a Mac and/or don't want to access the messages database on your Mac, pass the `--skip-mac-setup` flag. e.g. `python3 install.py --skip-mac-setup`
 
 If you are having an issue, make sure the prerequisites have been met.
 To verify your installations of Python and Node.js, you can run:
