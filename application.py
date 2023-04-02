@@ -1,10 +1,9 @@
-# Flask web server
 import json
-import subprocess
 import traceback
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
+import src
 
 application = Flask(__name__)
 api = Api(application)
@@ -13,8 +12,7 @@ CORS(application)
 
 class Application(Resource):
     def get(self, action):
-        args = ["python3", "-m", "analysis", action]
-        return self.get_output(args)
+        return self.get_output(action)
 
     def post(self, action):
         parser = reqparse.RequestParser()
@@ -28,28 +26,23 @@ class Application(Resource):
             if val != "":
                 args_list.append(val)
 
-        args = ["python3", "-m", "analysis", action]
-        args.extend(args_list)
-        return self.get_output(args)
+        return self.get_output(action, *args_list)
 
-    def get_output(self, args):
+    def get_output(self, action, *args):
         try:
             args = self.convert_args_to_strs(args)
-            output = subprocess.run(args, stdout=subprocess.PIPE)
-            output = output.stdout.decode("utf-8")
-        except subprocess.CalledProcessError as e:
-            # Get exception from stack trace
-            error = str(e.output).split("\\n")[-2][11:]
-            print(error)
+            output = src.main(action, args)
+        except Exception as e:
+            print(e)
             traceback.print_exc()
-            return self.error_msg(error["message"], 400)
+            return self.error_msg(e, 500)
 
         try:
             output = json.loads(output)
         except json.decoder.JSONDecodeError:
             print(output)
             traceback.print_exc()
-            return self.error_msg(output, 400)
+            return self.error_msg(output, 500)
 
         if "errorMessage" in output:
             print(output["errorMessage"])
@@ -61,7 +54,7 @@ class Application(Resource):
         return [str(arg) for arg in args]
 
     def error_msg(self, msg, code):
-        return {"errorMessage": msg}, code
+        return {"errorMessage": str(msg)}, code
 
 
 api.add_resource(Application, "/api/v1/<string:action>")

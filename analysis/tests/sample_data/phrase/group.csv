@@ -1,9 +1,0 @@
-time,sender,text,type,note
-01/01/2000 12:00:00,A,aa,text/plain
-01/01/2000 12:00:02,B,aa aa,text/plain
-01/01/2000 12:00:03,C,AA AA,text/plain
-01/01/2000 12:00:04,B,aa aaa,text/plain
-01/02/2000 12:00:00,A,Loved "aa aa",text/plain,reaction message - ignore
-01/02/2000 12:00:01,A,aaa,text/plain
-01/02/2000 12:00:02,B,AAA,text/plain
-01/02/2000 12:00:03,C,,image/png,wordless attachments count
