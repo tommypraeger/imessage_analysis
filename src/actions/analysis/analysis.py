@@ -20,8 +20,12 @@ def main(args):
     if args.function is None:
         args.function = "total"
 
-    # Always add reaction column
-    df["is reaction?"] = df["text"].apply(helpers.is_reaction)
+    # Swap raw ints for string reactin type
+    try:
+        df["reaction_type"] = df["reaction_type"].apply(helpers.convert_reaction)
+    except KeyError:
+        # CSV input might not have reaction type
+        df["reaction_type"] = [""] * len(df)
 
     # Get members of chat
     try:

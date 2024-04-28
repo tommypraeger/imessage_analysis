@@ -31,7 +31,7 @@ def get_messages(df, member_name=None, time_period=None):
 def get_non_reaction_messages(df, member_name=None, time_period=None):
     all_messages = get_messages(df, member_name, time_period)
 
-    return all_messages[~all_messages["is reaction?"]]
+    return all_messages[all_messages.reaction_type == ""]
 
 
 def get_total_messages(df, member_name=None, time_period=None):
@@ -141,95 +141,34 @@ def date_to_time(date, end_of_day=None):
     return timestamp * 1e9
 
 
-def is_reaction(msg):
-    msg = str(msg)
-    for reaction in constants.REACTIONS:
-        if msg.startswith(reaction):
-            return True
-    return False
-
-
 # TODO: use this
 def is_edit(msg):
     msg = str(msg)
     return msg.startswith("Edited to")
 
 
-def reaction_action(msg):
-    msg = str(msg)
-    for reaction in constants.REACTIONS[:6]:
-        if msg.startswith(reaction):
-            return 1
-    for reaction in constants.REACTIONS[6:]:
-        if msg.startswith(reaction):
-            return -1
-    return 0
+def convert_reaction(raw_reaction_type):
+    raw_reaction_type = int(raw_reaction_type)
+    return constants.REACTIONS.get(raw_reaction_type, "")
 
 
-def like_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Liked"):
-        return 1
-    elif msg.startswith("Removed a like"):
-        return -1
-    return 0
+def is_reaction(reaction_type):
+    # TODO: track the reactions each message gets
+    reaction_type = str(reaction_type)
+    return reaction_type != ""
 
 
-def love_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Loved"):
-        return 1
-    elif msg.startswith("Removed a heart"):
-        return -1
-    return 0
+def is_removed_reaction(reaction_type):
+    reaction_type = str(reaction_type)
+    return reaction_type.startswith("removed")
 
 
-def dislike_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Disliked"):
-        return 1
-    elif msg.startswith("Removed a dislike"):
-        return -1
-    return 0
+def is_attachment(msg, mime, reaction_type):
+    return mime != "text/plain" and not is_game_message(msg, mime, reaction_type)
 
 
-def laugh_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Laughed"):
-        return 1
-    elif msg.startswith("Removed a laugh"):
-        return -1
-    return 0
-
-
-def emphasis_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Emphasized"):
-        return 1
-    elif msg.startswith("Removed an emphasis"):
-        return -1
-    return 0
-
-
-def question_react_action(msg):
-    msg = str(msg)
-    if msg.startswith("Questioned"):
-        return 1
-    elif msg.startswith("Removed a question mark"):
-        return -1
-    return 0
-
-
-def is_not_reaction(msg):
-    return not is_reaction(msg)
-
-
-def is_attachment(msg, mime):
-    return mime != "text/plain" and not is_game_message(msg, mime)
-
-
-def is_phrase_in(phrase, msg, case_sensitive, separate, regex):
-    if is_reaction(msg):
+def is_phrase_in(phrase, msg, reaction_type, case_sensitive, separate, regex):
+    if is_reaction(reaction_type):
         return False
     msg = str(msg)
     if regex:
@@ -267,8 +206,8 @@ def is_type(test, target):
     return str(test) == target
 
 
-def includes_emoji(msg):
-    if is_reaction(msg):
+def includes_emoji(msg, reaction_type):
+    if is_reaction(reaction_type):
         return False
     msg = str(msg)
     return emoji.emoji_count(msg) > 0
@@ -280,8 +219,8 @@ def is_all_caps(msg):
     return len(msg) > 0 and msg == msg.upper()
 
 
-def is_tweet(msg):
-    if is_reaction(msg):
+def is_tweet(msg, reaction_type):
+    if is_reaction(reaction_type):
         return False
     msg = str(msg)
     # not using regex for speed and because it's prob not necessary
@@ -308,18 +247,18 @@ def message_letter_count(msg):
     return len(re.sub("[^a-zA-Z]+", "", msg))
 
 
-def is_link(msg):
-    if is_reaction(msg):
+def is_link(msg, reaction_type):
+    if is_reaction(reaction_type):
         return False
     if re.match(constants.LINK_REGEX, str(msg)):
         return True
     return False
 
 
-def is_game_message(msg, mime):
-    msg = str(msg)
-    if is_reaction(msg):
+def is_game_message(msg, mime, reaction_type):
+    if is_reaction(reaction_type):
         return False
+    msg = str(msg)
     return (msg in constants.GAMES or msg == "�￼") and (
         mime == "image/jpeg" or mime == "image/heic"
     )
@@ -327,8 +266,8 @@ def is_game_message(msg, mime):
 
 # unfortunately this is not accurate :/
 # regular game messages also use "�￼" now
-def _is_game_start(msg, mime):
-    if is_reaction(msg):
+def _is_game_start(msg, mime, reaction_type):
+    if is_reaction(reaction_type):
         return False
     return str(msg) == "�￼" and (mime == "image/jpeg" or mime == "image/heic")
 

@@ -35,9 +35,6 @@ def test_db():
             "5. Give Terminal (or whatever application you're running this from) Full Disk Access, ",
         )
         ret += "and then run the install.py script again\n"
-        ret += str(
-            "\nMore info here: https://spin.atomicobject.com/2020/05/22/search-imessage-sql/\n",
-        )
         ret += "\n===================================\n"
         return 1, ret
 
@@ -57,14 +54,16 @@ def get_group_df(name):
     chat_ids = helpers.get_chat_ids()[name]
 
     # Get chat history
-    cmd1 = f'SELECT ROWID, text, handle_id, date \
-                FROM message T1 \
-                INNER JOIN chat_message_join T2 \
-                    ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
-                    AND T1.ROWID=T2.message_id \
-                ORDER BY T1.date'
+    cmd1 = f'''
+    SELECT ROWID, text, handle_id, date, guid, associated_message_guid, associated_message_type \
+    FROM message T1 \
+    INNER JOIN chat_message_join T2 \
+        ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
+        AND T1.ROWID=T2.message_id \
+    ORDER BY T1.date
+    '''
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time"])
+    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time", "guid", "reaction_to", "reaction_type"])
     df_msg["sender"] = [
         helpers.contact_name_from_id(sender) for sender in df_msg["sender"]
     ]
@@ -92,14 +91,16 @@ def get_individual_df(name):
     contact_id = helpers.get_contact_ids()[name][0]
 
     # Get chat history
-    cmd1 = f'SELECT ROWID, text, is_from_me, date \
-                FROM message T1 \
-                INNER JOIN chat_message_join T2 \
-                    ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
-                    AND T1.ROWID=T2.message_id \
-                ORDER BY T1.date'
+    cmd1 = f'''
+    SELECT ROWID, text, is_from_me, date, guid, associated_message_guid, associated_message_type \
+    FROM message T1 \
+    INNER JOIN chat_message_join T2 \
+        ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
+        AND T1.ROWID=T2.message_id \
+    ORDER BY T1.date
+    '''
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time"])
+    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time", "guid", "reaction_to", "reaction_type"])
     df_msg["sender"] = [
         helpers.contact_name_from_id(0)
         if sender == 1

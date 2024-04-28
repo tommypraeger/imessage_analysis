@@ -24,7 +24,7 @@ class Game(Function):
     @staticmethod
     def process_messages_df(df, args):
         df["is game message?"] = df.apply(
-            lambda msg: helpers.is_game_message(msg.text, msg.type), axis=1
+            lambda msg: helpers.is_game_message(msg.text, msg.type, msg.reaction_type), axis=1
         )
 
     @staticmethod

@@ -20,7 +20,9 @@ class Emoji(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["includes emoji?"] = df["text"].apply(helpers.includes_emoji)
+        df["includes emoji?"] = df.apply(
+            lambda msg: helpers.includes_emoji(msg.text, msg.reaction_type), axis=1
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

@@ -7,7 +7,7 @@ percent_all_non_reaction_category = "Percent of all messages that are not reacti
 reactions_messages_category = "Reaction messages (including removing reactions)"
 percent_all_reactions_category = "Percent of all reactions messages"
 percent_reactions_category = "Percent of messages that are reactions"
-reactions_category = "Reactions (not including removed reactions)"
+removed_reactions = "Removed reactions"
 likes_category = "Like reacts"
 percent_likes_category = "Percent of reactions that are like reacts"
 loves_category = "Love reacts"
@@ -38,7 +38,7 @@ class Reaction(Function):
             reactions_messages_category,
             percent_all_reactions_category,
             percent_reactions_category,
-            reactions_category,
+            removed_reactions,
             likes_category,
             percent_likes_category,
             loves_category,
@@ -60,7 +60,7 @@ class Reaction(Function):
             non_reaction_messages_category,
             reactions_messages_category,
             percent_reactions_category,
-            reactions_category,
+            removed_reactions,
             likes_category,
             percent_likes_category,
             loves_category,
@@ -77,13 +77,7 @@ class Reaction(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["reaction action"] = df["text"].apply(helpers.reaction_action)
-        df["like react action"] = df["text"].apply(helpers.like_react_action)
-        df["love react action"] = df["text"].apply(helpers.love_react_action)
-        df["dislike react action"] = df["text"].apply(helpers.dislike_react_action)
-        df["laugh react action"] = df["text"].apply(helpers.laugh_react_action)
-        df["emphasis react action"] = df["text"].apply(helpers.emphasis_react_action)
-        df["question react action"] = df["text"].apply(helpers.question_react_action)
+        df["is removed reaction?"] = df["reaction_type"].apply(helpers.is_removed_reaction)
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
@@ -103,9 +97,9 @@ class Reaction(Function):
             )
         )
 
-        total_messages = helpers.get_total_messages(time_period=time_period)
+        total_messages = helpers.get_total_messages(df, time_period=time_period)
         total_non_reaction_messages = helpers.get_total_non_reaction_messages(
-            time_period=time_period
+            df, time_period=time_period
         )
         total_reaction_messages = total_messages - total_non_reaction_messages
         output_dict[percent_all_reactions_category].append(
@@ -123,15 +117,16 @@ class Reaction(Function):
         )
 
         messages = helpers.get_messages(df, member_name, time_period)
-        reactions = int(messages["reaction action"].sum())
-        like_reacts = int(messages["like react action"].sum())
-        love_reacts = int(messages["love react action"].sum())
-        dislike_reacts = int(messages["dislike react action"].sum())
-        laugh_reacts = int(messages["laugh react action"].sum())
-        emphasis_reacts = int(messages["emphasis react action"].sum())
-        question_reacts = int(messages["question react action"].sum())
+        reactions = len(messages[messages.reaction_type != ""])
+        like_reacts = len(messages[messages.reaction_type == "like"])
+        love_reacts = len(messages[messages.reaction_type == "love"])
+        dislike_reacts = len(messages[messages.reaction_type == "dislike"])
+        laugh_reacts = len(messages[messages.reaction_type == "laugh"])
+        emphasis_reacts = len(messages[messages.reaction_type == "emphasize"])
+        question_reacts = len(messages[messages.reaction_type == "question"])
+        removed_reacts = len(messages[messages["is removed reaction?"]])
 
-        output_dict[reactions_category].append(reactions)
+        output_dict[removed_reactions].append(removed_reacts)
 
         output_dict[likes_category].append(like_reacts)
         output_dict[percent_likes_category].append(

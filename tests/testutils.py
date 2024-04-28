@@ -62,7 +62,6 @@ def load_csv(function, csv_name):
     df = pd.read_csv(
         f"tests/sample_data/{function}/{csv_name}.csv", keep_default_na=False
     )
-    df["is reaction?"] = df["text"].apply(is_reaction)
     df["time"] = [parse_date(t) for t in df["time"]]
     return df
 

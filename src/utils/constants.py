@@ -30,20 +30,20 @@ GRAPH_COLORS = [
 ]
 GRAPH_TOTAL_KEY = "Total"
 
-REACTIONS = [
-    "Laughed at",
-    "Emphasized",
-    "Liked",
-    "Disliked",
-    "Questioned",
-    "Loved",
-    "Removed a like",
-    "Removed a dislike",
-    "Removed a heart",
-    "Removed an exclamation",
-    "Removed a question mark",
-    "Removed a laugh",
-]
+REACTIONS = {
+    2000: "love",
+    2001: "like",
+    2002: "dislike",
+    2003: "laugh",
+    2004: "emphasize",
+    2005: "question",
+    3000: "removed love",
+    3001: "removed like",
+    3002: "removed dislike",
+    3003: "removed laugh",
+    3004: "removed emphasize",
+    3005: "removed question"
+}
 GAMES = [
     "8 Ball",
     "Sea Battle",

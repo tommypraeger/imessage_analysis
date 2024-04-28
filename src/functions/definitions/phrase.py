@@ -26,10 +26,11 @@ class Phrase(Function):
         regex = args.regex
         if phrase is None:
             raise Exception("Function is phrase but not given a phrase")
-        df[f"includes {phrase}?"] = df["text"].apply(
+        df[f"includes {phrase}?"] = df.apply(
             lambda msg: helpers.is_phrase_in(
-                phrase, msg, case_sensitive, separate, regex
-            )
+                phrase, msg.text, msg.reaction_type, case_sensitive, separate, regex
+            ),
+            axis=1
         )
 
     @staticmethod

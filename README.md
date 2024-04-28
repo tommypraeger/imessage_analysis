@@ -120,8 +120,6 @@ This is the total number of iMessage reactions each person sends, along with how
 - Emphasis
 - Question
 
-The numbers returned are just approximates of the actual numbers, as reaction messages are stored as regular plain text messages, and I try to figure out based on the content of each message whether it is a reaction or not. Unfortunately, there is no data on how many reactions a message or got or who reacted to which messages, but these could also be estimated in a similar way to how I am doing it.
-
 #### Starters
 This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time, which I currently default to 60 minutes. I also show what percentage of the conversations are started by each person.
 

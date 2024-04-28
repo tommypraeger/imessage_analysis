@@ -20,7 +20,9 @@ class Link(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is link?"] = df["text"].apply(helpers.is_link)
+        df["is link?"] = df.apply(
+            lambda msg: helpers.is_link(msg.text, msg.reaction_type), axis=1
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
