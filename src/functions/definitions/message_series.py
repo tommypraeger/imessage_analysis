@@ -22,7 +22,11 @@ class MessageSeries(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [message_series_category, average_messages_category]
+        return [
+            message_series_category,
+            average_messages_category,
+            percent_series_category
+        ]
 
     @staticmethod
     def process_messages_df(df, args):

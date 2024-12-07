@@ -16,7 +16,7 @@ class Participation(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [conversations_participated_in_category]
+        return [conversations_participated_in_category, participation_rate_category]
 
     @staticmethod
     def process_messages_df(df, args):
