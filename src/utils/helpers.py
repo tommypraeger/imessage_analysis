@@ -51,7 +51,7 @@ def contact_name_from_id(contact_id):
 
 
 def load_user_data():
-    with open(constants.USER_DATE_FILE_NAME, "r") as user_data_file:
+    with open(constants.USER_DATA_FILE_NAME, "r") as user_data_file:
         user_data = json.load(user_data_file)
     return user_data
 
@@ -81,7 +81,7 @@ def get_chat_ids():
 
 
 def save_user_data(user_data):
-    with open(constants.USER_DATE_FILE_NAME, "w") as user_data_file:
+    with open(constants.USER_DATA_FILE_NAME, "w") as user_data_file:
         json.dump(user_data, user_data_file, indent=4)
 
 

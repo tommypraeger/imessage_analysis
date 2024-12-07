@@ -1,4 +1,4 @@
-USER_DATE_FILE_NAME = "user_data.json"
+USER_DATA_FILE_NAME = "user_data.json"
 
 DATE_FORMATS = [
     "%Y-%m-%d",

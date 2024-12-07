@@ -60,4 +60,4 @@ class Application(Resource):
 api.add_resource(Application, "/api/v1/<string:action>")
 
 if __name__ == "__main__":
-    application.run(debug=True)
+    application.run(debug=True, port=8000)

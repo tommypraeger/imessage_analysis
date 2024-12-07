@@ -27,12 +27,11 @@ def test_db():
         ret += "See the README for more details.\n"
 
         ret += "\nIf you are using a Mac and do want to access the messages database, do the following:\n"
-        ret += "1. Open System Preferences\n"
-        ret += "2. Go to Security and Privacy\n"
-        ret += "3. Go to Privacy\n"
-        ret += "4. Go to Full Disk Access\n"
+        ret += "1. Open System Settings\n"
+        ret += "2. Go to Privacy & Security\n"
+        ret += "3. Go to Full Disk Access\n"
         ret += str(
-            "5. Give Terminal (or whatever application you're running this from) Full Disk Access, ",
+            "4. Give Terminal (or whatever application you're running this from) Full Disk Access, ",
         )
         ret += "and then run the install.py script again\n"
         ret += "\n===================================\n"

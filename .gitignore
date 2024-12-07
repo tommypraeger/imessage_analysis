@@ -8,4 +8,4 @@ __pycache__
 
 # my stuff
 *.csv
-user_data.json
+user_data*.json

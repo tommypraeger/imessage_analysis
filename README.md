@@ -10,9 +10,11 @@
 
 ## Installation and Setup
 Open up Terminal (or wherever you gave permissions in the prerequisites), and then run the following:
-- `cd Documents` or whichever your preferred directory for this stuff is
 - `git clone https://github.com/tommypraeger/imessage_analysis.git`
 - `cd imessage_analysis`
+- `python3 -m venv venv`
+- `source venv/bin/activate`
+- `pip install -r requirements.txt`
 - `python3 install.py`
   - If you are not using a Mac and/or don't want to access the messages database on your Mac, pass the `--skip-mac-setup` flag. e.g. `python3 install.py --skip-mac-setup`
 
