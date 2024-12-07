@@ -30,7 +30,7 @@ class Phrase(Function):
             lambda msg: helpers.is_phrase_in(
                 phrase, msg.text, msg.reaction_type, case_sensitive, separate, regex
             ),
-            axis=1
+            axis=1,
         )
 
     @staticmethod

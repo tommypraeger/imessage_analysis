@@ -25,7 +25,7 @@ class MessageSeries(Function):
         return [
             message_series_category,
             average_messages_category,
-            percent_series_category
+            percent_series_category,
         ]
 
     @staticmethod

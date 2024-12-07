@@ -65,7 +65,9 @@ class Function(abc.ABC):
 
             # we change the category name for phrase
             if type(self).__name__ == "Phrase":
-                args.category = args.category.replace("the entered phrase", f'"{args.phrase}"')
+                args.category = args.category.replace(
+                    "the entered phrase", f'"{args.phrase}"'
+                )
 
             # prepare to return data
             self.format_graph_data(

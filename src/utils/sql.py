@@ -30,7 +30,7 @@ def test_db():
         ret += "1. Open System Settings\n"
         ret += "2. Go to Privacy & Security\n"
         ret += "3. Go to Full Disk Access\n"
-        ret += str(
+        ret += (
             "4. Give Terminal (or whatever application you're running this from) Full Disk Access, ",
         )
         ret += "and then run the install.py script again\n"
@@ -53,16 +53,27 @@ def get_group_df(name):
     chat_ids = helpers.get_chat_ids()[name]
 
     # Get chat history
-    cmd1 = f'''
+    cmd1 = f"""
     SELECT ROWID, text, handle_id, date, guid, associated_message_guid, associated_message_type \
     FROM message T1 \
     INNER JOIN chat_message_join T2 \
         ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
         AND T1.ROWID=T2.message_id \
     ORDER BY T1.date
-    '''
+    """
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time", "guid", "reaction_to", "reaction_type"])
+    df_msg = pd.DataFrame(
+        c.fetchall(),
+        columns=[
+            "id",
+            "text",
+            "sender",
+            "time",
+            "guid",
+            "reaction_to",
+            "reaction_type",
+        ],
+    )
     df_msg["sender"] = [
         helpers.contact_name_from_id(sender) for sender in df_msg["sender"]
     ]
@@ -90,20 +101,33 @@ def get_individual_df(name):
     contact_id = helpers.get_contact_ids()[name][0]
 
     # Get chat history
-    cmd1 = f'''
+    cmd1 = f"""
     SELECT ROWID, text, is_from_me, date, guid, associated_message_guid, associated_message_type \
     FROM message T1 \
     INNER JOIN chat_message_join T2 \
         ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
         AND T1.ROWID=T2.message_id \
     ORDER BY T1.date
-    '''
+    """
     c.execute(cmd1)
-    df_msg = pd.DataFrame(c.fetchall(), columns=["id", "text", "sender", "time", "guid", "reaction_to", "reaction_type"])
+    df_msg = pd.DataFrame(
+        c.fetchall(),
+        columns=[
+            "id",
+            "text",
+            "sender",
+            "time",
+            "guid",
+            "reaction_to",
+            "reaction_type",
+        ],
+    )
     df_msg["sender"] = [
-        helpers.contact_name_from_id(0)
-        if sender == 1
-        else helpers.contact_name_from_id(contact_id)
+        (
+            helpers.contact_name_from_id(0)
+            if sender == 1
+            else helpers.contact_name_from_id(contact_id)
+        )
         for sender in df_msg["sender"]
     ]
 

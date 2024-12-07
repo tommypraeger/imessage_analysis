@@ -28,7 +28,8 @@ class MimeType(Function):
             lambda typ: helpers.is_type(typ, mime_type)
         )
         df["is game message?"] = df.apply(
-            lambda msg: helpers.is_game_message(msg.text, msg.type, msg.reaction_type), axis=1
+            lambda msg: helpers.is_game_message(msg.text, msg.type, msg.reaction_type),
+            axis=1,
         )
 
     @staticmethod

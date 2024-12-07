@@ -42,7 +42,7 @@ REACTIONS = {
     3002: "removed dislike",
     3003: "removed laugh",
     3004: "removed emphasize",
-    3005: "removed question"
+    3005: "removed question",
 }
 GAMES = [
     "8 Ball",

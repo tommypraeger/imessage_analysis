@@ -77,7 +77,9 @@ class Reaction(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is removed reaction?"] = df["reaction_type"].apply(helpers.is_removed_reaction)
+        df["is removed reaction?"] = df["reaction_type"].apply(
+            helpers.is_removed_reaction
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
