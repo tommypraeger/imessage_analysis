@@ -63,6 +63,10 @@ class Function(abc.ABC):
                 graph_data, df, chat_members, time_periods, args.graph_individual, args
             )
 
+            # we change the category name for phrase
+            if type(self).__name__ == "Phrase":
+                args.category = args.category.replace("the entered phrase", f'"{args.phrase}"')
+
             # prepare to return data
             self.format_graph_data(
                 result_dict,

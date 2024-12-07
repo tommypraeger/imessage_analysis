@@ -38,7 +38,25 @@ class Phrase(Function):
         phrase = args.phrase
         nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
         phrase_messages = len(nr_messages[nr_messages[f"includes {phrase}?"]])
-        output_dict[phrase_category].append(phrase_messages)
-        output_dict[percent_phrase_category].append(
+        (
+            new_phrase_category,
+            new_percent_phrase_category,
+        ) = insert_phrase_into_category_names(output_dict, phrase)
+        output_dict[new_phrase_category].append(phrase_messages)
+        output_dict[new_percent_phrase_category].append(
             round(helpers.safe_divide(phrase_messages, len(nr_messages)) * 100, 2)
         )
+
+
+def insert_phrase_into_category_names(output_dict, phrase):
+    new_phrase_category = phrase_category.replace("the entered phrase", f'"{phrase}"')
+    new_percent_phrase_category = percent_phrase_category.replace(
+        "the entered phrase", f'"{phrase}"'
+    )
+    if new_phrase_category not in output_dict:
+        output_dict[new_phrase_category] = output_dict.pop(phrase_category)
+    if new_percent_phrase_category not in output_dict:
+        output_dict[new_percent_phrase_category] = output_dict.pop(
+            percent_phrase_category
+        )
+    return new_phrase_category, new_percent_phrase_category
