@@ -19,7 +19,7 @@ def initialize_member(member_name, result_dict):
 
 
 def get_messages(df, member_name=None, time_period=None):
-    condition = [True] * len(df)
+    condition = df["text"].apply(is_not_edit)
     if time_period is not None:
         condition = condition & (df["time_period"] == time_period)
     if member_name is not None:
@@ -141,10 +141,15 @@ def date_to_time(date, end_of_day=None):
     return timestamp * 1e9
 
 
-# TODO: use this
+# TODO: find way to link edits to the original message
+# TODO: find better way to identify edits
 def is_edit(msg):
     msg = str(msg)
     return msg.startswith("Edited to")
+
+
+def is_not_edit(msg):
+    return not is_edit(msg)
 
 
 def convert_reaction(raw_reaction_type):
