@@ -93,8 +93,12 @@ def build_df(args):
     # Remove duplicate messages (happens with links sometimes)
     df = df.drop_duplicates(subset=["text", "sender", "time"])
 
-    # Remove messages that are empty and plain text or completely empty
-    df = df[(~df.text.isna()) | (df.type != "text/plain")]
+    # Some messages show as null text even if they really do have text
+    # See comment on helper function for more
+    df["text"] = df["text"].fillna(
+        df["attributed_body"].apply(helpers.decode_message_attributedbody)
+    )
+    del df["attributed_body"]
 
     # Sort by date (sometimes the order gets messed up)
     # not sorting for now because

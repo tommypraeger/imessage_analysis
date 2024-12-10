@@ -6,6 +6,8 @@ import re
 import string
 import traceback
 
+from typedstream.stream import TypedStreamReader
+
 from src.utils import constants, sql
 
 USERNAME = ""
@@ -292,3 +294,14 @@ def get_month(date):
 
 def get_year(date):
     return f"1/1/{str(date.year)[-2:]}"
+
+
+# huge thank you to this reddit comment and the post as a whole
+# https://www.reddit.com/r/osx/comments/uevy32/comment/kie8ccz
+def decode_message_attributedbody(data):
+    if not data:
+        return None
+    for event in TypedStreamReader.from_data(data):
+        # The first bytes object is the one we want
+        if type(event) is bytes:
+            return event.decode("utf-8")

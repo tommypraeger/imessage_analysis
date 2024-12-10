@@ -54,7 +54,7 @@ def get_group_df(name):
 
     # Get chat history
     cmd1 = f"""
-    SELECT ROWID, text, handle_id, date, guid, associated_message_guid, associated_message_type \
+    SELECT ROWID, text, handle_id, date, guid, associated_message_guid, associated_message_type, attributedBody \
     FROM message T1 \
     INNER JOIN chat_message_join T2 \
         ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
@@ -72,6 +72,7 @@ def get_group_df(name):
             "guid",
             "reaction_to",
             "reaction_type",
+            "attributed_body",
         ],
     )
     df_msg["sender"] = [
@@ -102,7 +103,7 @@ def get_individual_df(name):
 
     # Get chat history
     cmd1 = f"""
-    SELECT ROWID, text, is_from_me, date, guid, associated_message_guid, associated_message_type \
+    SELECT ROWID, text, is_from_me, date, guid, associated_message_guid, associated_message_type, attributedBody \
     FROM message T1 \
     INNER JOIN chat_message_join T2 \
         ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
@@ -120,6 +121,7 @@ def get_individual_df(name):
             "guid",
             "reaction_to",
             "reaction_type",
+            "attributed_body",
         ],
     )
     df_msg["sender"] = [
