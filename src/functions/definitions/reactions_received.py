@@ -90,6 +90,6 @@ class ReactionsReceived(Function):
             output_dict[f"{reaction_type} reacts received per message"].append(
                 round(
                     helpers.safe_divide(total_reacts, total_messages_sent),
-                    2
+                    4
                 )
             )

@@ -307,7 +307,7 @@ def decode_message_attributedbody(data):
 
 def add_reactions_for_each_message(df):
     # Filter rows with reactions
-    reactions = df[df["reaction_to"].notnull()].copy()
+    reactions = df[df["message_type"].apply(is_reaction)].copy()
 
     # Clean the reaction_to column to match GUIDs
     reactions["reaction_to"] = reactions["reaction_to"].str.replace(r"^p:0/", "", regex=True)
