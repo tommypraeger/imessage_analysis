@@ -28,13 +28,15 @@ def main(name, group, number, dry_run=False):
             return helpers.make_error_message(msg)
 
         chat_ids = sql.get_chat_ids_from_phone_number(phone_number)
-        if len(chat_ids) == 0:
-            msg = (
-                f"Did not find {number}.\n"
-                "Make sure you type in the phone number correctly"
-                "and you have messages with this number."
-            )
-            return helpers.make_error_message(msg)
+
+        # commenting this out to allow adding contacts for people in group chats even if no individual chats
+        # if len(chat_ids) == 0:
+        #     msg = (
+        #         f"Did not find {number}.\n"
+        #         "Make sure you type in the phone number correctly "
+        #         "and you have messages with this number."
+        #     )
+        #     return helpers.make_error_message(msg)
 
         user_data["contact_ids"][name] = contact_ids
         user_data["chat_ids"][name] = chat_ids

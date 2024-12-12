@@ -16,7 +16,7 @@ class Participation(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [conversations_participated_in_category, participation_rate_category]
+        return [conversations_participated_in_category]
 
     @staticmethod
     def process_messages_df(df, args):
@@ -39,6 +39,7 @@ class Participation(Function):
                 df.at[msg_idx, "conversation number"] = previous_convo_number + 1
             else:
                 df.at[msg_idx, "conversation number"] = previous_convo_number
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

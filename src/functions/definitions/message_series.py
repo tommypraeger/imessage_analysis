@@ -24,8 +24,7 @@ class MessageSeries(Function):
     def get_categories_allowing_graph_total():
         return [
             message_series_category,
-            average_messages_category,
-            percent_series_category,
+            average_messages_category
         ]
 
     @staticmethod
@@ -46,6 +45,7 @@ class MessageSeries(Function):
             .where(df["sender"].shift() != df["sender"], False)
         )
         df.at[df.index[0], "is new message series?"] = True
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

@@ -7,7 +7,7 @@ import SelectContact from "./components/SelectContact";
 import SelectFunction from "./components/SelectFunction";
 import SelectOutput from "./components/SelectOutput";
 import Analysis from "./components/Analysis";
-import { runAnalysis } from "./utils";
+import { getCategories, runAnalysis } from "./utils";
 
 const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => {
   const [contactName, setContactName] = useState("");
@@ -74,6 +74,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
         <div className="input-div">
           <h2>Function:</h2>
           <SelectFunction
+            outputType={outputType}
             funcArgs={funcArgs}
             setFunc={setFunc}
             setFuncArgs={setFuncArgs}
@@ -95,6 +96,10 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
             setOutputType={setOutputType}
             setCategory={setCategory}
             categories={categories}
+            funcArgs={funcArgs}
+            func={func}
+            getCategories={getCategories}
+            setCategories={setCategories}
           />
         </div>
         <SelectCategory outputType={outputType} setCategory={setCategory} categories={categories} />

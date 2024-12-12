@@ -140,5 +140,12 @@ def get_get_categories_args(args):
         action="store_true",
         help="graph lines for each person in group",
     )
+    output_group = parser.add_mutually_exclusive_group()
+    output_group.add_argument(
+        "--table", action="store_true", help="output results to view in a table"
+    )
+    output_group.add_argument(
+        "--graph", action="store_true", help="output results to view in a line graph"
+    )
 
     return parser.parse_args(args)

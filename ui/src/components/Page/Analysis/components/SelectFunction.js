@@ -1,6 +1,6 @@
 import { getCategories } from "../utils";
 
-const SelectFunction = ({ funcArgs, setFunc, setFuncArgs, setCategory, setCategories }) => (
+const SelectFunction = ({ outputType, funcArgs, setFunc, setFuncArgs, setCategory, setCategories }) => (
   <select
     className="select"
     defaultValue="none"
@@ -8,7 +8,7 @@ const SelectFunction = ({ funcArgs, setFunc, setFuncArgs, setCategory, setCatego
       setFunc(event.target.value);
       //setFuncArgs({});
       setCategory("");
-      getCategories(event.target.value, funcArgs["graph-individual"], setCategories, setCategory);
+      getCategories(event.target.value, outputType, funcArgs["graph-individual"], setCategories, setCategory);
     }}
   >
     <option value="none" disabled={true}>
@@ -17,7 +17,11 @@ const SelectFunction = ({ funcArgs, setFunc, setFuncArgs, setCategory, setCatego
 
     <option value="total">Total: How many messages each person sends</option>
 
-    <option value="reaction">Reactions: How many messages are iMessage reactions</option>
+    <option value="reaction">Reactions sent: How many messages are iMessage reactions</option>
+
+    <option value="reactions_received">Reactions received: How many iMessage reactions each person receives</option>
+
+    <option value="reaction_matrix">Reaction matrix: How many iMessage reactions each person receives from each other person</option>
 
     <option value="participation">Participation: How often each person participates</option>
 

@@ -23,9 +23,10 @@ class WordCount(Function):
     @staticmethod
     def process_messages_df(df, args):
         df["is link?"] = df.apply(
-            lambda msg: helpers.is_link(msg.text, msg.reaction_type), axis=1
+            lambda msg: helpers.is_link(msg.text, msg.message_type), axis=1
         )
         df["word count"] = df["text"].apply(helpers.message_word_count)
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

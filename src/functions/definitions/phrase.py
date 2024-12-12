@@ -28,10 +28,11 @@ class Phrase(Function):
             raise Exception("Function is phrase but not given a phrase")
         df[f"includes {phrase}?"] = df.apply(
             lambda msg: helpers.is_phrase_in(
-                phrase, msg.text, msg.reaction_type, case_sensitive, separate, regex
+                phrase, msg.text, msg.message_type, case_sensitive, separate, regex
             ),
             axis=1,
         )
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

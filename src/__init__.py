@@ -44,7 +44,7 @@ def main(action, args):
 
         if action == "get_categories":
             args = parse_args.get_get_categories_args(args)
-            response = get_categories.main(args.function, args.graph_individual)
+            response = get_categories.main(args)
 
     except OperationalError:
         response = helpers.make_error_message(

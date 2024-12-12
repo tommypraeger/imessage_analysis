@@ -21,6 +21,7 @@ class AllCaps(Function):
     @staticmethod
     def process_messages_df(df, args):
         df["is all caps?"] = df["text"].apply(helpers.is_all_caps)
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

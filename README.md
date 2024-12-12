@@ -113,7 +113,7 @@ This is a graph of the number of messages over time. You can select between grap
 
 One future feature I may consider is allowing graphing of other functions besides just total messages. This could turn graphs into an alternative to tables rather a completely separate function.
 
-#### Reactions
+#### Reactions Sent
 This is the total number of iMessage reactions each person sends, along with how many of the total reactions they send. It also shows how many of each kind of reaction they send, along with what proportion each reaction is of the all of the reactions they send. The current iMessage reactions are:
 - Like
 - Love
@@ -121,6 +121,13 @@ This is the total number of iMessage reactions each person sends, along with how
 - Laugh
 - Emphasis
 - Question
+- Custom Emoji
+
+#### Reactions Received
+TODO
+
+#### Reaction Matrix
+TODO
 
 #### Starters
 This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time, which I currently default to 60 minutes. I also show what percentage of the conversations are started by each person.

@@ -30,20 +30,27 @@ GRAPH_COLORS = [
 ]
 GRAPH_TOTAL_KEY = "Total"
 
-REACTIONS = {
+MESSAGE_TYPES = {
+    0: "text",
+    2: "game start",
+    3: "game",
+    1000: "sticker",
     2000: "love",
     2001: "like",
     2002: "dislike",
     2003: "laugh",
     2004: "emphasize",
     2005: "question",
+    2006: "custom emoji",
     3000: "removed love",
     3001: "removed like",
     3002: "removed dislike",
     3003: "removed laugh",
     3004: "removed emphasize",
     3005: "removed question",
+    3006: "removed custom emoji",
 }
+REACTION_TYPES = ["love", "like", "dislike", "laugh", "emphasize", "question", "custom emoji"]
 GAMES = [
     "8 Ball",
     "Sea Battle",

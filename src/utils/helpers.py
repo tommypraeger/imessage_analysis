@@ -1,3 +1,4 @@
+import ast
 import datetime
 import emoji
 import json
@@ -33,7 +34,7 @@ def get_messages(df, member_name=None, time_period=None):
 def get_non_reaction_messages(df, member_name=None, time_period=None):
     all_messages = get_messages(df, member_name, time_period)
 
-    return all_messages[all_messages.reaction_type == ""]
+    return all_messages[all_messages.message_type.apply(is_not_reaction)]
 
 
 def get_total_messages(df, member_name=None, time_period=None):
@@ -88,6 +89,9 @@ def save_user_data(user_data):
 
 
 def clean_phone_number(phone_number):
+    if "@" in phone_number:
+        # actually an email
+        return phone_number
     digits = [i for i in phone_number if i.isdigit()]
     return "".join(digits)[-10:]
 
@@ -154,28 +158,31 @@ def is_not_edit(msg):
     return not is_edit(msg)
 
 
-def convert_reaction(raw_reaction_type):
-    raw_reaction_type = int(raw_reaction_type)
-    return constants.REACTIONS.get(raw_reaction_type, "")
+def convert_message_type(raw_message_type):
+    raw_message_type = int(raw_message_type)
+    return constants.MESSAGE_TYPES.get(raw_message_type, "")
 
 
-def is_reaction(reaction_type):
-    # TODO: track the reactions each message gets
-    reaction_type = str(reaction_type)
-    return reaction_type != ""
+def is_reaction(message_type):
+    message_type = str(message_type)
+    return message_type in constants.REACTION_TYPES
 
 
-def is_removed_reaction(reaction_type):
-    reaction_type = str(reaction_type)
-    return reaction_type.startswith("removed")
+def is_removed_reaction(message_type):
+    message_type = str(message_type)
+    return message_type.startswith("removed")
 
 
-def is_attachment(msg, mime, reaction_type):
-    return mime != "text/plain" and not is_game_message(msg, mime, reaction_type)
+def is_not_reaction(message_type):
+    return not is_reaction(message_type) and not is_removed_reaction(message_type)
 
 
-def is_phrase_in(phrase, msg, reaction_type, case_sensitive, separate, regex):
-    if is_reaction(reaction_type):
+def is_attachment(msg, mime, message_type):
+    return mime != "text/plain" and not is_game_message(message_type)
+
+
+def is_phrase_in(phrase, msg, message_type, case_sensitive, separate, regex):
+    if is_reaction(message_type):
         return False
     msg = str(msg)
     if regex:
@@ -213,8 +220,8 @@ def is_type(test, target):
     return str(test) == target
 
 
-def includes_emoji(msg, reaction_type):
-    if is_reaction(reaction_type):
+def includes_emoji(msg, message_type):
+    if is_reaction(message_type):
         return False
     msg = str(msg)
     return emoji.emoji_count(msg) > 0
@@ -226,8 +233,8 @@ def is_all_caps(msg):
     return len(msg) > 0 and msg == msg.upper()
 
 
-def is_tweet(msg, reaction_type):
-    if is_reaction(reaction_type):
+def is_tweet(msg, message_type):
+    if is_reaction(message_type):
         return False
     msg = str(msg)
     # not using regex for speed and because it's prob not necessary
@@ -254,29 +261,20 @@ def message_letter_count(msg):
     return len(re.sub("[^a-zA-Z]+", "", msg))
 
 
-def is_link(msg, reaction_type):
-    if is_reaction(reaction_type):
+def is_link(msg, message_type):
+    if is_reaction(message_type):
         return False
     if re.match(constants.LINK_REGEX, str(msg)):
         return True
     return False
 
 
-def is_game_message(msg, mime, reaction_type):
-    if is_reaction(reaction_type):
-        return False
-    msg = str(msg)
-    return (msg in constants.GAMES or msg == "�￼") and (
-        mime == "image/jpeg" or mime == "image/heic"
-    )
+def is_game_message(message_type):
+    return message_type == "game" or message_type == "game start"
 
 
-# unfortunately this is not accurate :/
-# regular game messages also use "�￼" now
-def _is_game_start(msg, mime, reaction_type):
-    if is_reaction(reaction_type):
-        return False
-    return str(msg) == "�￼" and (mime == "image/jpeg" or mime == "image/heic")
+def is_game_start(message_type):
+    return message_type == "game start"
 
 
 def get_day(date):
@@ -305,3 +303,51 @@ def decode_message_attributedbody(data):
         # The first bytes object is the one we want
         if type(event) is bytes:
             return event.decode("utf-8")
+
+
+def add_reactions_for_each_message(df):
+    # Filter rows with reactions
+    reactions = df[df["reaction_to"].notnull()].copy()
+
+    # Clean the reaction_to column to match GUIDs
+    reactions["reaction_to"] = reactions["reaction_to"].str.replace(r"^p:0/", "", regex=True)
+
+    # Group reactions by the original message GUID
+    reactions_grouped = reactions.groupby("reaction_to").agg({
+        "message_type": lambda x: list(x),  # Collect all reaction types
+        "sender": lambda x: list(x)  # Collect all users who reacted
+    }).rename(columns={"message_type": "reactions", "sender": "reacting_users"})
+
+    # Merge the grouped reactions back into the original dataframe
+    df = df.merge(
+        reactions_grouped,
+        how="left",
+        left_on="guid",
+        right_index=True
+    )
+
+    # Fill NaN for messages with no reactions
+    df["reactions"] = df["reactions"].apply(lambda x: x if isinstance(x, list) else [])
+    df["reacting_users"] = df["reacting_users"].apply(lambda x: x if isinstance(x, list) else [])
+
+    # Safely parse the reactions and reacting_users columns using ast.literal_eval
+    df["reaction_count"] = df["reactions"].apply(
+        lambda x: len(ast.literal_eval(str(x))) if x else 0
+    )
+
+    # Filter for rows that are messages (not reactions)
+    df = df[df["reaction_to"].isna()]
+
+    # Add a column for the total reactions each sender has received
+    df["total_reactions_received"] = df.groupby("reaction_to")["reaction_count"].transform("sum")
+
+    # Extract reaction types per user from the 'reactions' column
+    df["reactions_per_user"] = df.apply(
+        lambda row: list(zip(ast.literal_eval(str(row["reacting_users"])), ast.literal_eval(str(row["reactions"]))))
+        if row["reactions"] else [],
+        axis=1
+    )
+    del df["reactions"]
+    del df["reacting_users"]
+
+    return df

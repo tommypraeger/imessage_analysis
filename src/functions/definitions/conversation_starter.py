@@ -16,7 +16,7 @@ class ConversationStarter(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [conversations_started_category, percent_started_category]
+        return [conversations_started_category]
 
     @staticmethod
     def process_messages_df(df, args):
@@ -29,6 +29,7 @@ class ConversationStarter(Function):
             )
         )
         df.at[df.index[0], "is conversation starter?"] = True
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

@@ -19,6 +19,13 @@ class Function(abc.ABC):
         """
         pass
 
+    def get_categories_allowing_graph(self):
+        """
+        Return list of categories (i.e. table columns, graph choices) for this function
+        that can be used for graphing. If not implemented, just return all categories.
+        """
+        return self.get_categories()
+
     @abc.abstractmethod
     def get_categories_allowing_graph_total():
         """
@@ -49,7 +56,7 @@ class Function(abc.ABC):
             result_dict["names"] = []
             for category in self.get_categories():
                 result_dict[category] = []
-            self.get_table_results(result_dict, df, chat_members, args)
+            df = self.get_table_results(result_dict, df, chat_members, args)
 
         elif args.graph:
             # set up
@@ -59,7 +66,7 @@ class Function(abc.ABC):
             time_periods = self.get_time_periods(df, args.graph_time_interval)
 
             # get graph data
-            self.get_graph_results(
+            df = self.get_graph_results(
                 graph_data, df, chat_members, time_periods, args.graph_individual, args
             )
 
@@ -78,13 +85,15 @@ class Function(abc.ABC):
                 args.graph_time_interval,
             )
 
-        return result_dict
+        return result_dict, df
 
     def get_table_results(self, result_dict, df, chat_members, args):
-        self.process_messages_df(df, args)
+        df = self.process_messages_df(df, args)
+        df.to_csv("test.csv", index=False)
         for member_name in chat_members:
             helpers.initialize_member(member_name, result_dict)
             self.get_results(result_dict, df, args, member_name=member_name)
+        return df
 
     def get_graph_results(
         self,
@@ -95,13 +104,14 @@ class Function(abc.ABC):
         graph_individual,
         args,
     ):
-        self.process_messages_df(df, args)
+        df = self.process_messages_df(df, args)
         if graph_individual:
             self.get_individual_graph_results(
                 graph_data, df, chat_members, time_periods, args
             )
         else:
             self.get_total_graph_results(graph_data, df, time_periods, args)
+        return df
 
     def get_individual_graph_results(
         self,

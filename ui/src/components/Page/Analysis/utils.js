@@ -118,10 +118,11 @@ const removeArg = (setFuncArgs, key) => {
   });
 };
 
-const getCategories = (func, graphIndividual, setCategories, setCategory) => {
+const getCategories = (func, outputType, graphIndividual, setCategories, setCategory) => {
   const args = {
     function: func,
   };
+  args[outputType] = "";
   if (graphIndividual) {
     args["graph-individual"] = "";
   }

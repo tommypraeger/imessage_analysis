@@ -21,8 +21,9 @@ class Tweet(Function):
     @staticmethod
     def process_messages_df(df, args):
         df["is tweet?"] = df.apply(
-            lambda msg: helpers.is_tweet(msg.text, msg.reaction_type), axis=1
+            lambda msg: helpers.is_tweet(msg.text, msg.message_type), axis=1
         )
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

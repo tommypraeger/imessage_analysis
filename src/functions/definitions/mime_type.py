@@ -20,7 +20,6 @@ class MimeType(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        print(args)
         mime_type = args.mime_type
         if mime_type is None:
             raise Exception("Function is type but not given a type")
@@ -28,9 +27,10 @@ class MimeType(Function):
             lambda typ: helpers.is_type(typ, mime_type)
         )
         df["is game message?"] = df.apply(
-            lambda msg: helpers.is_game_message(msg.text, msg.type, msg.reaction_type),
+            lambda msg: helpers.is_game_message(msg.message_type),
             axis=1,
         )
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

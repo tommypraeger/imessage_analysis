@@ -20,12 +20,12 @@ def main(args):
     if args.function is None:
         args.function = "total"
 
-    # Swap raw ints for string reactin type
+    # Swap raw ints for string message types
     try:
-        df["reaction_type"] = df["reaction_type"].apply(helpers.convert_reaction)
+        df["message_type"] = df["message_type"].apply(helpers.convert_message_type)
     except KeyError:
         # CSV input might not have reaction type
-        df["reaction_type"] = [""] * len(df)
+        df["message_type"] = [""] * len(df)
 
     # Get members of chat
     try:
@@ -36,7 +36,7 @@ def main(args):
     # Process df based on function
     try:
         function = functions.get_function_class_by_name(args.function)
-        result_dict = function.run(df, args, chat_members)
+        result_dict, df = function.run(df, args, chat_members)
     except Exception as e:
         return helpers.make_error_message(e)
 
@@ -46,7 +46,7 @@ def main(args):
 
     try:
         result_df = pd.DataFrame(data=result_dict)
-        result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
+        # result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)
         # print(result_df.to_string(index=False))
     except Exception as e:
         return helpers.make_error_message(e)
@@ -61,7 +61,7 @@ def main(args):
 
     # print("--- %s seconds ---" % (time.time() - start_time))
 
-    return {"htmlTable": result_df.to_html(index=False)}
+    return {"htmlTable": result_df.to_html(index=False, escape=False)}
 
 
 def build_df(args):

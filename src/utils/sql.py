@@ -71,7 +71,7 @@ def get_group_df(name):
             "time",
             "guid",
             "reaction_to",
-            "reaction_type",
+            "message_type",
             "attributed_body",
         ],
     )
@@ -120,7 +120,7 @@ def get_individual_df(name):
             "time",
             "guid",
             "reaction_to",
-            "reaction_type",
+            "message_type",
             "attributed_body",
         ],
     )
@@ -203,9 +203,8 @@ def get_phone_number_from_contact_id(contact_id):
 
 def get_all_phone_numbers():
     c = connect_to_db()
-    cmd = 'SELECT DISTINCT chat_identifier \
-           FROM chat \
-           WHERE chat_identifier NOT LIKE "chat%"'
+    cmd = 'SELECT DISTINCT id \
+           FROM handle'
     c.execute(cmd)
     phone_numbers = c.fetchall()
     return [str(phone_number[0]) for phone_number in phone_numbers]

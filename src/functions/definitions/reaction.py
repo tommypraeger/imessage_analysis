@@ -77,9 +77,10 @@ class Reaction(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is removed reaction?"] = df["reaction_type"].apply(
+        df["is removed reaction?"] = df["message_type"].apply(
             helpers.is_removed_reaction
         )
+        return df
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
@@ -119,13 +120,13 @@ class Reaction(Function):
         )
 
         messages = helpers.get_messages(df, member_name, time_period)
-        reactions = len(messages[messages.reaction_type != ""])
-        like_reacts = len(messages[messages.reaction_type == "like"])
-        love_reacts = len(messages[messages.reaction_type == "love"])
-        dislike_reacts = len(messages[messages.reaction_type == "dislike"])
-        laugh_reacts = len(messages[messages.reaction_type == "laugh"])
-        emphasis_reacts = len(messages[messages.reaction_type == "emphasize"])
-        question_reacts = len(messages[messages.reaction_type == "question"])
+        reactions = len(messages[messages.message_type != "text"]) # TODO: fix
+        like_reacts = len(messages[messages.message_type == "like"])
+        love_reacts = len(messages[messages.message_type == "love"])
+        dislike_reacts = len(messages[messages.message_type == "dislike"])
+        laugh_reacts = len(messages[messages.message_type == "laugh"])
+        emphasis_reacts = len(messages[messages.message_type == "emphasize"])
+        question_reacts = len(messages[messages.message_type == "question"])
         removed_reacts = len(messages[messages["is removed reaction?"]])
 
         output_dict[removed_reactions].append(removed_reacts)

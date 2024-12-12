@@ -16,11 +16,11 @@ class Total(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [total_messages_category, percent_total_messages_category]
+        return [total_messages_category]
 
     @staticmethod
     def process_messages_df(df, args):
-        pass  # no processing necessary
+        return df  # no processing necessary
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

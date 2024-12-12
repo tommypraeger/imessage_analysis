@@ -31,7 +31,7 @@ const GraphForm = ({ func, setFuncArgs, setCategory, setCategories }) => (
         className="checkbox"
         onChange={(event) => {
           setCategory("");
-          getCategories(func, event.target.checked, setCategories, setCategory);
+          getCategories(func, "graph", event.target.checked, setCategories, setCategory);
           if (event.target.checked) {
             addArg(setFuncArgs, "graph-individual", "");
           } else {
