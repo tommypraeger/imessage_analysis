@@ -65,7 +65,7 @@ class ReactionsReceived(Function):
         # Calculate the reactions received per message
         reactions_received_per_message = round(
             helpers.safe_divide(total_reactions_received, total_messages_sent),
-            2
+            4
         )
 
         # Calculate reactions by each person
