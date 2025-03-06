@@ -12,7 +12,7 @@ Flask-RESTful==0.3.9
 iniconfig==2.0.0
 isort==5.12.0
 itsdangerous==2.1.2
-Jinja2==3.1.4
+Jinja2==3.1.6
 lazy-object-proxy==1.9.0
 MarkupSafe==2.1.2
 mccabe==0.7.0
