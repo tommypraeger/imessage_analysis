@@ -238,7 +238,9 @@ def is_tweet(msg, message_type):
         return False
     msg = str(msg)
     # not using regex for speed and because it's prob not necessary
-    return "twitter.com" in msg and "status" in msg
+    return (("/twitter.com" in msg
+            or "/x.com" in msg) # 🤮
+            and "status" in msg)
 
 
 def is_conversation_starter(time_diff, threshold):
