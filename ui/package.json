@@ -22,7 +22,8 @@
     "react-loader-spinner": "^5.0.0",
     "react-modal": "^3.11.2",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "zustand": "^5.0.8"
   },
   "scripts": {
     "start": "react-scripts start",

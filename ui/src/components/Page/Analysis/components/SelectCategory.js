@@ -1,4 +1,15 @@
-const SelectCategory = ({ outputType, setCategory, categories }) => {
+import useAnalysisForm from "../../../../state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
+
+const SelectCategory = () => {
+  const { outputType, setCategory, categories } = useAnalysisForm(
+    useShallow((s) => ({
+      outputType: s.outputType,
+      setCategory: s.setCategory,
+      categories: s.categories,
+    }))
+  );
+
   if (outputType === "graph") {
     return (
       <div className="input-div">

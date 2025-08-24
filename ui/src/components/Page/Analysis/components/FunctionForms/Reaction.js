@@ -1,5 +1,3 @@
-import React from "react";
-
 const ReactionForm = ({ outputType, reactionType, setReactionType }) => {
 
   const reactionTypes = [

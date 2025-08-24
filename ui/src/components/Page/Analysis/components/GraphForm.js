@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { addArg, removeArg, getCategories } from "../utils";
+import useAnalysisForm from "../../../../state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
-const GraphFormSection = ({ func, outputType, setFuncArgs, setCategory, setCategories }) => {
+const GraphFormSection = ({ setFuncArgs }) => {
+  const { outputType } = useAnalysisForm(useShallow((s) => ({ outputType: s.outputType })));
   useEffect(() => {
     if (outputType === "graph") {
       addArg(setFuncArgs, "graph-time-interval", "month");
@@ -10,19 +13,18 @@ const GraphFormSection = ({ func, outputType, setFuncArgs, setCategory, setCateg
   if (outputType === "graph") {
     return (
       <div className="input-div">
-        <GraphForm
-          func={func}
-          setFuncArgs={setFuncArgs}
-          setCategory={setCategory}
-          setCategories={setCategories}
-        />
+        <GraphForm setFuncArgs={setFuncArgs} />
       </div>
     );
   }
   return <div />;
 };
 
-const GraphForm = ({ func, setFuncArgs, setCategory, setCategories }) => (
+const GraphForm = ({ setFuncArgs }) => {
+  const { func, setCategory, setCategories } = useAnalysisForm(
+    useShallow((s) => ({ func: s.func, setCategory: s.setCategory, setCategories: s.setCategories }))
+  );
+  return (
   <div>
     <div className="input-div">
       <p>Graph each person individually (as opposed to just the total)?</p>
@@ -77,6 +79,7 @@ const GraphForm = ({ func, setFuncArgs, setCategory, setCategories }) => (
       Year
     </div>
   </div>
-);
+  );
+};
 
 export default GraphFormSection;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import DateForm from "./components/DateForm";
 import FunctionForm from "./components/FunctionForms";
 import GraphFormSection from "./components/GraphForm";
@@ -8,24 +8,35 @@ import SelectFunction from "./components/SelectFunction";
 import SelectOutput from "./components/SelectOutput";
 import Analysis from "./components/Analysis";
 import { getCategories, runAnalysis } from "./utils";
+import useAnalysisForm from "../../../state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
 const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => {
-  const [contactName, setContactName] = useState("");
-  const [group, setGroup] = useState(false);
-  const [csv, setCsv] = useState(false);
-  const [csvFileName, setCsvFileName] = useState("");
-  const [func, setFunc] = useState("");
+  const { contactName, group, csv, csvFileName, setCsvFileName, reactionType, setReactionType, func, outputType, category } =
+    useAnalysisForm(
+      useShallow((s) => ({
+        contactName: s.contactName,
+        group: s.group,
+        csv: s.csv,
+        csvFileName: s.csvFileName,
+        setCsvFileName: s.setCsvFileName,
+        reactionType: s.reactionType,
+        setReactionType: s.setReactionType,
+        func: s.func,
+        outputType: s.outputType,
+        category: s.category,
+      }))
+    );
   const [funcArgs, setFuncArgs] = useState({});
-  const [outputType, setOutputType] = useState("table");
-  const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState("");
+  // outputType managed via store
+  // categories and category managed via store inside subcomponents
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [response, setResponse] = useState({});
   const [fetchSeconds, setFetchSeconds] = useState(0);
   const [counterId, setCounterId] = useState(0);
   const [isCounterSet, setIsCounterSet] = useState(false);
-  const [reactionType, setReactionType] = useState("all");
+  // reactionType managed via store
 
   useEffect(() => {
     setResponse({});
@@ -47,12 +58,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
       <div className="center-content">
         <div className="input-div">
           <h2>Analysis for:</h2>
-          <SelectContact
-            contacts={contacts}
-            setContactName={setContactName}
-            setGroup={setGroup}
-            setCsv={setCsv}
-          />
+          <SelectContact contacts={contacts} />
         </div>
         {csv ? (
           <div className="input-div">
@@ -74,14 +80,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
         )}
         <div className="input-div">
           <h2>Function:</h2>
-          <SelectFunction
-            outputType={outputType}
-            funcArgs={funcArgs}
-            setFunc={setFunc}
-            setFuncArgs={setFuncArgs}
-            setCategory={setCategory}
-            setCategories={setCategories}
-          />
+          <SelectFunction />
         </div>
         {func === "" ? (
           ""
@@ -98,25 +97,10 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
         )}
         <div className="input-div">
           <h2>Output:</h2>
-          <SelectOutput
-            outputType={outputType}
-            setOutputType={setOutputType}
-            setCategory={setCategory}
-            categories={categories}
-            funcArgs={funcArgs}
-            func={func}
-            getCategories={getCategories}
-            setCategories={setCategories}
-          />
+          <SelectOutput />
         </div>
-        <SelectCategory outputType={outputType} setCategory={setCategory} categories={categories} />
-        <GraphFormSection
-          func={func}
-          outputType={outputType}
-          setFuncArgs={setFuncArgs}
-          setCategory={setCategory}
-          setCategories={setCategories}
-        />
+        <SelectCategory />
+        <GraphFormSection setFuncArgs={setFuncArgs} />
         <DateForm
           startDate={startDate}
           endDate={endDate}

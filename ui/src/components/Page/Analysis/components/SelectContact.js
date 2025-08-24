@@ -1,4 +1,14 @@
-const SelectContact = ({ contacts, setContactName, setGroup, setCsv }) => {
+import { useShallow } from "zustand/react/shallow";
+import useAnalysisForm from "../../../../state/analysisStore";
+
+const SelectContact = ({ contacts }) => {
+  const { setContactName, setGroup, setCsv } = useAnalysisForm(
+    useShallow((s) => ({
+      setContactName: s.setContactName,
+      setGroup: s.setGroup,
+      setCsv: s.setCsv,
+    }))
+  );
   const groupOptions = Object.keys(contacts)
     .filter((name) => contacts[name] === "group")
     .sort()

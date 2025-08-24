@@ -1,23 +1,36 @@
 import { getCategories } from "../utils";
+import useAnalysisForm from "../../../../state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
-const SelectFunction = ({ outputType, funcArgs, setFunc, setFuncArgs, setCategory, setCategories }) => (
-  <select
-    className="select"
-    defaultValue="none"
-    onChange={(event) => {
-      setFunc(event.target.value);
-      //setFuncArgs({});
-      setCategory("");
-      getCategories(event.target.value, outputType, funcArgs["graph-individual"], setCategories, setCategory);
-    }}
-  >
+const SelectFunction = () => {
+  const { outputType, funcArgs, setFunc, setCategory, setCategories } = useAnalysisForm(
+    useShallow((s) => ({
+      outputType: s.outputType,
+      funcArgs: s.funcArgs,
+      setFunc: s.setFunc,
+      setCategory: s.setCategory,
+      setCategories: s.setCategories,
+    }))
+  );
+
+  return (
+    <select
+      className="select"
+      defaultValue="none"
+      onChange={(event) => {
+        const nextFunc = event.target.value;
+        setFunc(nextFunc);
+        setCategory("");
+        getCategories(nextFunc, outputType, funcArgs["graph-individual"], setCategories, setCategory);
+      }}
+    >
     <option value="none" disabled={true}>
       Select a function
     </option>
 
     <option value="total">Total: How many messages each person sends</option>
 
-    <option value="reaction">Reactions sent: How many messages are iMessage reactions</option>
+    <option value="reaction">Reactions sent: How many iMessage reactions each person sends</option>
 
     <option value="reactions_received">Reactions received: How many iMessage reactions each person receives</option>
 
@@ -52,7 +65,8 @@ const SelectFunction = ({ outputType, funcArgs, setFunc, setFuncArgs, setCategor
     <option value="all_caps">All Caps: How many messages are in all caps</option>
 
     <option value="mime_type">File Type: How many messages are of a specific file type</option>
-  </select>
-);
+    </select>
+  );
+};
 
 export default SelectFunction;

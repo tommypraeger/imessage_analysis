@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import { TextField, Autocomplete } from "@mui/material";
 import { addContact, phoneNumberFilterOptions } from "../utils";
