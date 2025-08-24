@@ -1,4 +1,14 @@
-const ReactionForm = ({ outputType, reactionType, setReactionType }) => {
+import useAnalysisForm from "state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
+
+const ReactionForm = () => {
+  const { outputType, reactionType, setReactionType } = useAnalysisForm(
+    useShallow((s) => ({
+      outputType: s.outputType,
+      reactionType: s.reactionType,
+      setReactionType: s.setReactionType,
+    }))
+  );
 
   const reactionTypes = [
     { label: "All types (default)", value: "all" },

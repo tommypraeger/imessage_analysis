@@ -1,6 +1,16 @@
 import DatePicker from "react-datepicker";
+import useAnalysisForm from "state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
-const DateForm = ({ startDate, endDate, setStartDate, setEndDate }) => {
+const DateForm = () => {
+  const { startDate, endDate, setStartDate, setEndDate } = useAnalysisForm(
+    useShallow((s) => ({
+      startDate: s.startDate,
+      endDate: s.endDate,
+      setStartDate: s.setStartDate,
+      setEndDate: s.setEndDate,
+    }))
+  );
   return (
     <div className="input-div">
       <p>Limit dates to...</p>

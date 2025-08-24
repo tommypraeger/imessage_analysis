@@ -14,6 +14,15 @@ const initialState = {
   endDate: "",
   response: {},
   reactionType: "all",
+  // First-class form fields
+  minutesThreshold: 60,
+  mimeType: "image/png",
+  phrase: "",
+  phraseSeparate: false,
+  phraseCaseSensitive: false,
+  phraseRegex: false,
+  graphIndividual: false,
+  graphTimeInterval: "",
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -32,12 +41,34 @@ const useAnalysisForm = create((set, get) => ({
   setEndDate: (date) => set({ endDate: date }),
   setResponse: (resp) => set({ response: resp }),
   setReactionType: (val) => set({ reactionType: val }),
+  setMinutesThreshold: (val) => set({ minutesThreshold: val }),
+  setMimeType: (val) => set({ mimeType: val }),
+  setPhrase: (val) => set({ phrase: val }),
+  setPhraseSeparate: (val) => set({ phraseSeparate: !!val }),
+  setPhraseCaseSensitive: (val) => set({ phraseCaseSensitive: !!val }),
+  setPhraseRegex: (val) => set({ phraseRegex: !!val }),
+  setGraphIndividual: (val) => set({ graphIndividual: !!val }),
+  setGraphTimeInterval: (val) => set({ graphTimeInterval: val }),
 
   // funcArgs compatibility during migration
   setFuncArgs: (updater) => {
     const prev = get().funcArgs;
     const next = typeof updater === "function" ? updater(prev) : updater;
     set({ funcArgs: next || {} });
+  },
+
+  // Derived: whether Analyze should be disabled based on current state
+  getAnalyzeDisabled: () => {
+    const s = get();
+    const { contactName, func, outputType, category, csv, csvFileName } = s;
+    if (!contactName || !func) return true;
+    if (func === "phrase" && !s.phrase) return true;
+    if (func === "mime_type" && !s.mimeType) return true;
+    if ((func === "message_series" || func === "conversation_starter" || func === "participation") && !s.minutesThreshold)
+      return true;
+    if (outputType === "graph" && (!category || !s.graphTimeInterval)) return true;
+    if (csv && csvFileName === "") return true;
+    return false;
   },
 
   reset: () => set({ ...initialState }),

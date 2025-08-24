@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
-import { addArg } from "../../utils";
+import React from "react";
+import useAnalysisForm from "state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
-const MimeTypeForm = ({ setFuncArgs }) => {
-  useEffect(() => {
-    addArg(setFuncArgs, "mime-type", "image/png");
-  }, [setFuncArgs]);
+const MimeTypeForm = () => {
+  const { mimeType, setMimeType } = useAnalysisForm(
+    useShallow((s) => ({ mimeType: s.mimeType, setMimeType: s.setMimeType }))
+  );
 
   const mimeTypes = [
     "image/png",
@@ -42,11 +43,7 @@ const MimeTypeForm = ({ setFuncArgs }) => {
   return (
     <div className="input-div">
       <p>File type:</p>
-      <select
-        className="select"
-        defaultValue="image/png"
-        onChange={(event) => addArg(setFuncArgs, "mime-type", event.target.value)}
-      >
+      <select className="select" value={mimeType} onChange={(e) => setMimeType(e.target.value)}>
         {mimeTypes.map((mimeType) => (
           <option key={mimeType} value={mimeType}>
             {mimeType}

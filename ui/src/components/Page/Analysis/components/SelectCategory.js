@@ -1,4 +1,4 @@
-import useAnalysisForm from "../../../../state/analysisStore";
+import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
 const SelectCategory = () => {

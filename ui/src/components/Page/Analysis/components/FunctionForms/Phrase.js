@@ -1,47 +1,42 @@
-import { useEffect } from "react";
-import { addArg, removeArg } from "../../utils";
+import useAnalysisForm from "state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 
-const PhraseForm = ({ setFuncArgs }) => {
-  useEffect(() => {
-    addArg(setFuncArgs, "phrase", "");
-  }, [setFuncArgs]);
+const PhraseForm = () => {
+  const {
+    phrase,
+    setPhrase,
+    phraseSeparate,
+    setPhraseSeparate,
+    phraseCaseSensitive,
+    setPhraseCaseSensitive,
+    phraseRegex,
+    setPhraseRegex,
+  } = useAnalysisForm(
+    useShallow((s) => ({
+      phrase: s.phrase,
+      setPhrase: s.setPhrase,
+      phraseSeparate: s.phraseSeparate,
+      setPhraseSeparate: s.setPhraseSeparate,
+      phraseCaseSensitive: s.phraseCaseSensitive,
+      setPhraseCaseSensitive: s.setPhraseCaseSensitive,
+      phraseRegex: s.phraseRegex,
+      setPhraseRegex: s.setPhraseRegex,
+    }))
+  );
 
   return (
     <div>
       <div className="input-div">
         <p>Phrase to search for:</p>
-        <input
-          type="text"
-          onChange={(event) => addArg(setFuncArgs, "phrase", event.target.value)}
-        />
+        <input type="text" value={phrase} onChange={(e) => setPhrase(e.target.value)} />
       </div>
       <div className="input-div">
         <p>Search whole words (do not include results if phrase is within a larger word)?</p>
-        <input
-          type="checkbox"
-          className="checkbox"
-          onChange={(event) => {
-            if (event.target.checked) {
-              addArg(setFuncArgs, "separate", "");
-            } else {
-              removeArg(setFuncArgs, "separate");
-            }
-          }}
-        />
+        <input type="checkbox" className="checkbox" checked={!!phraseSeparate} onChange={(e) => setPhraseSeparate(e.target.checked)} />
       </div>
       <div className="input-div">
         <p>Case-sensitive search?</p>
-        <input
-          type="checkbox"
-          className="checkbox"
-          onChange={(event) => {
-            if (event.target.checked) {
-              addArg(setFuncArgs, "case-sensitive", "");
-            } else {
-              removeArg(setFuncArgs, "case-sensitive");
-            }
-          }}
-        />
+        <input type="checkbox" className="checkbox" checked={!!phraseCaseSensitive} onChange={(e) => setPhraseCaseSensitive(e.target.checked)} />
         <div className="sep-50"></div>
         <p>
           Use{" "}
@@ -50,17 +45,7 @@ const PhraseForm = ({ setFuncArgs }) => {
           </a>
           ?
         </p>
-        <input
-          type="checkbox"
-          className="checkbox"
-          onChange={(event) => {
-            if (event.target.checked) {
-              addArg(setFuncArgs, "regex", "");
-            } else {
-              removeArg(setFuncArgs, "regex");
-            }
-          }}
-        />
+        <input type="checkbox" className="checkbox" checked={!!phraseRegex} onChange={(e) => setPhraseRegex(e.target.checked)} />
       </div>
     </div>
   );

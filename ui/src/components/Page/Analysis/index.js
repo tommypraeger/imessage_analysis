@@ -8,11 +8,11 @@ import SelectFunction from "./components/SelectFunction";
 import SelectOutput from "./components/SelectOutput";
 import Analysis from "./components/Analysis";
 import { getCategories, runAnalysis } from "./utils";
-import useAnalysisForm from "../../../state/analysisStore";
+import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
 const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => {
-  const { contactName, group, csv, csvFileName, setCsvFileName, reactionType, setReactionType, func, outputType, category } =
+  const { contactName, group, csv, csvFileName, setCsvFileName, reactionType, setReactionType, func, outputType, category, funcArgs, setFuncArgs } =
     useAnalysisForm(
       useShallow((s) => ({
         contactName: s.contactName,
@@ -25,13 +25,14 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
         func: s.func,
         outputType: s.outputType,
         category: s.category,
+        funcArgs: s.funcArgs,
+        setFuncArgs: s.setFuncArgs,
       }))
     );
-  const [funcArgs, setFuncArgs] = useState({});
+  // funcArgs managed via store (temporary during migration)
   // outputType managed via store
   // categories and category managed via store inside subcomponents
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // startDate/endDate managed via store
   const [response, setResponse] = useState({});
   const [fetchSeconds, setFetchSeconds] = useState(0);
   const [counterId, setCounterId] = useState(0);
@@ -86,13 +87,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
           ""
         ) : (
           <div className="select-div">
-            <FunctionForm
-              func={func}
-              setFuncArgs={setFuncArgs}
-              outputType={outputType}
-              reactionType={reactionType}
-              setReactionType={setReactionType}
-            />
+            <FunctionForm />
           </div>
         )}
         <div className="input-div">
@@ -100,13 +95,8 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
           <SelectOutput />
         </div>
         <SelectCategory />
-        <GraphFormSection setFuncArgs={setFuncArgs} />
-        <DateForm
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-        />
+        <GraphFormSection />
+        <DateForm />
         <button
           className="center-btn"
           onClick={() => {
@@ -120,25 +110,14 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
               group,
               csv,
               csvFileName,
-              startDate,
-              endDate,
+              useAnalysisForm.getState().startDate,
+              useAnalysisForm.getState().endDate,
               reactionType,
               setFetchesInProgress,
               setResponse
             );
           }}
-          disabled={
-            !contactName ||
-            !func ||
-            (func === "phrase" && !funcArgs.phrase) ||
-            (func === "mime_type" && !funcArgs["mime-type"]) ||
-            ((func === "message_series" ||
-              func === "conversation_starter" ||
-              func === "participation") &&
-              !funcArgs["minutes-threshold"]) ||
-            (outputType === "graph" && (!category || !("graph-time-interval" in funcArgs))) ||
-            (csv && csvFileName === "")
-          }
+          disabled={useAnalysisForm((s) => s.getAnalyzeDisabled())}
         >
           Analyze
         </button>

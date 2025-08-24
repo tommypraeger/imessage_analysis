@@ -1,5 +1,5 @@
 import { useShallow } from "zustand/react/shallow";
-import useAnalysisForm from "../../../../state/analysisStore";
+import useAnalysisForm from "state/analysisStore";
 
 const SelectContact = ({ contacts }) => {
   const { setContactName, setGroup, setCsv } = useAnalysisForm(

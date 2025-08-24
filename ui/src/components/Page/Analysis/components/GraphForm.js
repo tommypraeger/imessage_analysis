@@ -1,28 +1,37 @@
 import { useEffect } from "react";
-import { addArg, removeArg, getCategories } from "../utils";
-import useAnalysisForm from "../../../../state/analysisStore";
+import { getCategories } from "../utils";
+import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
-const GraphFormSection = ({ setFuncArgs }) => {
-  const { outputType } = useAnalysisForm(useShallow((s) => ({ outputType: s.outputType })));
+const GraphFormSection = () => {
+  const { outputType, setGraphTimeInterval } = useAnalysisForm(
+    useShallow((s) => ({ outputType: s.outputType, setGraphTimeInterval: s.setGraphTimeInterval }))
+  );
   useEffect(() => {
     if (outputType === "graph") {
-      addArg(setFuncArgs, "graph-time-interval", "month");
+      setGraphTimeInterval("month");
     }
-  }, [setFuncArgs, outputType]);
+  }, [setGraphTimeInterval, outputType]);
   if (outputType === "graph") {
     return (
       <div className="input-div">
-        <GraphForm setFuncArgs={setFuncArgs} />
+        <GraphForm />
       </div>
     );
   }
   return <div />;
 };
 
-const GraphForm = ({ setFuncArgs }) => {
-  const { func, setCategory, setCategories } = useAnalysisForm(
-    useShallow((s) => ({ func: s.func, setCategory: s.setCategory, setCategories: s.setCategories }))
+const GraphForm = () => {
+  const { func, setCategory, setCategories, setGraphIndividual, setGraphTimeInterval, graphIndividual } = useAnalysisForm(
+    useShallow((s) => ({
+      func: s.func,
+      setCategory: s.setCategory,
+      setCategories: s.setCategories,
+      setGraphIndividual: s.setGraphIndividual,
+      setGraphTimeInterval: s.setGraphTimeInterval,
+      graphIndividual: s.graphIndividual,
+    }))
   );
   return (
   <div>
@@ -34,11 +43,7 @@ const GraphForm = ({ setFuncArgs }) => {
         onChange={(event) => {
           setCategory("");
           getCategories(func, "graph", event.target.checked, setCategories, setCategory);
-          if (event.target.checked) {
-            addArg(setFuncArgs, "graph-individual", "");
-          } else {
-            removeArg(setFuncArgs, "graph-individual");
-          }
+          setGraphIndividual(event.target.checked);
         }}
       />
     </div>
@@ -49,7 +54,7 @@ const GraphForm = ({ setFuncArgs }) => {
         type="radio"
         value="day"
         name="time-period"
-        onChange={(event) => addArg(setFuncArgs, "graph-time-interval", event.target.value)}
+        onChange={(event) => setGraphTimeInterval(event.target.value)}
       />
       Day
       <input
@@ -57,7 +62,7 @@ const GraphForm = ({ setFuncArgs }) => {
         type="radio"
         value="week"
         name="time-period"
-        onChange={(event) => addArg(setFuncArgs, "graph-time-interval", event.target.value)}
+        onChange={(event) => setGraphTimeInterval(event.target.value)}
       />
       Week
       <input
@@ -66,7 +71,7 @@ const GraphForm = ({ setFuncArgs }) => {
         value="month"
         name="time-period"
         defaultChecked={true}
-        onChange={(event) => addArg(setFuncArgs, "graph-time-interval", event.target.value)}
+        onChange={(event) => setGraphTimeInterval(event.target.value)}
       />
       Month
       <input
@@ -74,7 +79,7 @@ const GraphForm = ({ setFuncArgs }) => {
         type="radio"
         value="year"
         name="time-period"
-        onChange={(event) => addArg(setFuncArgs, "graph-time-interval", event.target.value)}
+        onChange={(event) => setGraphTimeInterval(event.target.value)}
       />
       Year
     </div>

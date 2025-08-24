@@ -10,12 +10,15 @@ import ParticipationForm from "./Participation";
 import PhraseForm from "./Phrase";
 import ReactionForm from "./Reaction";
 import ReactionsReceivedForm from "./ReactionsReceived";
+import useAnalysisForm from "state/analysisStore";
+import { useShallow } from "zustand/react/shallow";
 import TotalForm from "./Total";
 import TweetForm from "./Tweet";
 import WordCountForm from "./WordCount";
 import WordLengthForm from "./WordLength";
 
-const FunctionForm = ({ func, setFuncArgs, outputType, reactionType, setReactionType }) => {
+const FunctionForm = () => {
+  const { func } = useAnalysisForm(useShallow((s) => ({ func: s.func })));
   switch (func) {
     case "all_caps":
       return <AllCapsForm />;
@@ -24,7 +27,7 @@ const FunctionForm = ({ func, setFuncArgs, outputType, reactionType, setReaction
       return <AttachmentForm />;
 
     case "conversation_starter":
-      return <ConvoStarterForm setFuncArgs={setFuncArgs} />;
+      return <ConvoStarterForm />;
 
     case "emoji":
       return <EmojiForm />;
@@ -36,30 +39,22 @@ const FunctionForm = ({ func, setFuncArgs, outputType, reactionType, setReaction
       return <LinkForm />;
 
     case "message_series":
-      return <MessageSeriesForm setFuncArgs={setFuncArgs} />;
+      return <MessageSeriesForm />;
 
     case "mime_type":
-      return <MimeTypeForm setFuncArgs={setFuncArgs} />;
+      return <MimeTypeForm />;
 
     case "participation":
-      return <ParticipationForm setFuncArgs={setFuncArgs} />;
+      return <ParticipationForm />;
 
     case "phrase":
-      return <PhraseForm setFuncArgs={setFuncArgs} />;
+      return <PhraseForm />;
 
     case "reaction":
-      return (
-        <ReactionForm outputType={outputType} reactionType={reactionType} setReactionType={setReactionType} />
-      );
+      return <ReactionForm />;
 
     case "reactions_received":
-      return (
-        <ReactionsReceivedForm
-          outputType={outputType}
-          reactionType={reactionType}
-          setReactionType={setReactionType}
-        />
-      );
+      return <ReactionsReceivedForm />;
 
     case "total":
       return <TotalForm />;

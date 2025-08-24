@@ -1,15 +1,15 @@
 import { getCategories } from "../utils";
-import useAnalysisForm from "../../../../state/analysisStore";
+import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
 const SelectFunction = () => {
-  const { outputType, funcArgs, setFunc, setCategory, setCategories } = useAnalysisForm(
+  const { outputType, setFunc, setCategory, setCategories, graphIndividual } = useAnalysisForm(
     useShallow((s) => ({
       outputType: s.outputType,
-      funcArgs: s.funcArgs,
       setFunc: s.setFunc,
       setCategory: s.setCategory,
       setCategories: s.setCategories,
+      graphIndividual: s.graphIndividual,
     }))
   );
 
@@ -21,7 +21,7 @@ const SelectFunction = () => {
         const nextFunc = event.target.value;
         setFunc(nextFunc);
         setCategory("");
-        getCategories(nextFunc, outputType, funcArgs["graph-individual"], setCategories, setCategory);
+        getCategories(nextFunc, outputType, graphIndividual, setCategories, setCategory);
       }}
     >
     <option value="none" disabled={true}>

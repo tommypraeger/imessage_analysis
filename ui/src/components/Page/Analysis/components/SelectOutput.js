@@ -1,16 +1,16 @@
 import { getCategories } from "../utils";
-import useAnalysisForm from "../../../../state/analysisStore";
+import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
 const SelectOutput = () => {
-  const { outputType, setOutputType, func, funcArgs, setCategories, setCategory } = useAnalysisForm(
+  const { outputType, setOutputType, func, setCategories, setCategory, graphIndividual } = useAnalysisForm(
     useShallow((s) => ({
       outputType: s.outputType,
       setOutputType: s.setOutputType,
       func: s.func,
-      funcArgs: s.funcArgs,
       setCategories: s.setCategories,
       setCategory: s.setCategory,
+      graphIndividual: s.graphIndividual,
     }))
   );
 
@@ -22,7 +22,7 @@ const SelectOutput = () => {
         const nextOutput = event.target.value;
         setOutputType(nextOutput);
         if (func !== "") {
-          getCategories(func, nextOutput, funcArgs["graph-individual"], setCategories, setCategory);
+          getCategories(func, nextOutput, graphIndividual, setCategories, setCategory);
         }
       }}
     >
