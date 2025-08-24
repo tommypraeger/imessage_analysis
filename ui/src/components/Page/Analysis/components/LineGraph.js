@@ -1,16 +1,8 @@
 import { Line } from "react-chartjs-2";
-import {
-  CategoryScale,
-  Chart,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-} from "chart.js";
+
 // https://stackoverflow.com/a/67143648
-Chart.register(CategoryScale, LinearScale, LineElement, Legend, PointElement, Title, Tooltip);
+// eslint-disable-next-line no-unused-vars
+import Chart from "chart.js/auto";
 
 const LineGraph = ({ data, category, func, funcArgs }) => {
   if (func === "phrase") {
