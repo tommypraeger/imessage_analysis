@@ -9,10 +9,10 @@ const LoadingGif = () => (
   </div>
 );
 
-const Analysis = ({ response, category, func, funcArgs, fetchesInProgress, fetchSeconds }) => {
+const Analysis = ({ response, category, func, funcArgs, reactionType, fetchesInProgress, fetchSeconds }) => {
   useEffect(() => {
     makeTableNice();
-  });
+  }, [response]);
 
   if (fetchesInProgress > 0) {
     return (

@@ -25,6 +25,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
   const [fetchSeconds, setFetchSeconds] = useState(0);
   const [counterId, setCounterId] = useState(0);
   const [isCounterSet, setIsCounterSet] = useState(false);
+  const [reactionType, setReactionType] = useState("all");
 
   useEffect(() => {
     setResponse({});
@@ -86,7 +87,13 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
           ""
         ) : (
           <div className="select-div">
-            <FunctionForm func={func} setFuncArgs={setFuncArgs} />
+            <FunctionForm
+              func={func}
+              setFuncArgs={setFuncArgs}
+              outputType={outputType}
+              reactionType={reactionType}
+              setReactionType={setReactionType}
+            />
           </div>
         )}
         <div className="input-div">
@@ -131,6 +138,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
               csvFileName,
               startDate,
               endDate,
+              reactionType,
               setFetchesInProgress,
               setResponse
             );
@@ -157,6 +165,7 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
           category={category}
           func={func}
           funcArgs={funcArgs}
+          reactionType={reactionType}
           fetchesInProgress={fetchesInProgress}
           fetchSeconds={fetchSeconds}
         />

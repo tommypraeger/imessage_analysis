@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReactionForm = ({ outputType, reactionType, setReactionType }) => {
+const ReactionsReceivedForm = ({ outputType, reactionType, setReactionType }) => {
 
   const reactionTypes = [
     { label: "All types (default)", value: "all" },
@@ -36,4 +36,4 @@ const ReactionForm = ({ outputType, reactionType, setReactionType }) => {
   );
 };
 
-export default ReactionForm;
+export default ReactionsReceivedForm;

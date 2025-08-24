@@ -9,12 +9,13 @@ import MimeTypeForm from "./MimeType";
 import ParticipationForm from "./Participation";
 import PhraseForm from "./Phrase";
 import ReactionForm from "./Reaction";
+import ReactionsReceivedForm from "./ReactionsReceived";
 import TotalForm from "./Total";
 import TweetForm from "./Tweet";
 import WordCountForm from "./WordCount";
 import WordLengthForm from "./WordLength";
 
-const FunctionForm = ({ func, setFuncArgs }) => {
+const FunctionForm = ({ func, setFuncArgs, outputType, reactionType, setReactionType }) => {
   switch (func) {
     case "all_caps":
       return <AllCapsForm />;
@@ -47,7 +48,18 @@ const FunctionForm = ({ func, setFuncArgs }) => {
       return <PhraseForm setFuncArgs={setFuncArgs} />;
 
     case "reaction":
-      return <ReactionForm />;
+      return (
+        <ReactionForm outputType={outputType} reactionType={reactionType} setReactionType={setReactionType} />
+      );
+
+    case "reactions_received":
+      return (
+        <ReactionsReceivedForm
+          outputType={outputType}
+          reactionType={reactionType}
+          setReactionType={setReactionType}
+        />
+      );
 
     case "total":
       return <TotalForm />;

@@ -3,8 +3,9 @@ from collections import defaultdict
 from src.functions import Function
 from src.utils import helpers, constants
 
-reactions_given_category = "Reactions given"
-reactions_to_others_category = "Reactions to others"
+total_messages_sent_category = "Total messages sent"
+total_reactions_received_category = "Total reactions received"
+reactions_received_per_message_category = "Reactions received per message"
 
 
 class ReactionsReceived(Function):
@@ -14,27 +15,29 @@ class ReactionsReceived(Function):
 
     @staticmethod
     def get_categories():
-        return [
-            "Total messages sent",
-            "Total reactions received",
-            "Reactions received per message",
-        ] + [
-            f"{reaction_type} reacts received" for reaction_type in constants.REACTION_TYPES
-        ] + [
-            f"{reaction_type} reacts received per message" for reaction_type in constants.REACTION_TYPES
+        base = [
+            total_messages_sent_category,
+            total_reactions_received_category,
+            reactions_received_per_message_category,
         ]
+        per_type = []
+        for reaction_type in constants.REACTION_TYPES:
+            rt_title = reaction_type.title()
+            per_type.append(f"{rt_title} reacts received")
+            per_type.append(f"{rt_title} reacts received per message")
+        return base + per_type
     
     def get_categories_allowing_graph(self):
         return [
-            "Total reactions received",
-            "Reactions received per message"
+            total_reactions_received_category,
+            reactions_received_per_message_category,
         ]
 
     @staticmethod
     def get_categories_allowing_graph_total():
         return [
-            "Total reactions received",
-            "Reactions received per message"
+            total_reactions_received_category,
+            reactions_received_per_message_category,
         ]
     
     @staticmethod
@@ -60,7 +63,7 @@ class ReactionsReceived(Function):
 
         # Calculate the number of messages sent by the member
         total_messages_sent = len(df)
-        output_dict["Total messages sent"].append(total_messages_sent)
+        output_dict[total_messages_sent_category].append(total_messages_sent)
 
         # Calculate the reactions received per message
         reactions_received_per_message = round(
@@ -76,18 +79,20 @@ class ReactionsReceived(Function):
                     reactions_by_person[user][reaction] += 1
 
         # Update the output_dict with the calculated values
-        output_dict["Total reactions received"].append(total_reactions_received)
-        output_dict["Reactions received per message"].append(reactions_received_per_message)
+        output_dict[total_reactions_received_category].append(total_reactions_received)
+        output_dict[reactions_received_per_message_category].append(reactions_received_per_message)
 
         # Reaction types stats: Like, Love, Laugh, etc.
         for reaction_type in constants.REACTION_TYPES:
             total_reacts = sum(
-                count for user_reactions in reactions_by_person.values()
+                count
+                for user_reactions in reactions_by_person.values()
                 for react_type, count in user_reactions.items()
                 if react_type == reaction_type
             )
-            output_dict[f"{reaction_type} reacts received"].append(total_reacts)
-            output_dict[f"{reaction_type} reacts received per message"].append(
+            rt_title = reaction_type.title()
+            output_dict[f"{rt_title} reacts received"].append(total_reacts)
+            output_dict[f"{rt_title} reacts received per message"].append(
                 round(
                     helpers.safe_divide(total_reacts, total_messages_sent),
                     4
