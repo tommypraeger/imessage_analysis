@@ -1,27 +1,30 @@
-import { getCategories } from "../utils";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
+import useAnalysisRunner from "../useAnalysisRunner";
 
 const SelectFunction = () => {
-  const { outputType, setFunc, setCategory, setCategories, graphIndividual } = useAnalysisForm(
+  const { outputType, func, setFunc, setCategory, graphIndividual } = useAnalysisForm(
     useShallow((s) => ({
       outputType: s.outputType,
+      func: s.func,
       setFunc: s.setFunc,
       setCategory: s.setCategory,
-      setCategories: s.setCategories,
       graphIndividual: s.graphIndividual,
     }))
   );
+  const { fetchCategories } = useAnalysisRunner();
 
   return (
+    <>
+    <h2>Function:</h2>
     <select
       className="select"
-      defaultValue="none"
+      value={func || "none"}
       onChange={(event) => {
         const nextFunc = event.target.value;
         setFunc(nextFunc);
         setCategory("");
-        getCategories(nextFunc, outputType, graphIndividual, setCategories, setCategory);
+        fetchCategories(nextFunc, outputType, graphIndividual);
       }}
     >
     <option value="none" disabled={true}>
@@ -66,6 +69,7 @@ const SelectFunction = () => {
 
     <option value="mime_type">File Type: How many messages are of a specific file type</option>
     </select>
+    </>
   );
 };
 

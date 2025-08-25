@@ -2,6 +2,7 @@ import $ from "jquery";
 import "datatables.net";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import { postFetch } from "../utils";
+import useAnalysisForm from "state/analysisStore";
 
 // Map UI reaction type values to column labels for table hiding
 const REACTION_PER_TYPE_COLUMNS = {
@@ -42,35 +43,49 @@ const formatDate = (date) => {
   return strDate;
 };
 
-const buildArgs = (
-  contactName,
-  func,
-  funcArgs,
-  outputType,
-  category,
-  group,
-  csv,
-  csvFileName,
-  startDate,
-  endDate
-) => {
-  const args = {
-    name: contactName,
-    export: "",
-  };
+const buildArgs = () => {
+  const s = useAnalysisForm.getState();
+  const {
+    contactName,
+    func,
+    outputType,
+    category,
+    group,
+    csv,
+    csvFileName,
+    startDate,
+    endDate,
+  } = s;
 
+  const args = { name: contactName, export: "" };
   args.function = func;
 
-  Object.assign(args, funcArgs);
-
-  args[outputType] = "";
-
-  if (category) {
-    args.category = category;
+  // Function-specific transient args composed from store
+  if (func === "phrase") {
+    args["phrase"] = s.phrase || "";
+    if (s.phraseSeparate) args["separate"] = "";
+    if (s.phraseCaseSensitive) args["case-sensitive"] = "";
+    if (s.phraseRegex) args["regex"] = "";
+  }
+  if (func === "mime_type") {
+    args["mime-type"] = s.mimeType;
+  }
+  if (func === "message_series" || func === "conversation_starter" || func === "participation") {
+    if (typeof s.minutesThreshold === "number" && !Number.isNaN(s.minutesThreshold)) {
+      args["minutes-threshold"] = s.minutesThreshold;
+    }
   }
 
-  // group and csv shouldn't be set at the same time
-  // group has priority to cover cases where group chat name matches csv default value
+  // Output + graph-specific args
+  args[outputType] = "";
+  if (outputType === "graph") {
+    if (s.graphIndividual) args["graph-individual"] = "";
+    if (s.graphTimeInterval) args["graph-time-interval"] = s.graphTimeInterval;
+  }
+
+  if (category) args.category = category;
+
+  // group and csv shouldn't be set at the same time (group has priority)
   if (group) {
     args.group = "";
   } else if (csv) {
@@ -78,51 +93,22 @@ const buildArgs = (
     args["csv-file-path"] = csvFileName;
   }
 
-  if (startDate) {
-    args["from-date"] = formatDate(startDate);
-  }
-
-  if (endDate) {
-    args["to-date"] = formatDate(endDate);
-  }
+  if (startDate) args["from-date"] = formatDate(startDate);
+  if (endDate) args["to-date"] = formatDate(endDate);
 
   return args;
 };
 
-const runAnalysis = (
-  contactName,
-  func,
-  funcArgs,
-  outputType,
-  category,
-  group,
-  csv,
-  csvFileName,
-  startDate,
-  endDate,
-  reactionType,
-  setFetchesInProgress,
-  setResponse
-) => {
+const runAnalysis = (setFetchesInProgress, setResponse) => {
   setResponse({});
-  const args = buildArgs(
-    contactName,
-    func,
-    funcArgs,
-    outputType,
-    category,
-    group,
-    csv,
-    csvFileName,
-    startDate,
-    endDate
-  );
+  const s = useAnalysisForm.getState();
+  const args = buildArgs();
   postFetch("analysis", args, setFetchesInProgress)
     .then((response) => {
       // If we received an HTML table, optionally strip irrelevant columns
       if (response && response.htmlTable) {
         response = Object.assign({}, response, {
-          htmlTable: filterHtmlTableByReactionType(func, reactionType, response.htmlTable),
+          htmlTable: filterHtmlTableByReactionType(s.func, s.reactionType, response.htmlTable),
         });
       }
       setResponse(response);
@@ -212,20 +198,6 @@ const filterHtmlTableByReactionType = (func, reactionType, html) => {
   }
 };
 
-const addArg = (setFuncArgs, key, val) => {
-  const newArg = {};
-  newArg[key] = val;
-  setFuncArgs((args) => Object.assign({}, args, newArg));
-};
-
-const removeArg = (setFuncArgs, key) => {
-  setFuncArgs((args) => {
-    const newArgs = Object.assign({}, args);
-    delete newArgs[key];
-    return newArgs;
-  });
-};
-
 const getCategories = (func, outputType, graphIndividual, setCategories, setCategory) => {
   const args = {
     function: func,
@@ -245,4 +217,4 @@ const getCategories = (func, outputType, graphIndividual, setCategories, setCate
     .catch((err) => console.log(err));
 };
 
-export { runAnalysis, makeTableNice, addArg, removeArg, getCategories };
+export { runAnalysis, makeTableNice, getCategories };

@@ -11,29 +11,23 @@ const DateForm = () => {
       setEndDate: s.setEndDate,
     }))
   );
+  const DateField = ({ label, selected, onChange, placeholder }) => (
+    <div className="date-input">
+      <p>{label}:</p>
+      <DatePicker
+        dateFormat="MM/dd/yyyy"
+        selected={selected}
+        onChange={onChange}
+        placeholderText={placeholder}
+        isClearable={true}
+      />
+    </div>
+  );
   return (
     <div className="input-div">
       <p>Limit dates to...</p>
-      <div className="date-input">
-        <p>Start:</p>
-        <DatePicker
-          dateFormat="MM/dd/yyyy"
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          placeholderText="No start limit"
-          isClearable={true}
-        />
-      </div>
-      <div className="date-input">
-        <p>End:</p>
-        <DatePicker
-          dateFormat="MM/dd/yyyy"
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          placeholderText="No end limit"
-          isClearable={true}
-        />
-      </div>
+      <DateField label="Start" selected={startDate} onChange={setStartDate} placeholder="No start limit" />
+      <DateField label="End" selected={endDate} onChange={setEndDate} placeholder="No end limit" />
     </div>
   );
 };

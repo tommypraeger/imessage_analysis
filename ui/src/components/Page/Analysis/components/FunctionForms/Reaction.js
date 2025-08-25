@@ -1,5 +1,6 @@
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
+import { REACTION_TYPE_OPTIONS } from "./common";
 
 const ReactionForm = () => {
   const { outputType, reactionType, setReactionType } = useAnalysisForm(
@@ -10,17 +11,7 @@ const ReactionForm = () => {
     }))
   );
 
-  const reactionTypes = [
-    { label: "All types (default)", value: "all" },
-    { label: "Total (aggregate)", value: "total" },
-    { label: "Love", value: "love" },
-    { label: "Like", value: "like" },
-    { label: "Dislike", value: "dislike" },
-    { label: "Laugh", value: "laugh" },
-    { label: "Emphasize", value: "emphasize" },
-    { label: "Question", value: "question" },
-    { label: "Custom Emoji", value: "custom emoji" },
-  ];
+  const reactionTypes = REACTION_TYPE_OPTIONS;
 
   if (outputType !== "table") {
     return <div />;

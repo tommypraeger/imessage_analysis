@@ -6,7 +6,6 @@ const initialState = {
   csv: false,
   csvFileName: "",
   func: "",
-  funcArgs: {},
   outputType: "table",
   categories: [],
   category: "",
@@ -14,7 +13,6 @@ const initialState = {
   endDate: "",
   response: {},
   reactionType: "all",
-  // First-class form fields
   minutesThreshold: 60,
   mimeType: "image/png",
   phrase: "",
@@ -28,7 +26,6 @@ const initialState = {
 const useAnalysisForm = create((set, get) => ({
   ...initialState,
 
-  // Global setters
   setContactName: (name) => set({ contactName: name }),
   setGroup: (val) => set({ group: !!val }),
   setCsv: (val) => set({ csv: !!val }),
@@ -41,7 +38,8 @@ const useAnalysisForm = create((set, get) => ({
   setEndDate: (date) => set({ endDate: date }),
   setResponse: (resp) => set({ response: resp }),
   setReactionType: (val) => set({ reactionType: val }),
-  setMinutesThreshold: (val) => set({ minutesThreshold: val }),
+  setMinutesThreshold: (val) =>
+    set({ minutesThreshold: Number.isNaN(val) ? undefined : val }),
   setMimeType: (val) => set({ mimeType: val }),
   setPhrase: (val) => set({ phrase: val }),
   setPhraseSeparate: (val) => set({ phraseSeparate: !!val }),
@@ -50,14 +48,6 @@ const useAnalysisForm = create((set, get) => ({
   setGraphIndividual: (val) => set({ graphIndividual: !!val }),
   setGraphTimeInterval: (val) => set({ graphTimeInterval: val }),
 
-  // funcArgs compatibility during migration
-  setFuncArgs: (updater) => {
-    const prev = get().funcArgs;
-    const next = typeof updater === "function" ? updater(prev) : updater;
-    set({ funcArgs: next || {} });
-  },
-
-  // Derived: whether Analyze should be disabled based on current state
   getAnalyzeDisabled: () => {
     const s = get();
     const { contactName, func, outputType, category, csv, csvFileName } = s;

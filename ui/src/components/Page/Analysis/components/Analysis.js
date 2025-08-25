@@ -9,7 +9,7 @@ const LoadingGif = () => (
   </div>
 );
 
-const Analysis = ({ response, category, func, funcArgs, reactionType, fetchesInProgress, fetchSeconds }) => {
+const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds }) => {
   useEffect(() => {
     makeTableNice();
   }, [response]);
@@ -18,11 +18,9 @@ const Analysis = ({ response, category, func, funcArgs, reactionType, fetchesInP
     return (
       <div>
         <LoadingGif />
-        {fetchSeconds < 3 ? (
-          ""
-        ) : (
+        {fetchSeconds > 1 &&
           <p className="center-content">Request has been loading for {fetchSeconds} seconds</p>
-        )}
+        }
       </div>
     );
   } else if (Object.keys(response).length === 0) {
@@ -33,12 +31,7 @@ const Analysis = ({ response, category, func, funcArgs, reactionType, fetchesInP
     } else if ("graphData" in response) {
       return (
         <div className="center-content">
-          <LineGraph
-            data={response.graphData}
-            category={category}
-            func={func}
-            funcArgs={funcArgs}
-          />
+          <LineGraph data={response.graphData} category={category} func={func} />
         </div>
       );
     } else if ("errorMessage" in response) {

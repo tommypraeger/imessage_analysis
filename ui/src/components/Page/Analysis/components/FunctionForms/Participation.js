@@ -12,7 +12,12 @@ const ParticipationForm = () => {
         Time (in minutes) after the previous message for a new message to be classified as a new
         conversation:
       </p>
-      <input type="number" min="1" value={minutesThreshold || 60} onChange={(e) => setMinutesThreshold(e.target.valueAsNumber)} />
+      <input
+        type="number"
+        min="1"
+        value={minutesThreshold ?? ""}
+        onChange={(e) => setMinutesThreshold(e.target.valueAsNumber)}
+      />
     </div>
   );
 };
