@@ -16,6 +16,18 @@ def main(args):
     except Exception as e:
         return helpers.make_error_message(e)
 
+    # If no messages are available after loading/filters, return a clear error
+    try:
+        if df is None or len(df) == 0:
+            return helpers.make_error_message(
+                "No messages found for the selected inputs (contact/group, CSV, and/or date range)."
+            )
+    except Exception:
+        # If df doesn't behave like a DataFrame, fail safe
+        return helpers.make_error_message(
+            "No messages found for the selected inputs (contact/group, CSV, and/or date range)."
+        )
+
     # Default to just getting total messages
     if args.function is None:
         args.function = "total"

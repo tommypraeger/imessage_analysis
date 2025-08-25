@@ -22,7 +22,7 @@ class MimeType(Function):
     def process_messages_df(df, args):
         mime_type = args.mime_type
         if mime_type is None:
-            raise Exception("Function is type but not given a type")
+            raise Exception("Function is mime type but not given a mime type")
         df[f"is file type {mime_type}?"] = df["type"].apply(
             lambda typ: helpers.is_type(typ, mime_type)
         )
@@ -39,7 +39,7 @@ class MimeType(Function):
         mime_type_messages = len(
             nr_messages[
                 nr_messages[f"is file type {mime_type}?"]
-                & ~nr_messages[f"is game message?"]
+                & ~nr_messages["is game message?"]
             ]
         )
         output_dict[type_category].append(mime_type_messages)

@@ -97,7 +97,9 @@ def clean_phone_number(phone_number):
 
 
 def make_error_message(msg):
-    return {"errorMessage": f"{str(msg)}\n{traceback.format_exc()}"}
+    if isinstance(msg, Exception):
+        return {"errorMessage": f"{str(msg)}\n{traceback.format_exc()}"}
+    return {"errorMessage": str(msg)}
 
 
 def make_success_message(msg):
