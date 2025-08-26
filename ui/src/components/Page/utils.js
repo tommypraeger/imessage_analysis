@@ -12,14 +12,14 @@ const getFetch = (action, setFetchesInProgress) => {
   if (setFetchesInProgress) {
     setFetchesInProgress((fetches) => fetches + 1);
   }
-  return fetch(`http://localhost:8000/api/v1/${action}`).then((response) => response.json());
+  return fetch(`/api/v1/${action}`).then((response) => response.json());
 };
 
 const postFetch = (action, body, setFetchesInProgress) => {
   if (setFetchesInProgress) {
     setFetchesInProgress((fetches) => fetches + 1);
   }
-  return fetch(`http://localhost:8000/api/v1/${action}`, {
+  return fetch(`/api/v1/${action}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

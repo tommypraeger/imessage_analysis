@@ -2,7 +2,9 @@ import { useState } from "react";
 import Modal from "react-modal";
 import { TextField, Autocomplete } from "@mui/material";
 import { addGroup } from "../utils";
-Modal.setAppElement("#root");
+if (typeof document !== "undefined" && document.getElementById("root")) {
+  Modal.setAppElement("#root");
+}
 
 const AddGroupChatModal = ({
   open,

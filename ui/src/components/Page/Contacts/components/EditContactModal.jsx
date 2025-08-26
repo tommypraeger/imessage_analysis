@@ -1,51 +1,58 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { TextField, Autocomplete } from "@mui/material";
-import { addContact, phoneNumberFilterOptions } from "../utils";
-Modal.setAppElement("#root");
+import { editContact, phoneNumberFilterOptions } from "../utils";
+if (typeof document !== "undefined" && document.getElementById("root")) {
+  Modal.setAppElement("#root");
+}
 
-const AddContactModal = ({
+const EditContactModal = ({
   open,
   setOpen,
+  name,
+  number,
   allPhoneNumbers,
   setFetchesInProgress,
   setUpdateContacts,
 }) => {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+  const oldName = name;
+  const [newName, setNewName] = useState(name);
+  const [newNumber, setNewNumber] = useState(number);
 
   return (
     <Modal
       isOpen={open}
       onRequestClose={() => {
         setOpen(false);
-        setName("");
-        setNumber("");
+        setNewName("");
+        setNewNumber("");
       }}
       className="modal"
       overlayClassName="modal-background"
       shouldFocusAfterRender={false}
     >
-      <h2>Add Contact</h2>
+      <h2>Edit Contact</h2>
 
       <TextField
-        onChange={(event) => setName(event.target.value)}
+        defaultValue={name}
+        onChange={(event) => setNewName(event.target.value)}
         className="modal-input"
         label="Name"
         variant="outlined"
       />
 
       <Autocomplete
+        defaultValue={allPhoneNumbers.filter((numObj) => numObj.number === number)[0]}
         onChange={(event, newValue) => {
           if (newValue) {
-            setNumber(newValue.number);
+            setNewNumber(newValue.number);
           } else {
-            setNumber("");
+            setNewNumber("");
           }
         }}
         options={allPhoneNumbers}
+        getOptionLabel={(numberObj) => numberObj.formatted}
         filterOptions={phoneNumberFilterOptions}
-        getOptionLabel={(number) => number.formatted}
         renderInput={(params) => (
           <TextField {...params} className="modal-input" label="Phone Number" variant="outlined" />
         )}
@@ -53,16 +60,16 @@ const AddContactModal = ({
 
       <button
         className="btn"
-        disabled={!name || !number}
+        disabled={!newName || !newNumber}
         onClick={() => {
-          addContact(name, number, setFetchesInProgress, setUpdateContacts);
+          editContact(newName, newNumber, oldName, setFetchesInProgress, setUpdateContacts);
           setOpen(false);
         }}
       >
-        Add Contact
+        Edit Contact
       </button>
     </Modal>
   );
 };
 
-export default AddContactModal;
+export default EditContactModal;
