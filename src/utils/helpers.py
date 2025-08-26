@@ -22,19 +22,22 @@ def initialize_member(member_name, result_dict):
 
 
 def get_messages(df, member_name=None, time_period=None):
-    condition = df["text"].apply(is_not_edit)
+    # Vectorized filter: exclude edits (messages starting with "Edited to")
+    text_series = df["text"].astype("string")
+    condition = ~text_series.str.startswith("Edited to", na=False)
     if time_period is not None:
-        condition = condition & (df["time_period"] == time_period)
+        condition &= (df["time_period"] == time_period)
     if member_name is not None:
-        condition = condition & (df["sender"] == member_name)
-
+        condition &= (df["sender"] == member_name)
     return df[condition]
 
 
 def get_non_reaction_messages(df, member_name=None, time_period=None):
-    all_messages = get_messages(df, member_name, time_period)
-
-    return all_messages[all_messages.message_type.apply(is_not_reaction)]
+    msgs = get_messages(df, member_name, time_period)
+    mt = msgs["message_type"].astype("string")
+    non_removed = ~mt.str.startswith("removed", na=False)
+    non_reaction = ~mt.isin(constants.REACTION_TYPES)
+    return msgs[non_removed & non_reaction]
 
 
 def get_total_messages(df, member_name=None, time_period=None):
@@ -310,48 +313,20 @@ def decode_message_attributedbody(data):
 
 
 def add_reactions_for_each_message(df):
-    # Filter rows with reactions
-    reactions = df[df["message_type"].apply(is_reaction)].copy()
+    # Keep only reaction rows, normalize reaction_to GUIDs
+    mt = df["message_type"].astype("string")
+    reactions = df[mt.isin(constants.REACTION_TYPES)].copy()
+    reactions["reaction_to"] = reactions["reaction_to"].astype("string").str.replace(r"^p:0/", "", regex=True)
 
-    # Clean the reaction_to column to match GUIDs
-    reactions["reaction_to"] = reactions["reaction_to"].str.replace(r"^p:0/", "", regex=True)
-
-    # Group reactions by the original message GUID
-    reactions_grouped = reactions.groupby("reaction_to").agg({
-        "message_type": lambda x: list(x),  # Collect all reaction types
-        "sender": lambda x: list(x)  # Collect all users who reacted
-    }).rename(columns={"message_type": "reactions", "sender": "reacting_users"})
-
-    # Merge the grouped reactions back into the original dataframe
-    df = df.merge(
-        reactions_grouped,
-        how="left",
-        left_on="guid",
-        right_index=True
+    # Count and collect tuples (user, reaction) per original message guid
+    counts = reactions.groupby("reaction_to").size()
+    tuples = reactions.groupby("reaction_to").apply(
+        lambda g: list(zip(g["sender"].tolist(), g["message_type"].tolist()))
     )
 
-    # Fill NaN for messages with no reactions
-    df["reactions"] = df["reactions"].apply(lambda x: x if isinstance(x, list) else [])
-    df["reacting_users"] = df["reacting_users"].apply(lambda x: x if isinstance(x, list) else [])
-
-    # Safely parse the reactions and reacting_users columns using ast.literal_eval
-    df["reaction_count"] = df["reactions"].apply(
-        lambda x: len(ast.literal_eval(str(x))) if x else 0
-    )
-
-    # Filter for rows that are messages (not reactions)
-    df = df[df["reaction_to"].isna()]
-
-    # Add a column for the total reactions each sender has received
-    df["total_reactions_received"] = df.groupby("reaction_to")["reaction_count"].transform("sum")
-
-    # Extract reaction types per user from the 'reactions' column
-    df["reactions_per_user"] = df.apply(
-        lambda row: list(zip(ast.literal_eval(str(row["reacting_users"])), ast.literal_eval(str(row["reactions"]))))
-        if row["reactions"] else [],
-        axis=1
-    )
-    del df["reactions"]
-    del df["reacting_users"]
-
-    return df
+    # Only original messages (not reactions)
+    base = df[df["reaction_to"].isna()].copy()
+    base["reaction_count"] = base["guid"].map(counts).fillna(0).astype("int64")
+    _mapped = base["guid"].map(tuples)
+    base["reactions_per_user"] = _mapped.apply(lambda x: x if isinstance(x, list) else [])
+    return base

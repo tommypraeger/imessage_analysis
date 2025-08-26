@@ -32,9 +32,10 @@ def main(args):
     if args.function is None:
         args.function = "total"
 
-    # Swap raw ints for string message types
+    # Swap raw ints for string message types (vectorized)
     try:
-        df["message_type"] = df["message_type"].apply(helpers.convert_message_type)
+        # Map known message types; default to empty string when unknown/missing
+        df["message_type"] = df["message_type"].map(constants.MESSAGE_TYPES).fillna("")
     except KeyError:
         # CSV input might not have reaction type
         df["message_type"] = [""] * len(df)
@@ -93,23 +94,26 @@ def build_df(args):
         # Trim dataframe based on date constraints
         df = filter_by_date(df, args.from_date, args.to_date)
 
-        # Set timezone and date format
-        df["time"] = [
-            datetime.datetime.fromtimestamp((t + constants.TIME_OFFSET) / 1e9)
-            for t in df["time"]
-        ]
+        # Set timezone and date format (vectorized)
+        df["time"] = pd.to_datetime(df["time"] + constants.TIME_OFFSET, unit="ns")
 
         # Clean type column
-        df["type"] = [t if type(t) is str else "text/plain" for t in df["type"]]
+        # Ensure mime type is string; default to text/plain
+        if "type" in df.columns:
+            df["type"] = df["type"].fillna("text/plain").astype("string")
 
     # Remove duplicate messages (happens with links sometimes)
     df = df.drop_duplicates(subset=["text", "sender", "time"])
 
     # Some messages show as null text even if they really do have text
     # See comment on helper function for more
-    df["text"] = df["text"].fillna(
-        df["attributed_body"].apply(helpers.decode_message_attributedbody)
-    )
+    # Only decode attributed body where text is missing
+    if "attributed_body" in df.columns:
+        _mask = df["text"].isna()
+        if _mask.any():
+            df.loc[_mask, "text"] = df.loc[_mask, "attributed_body"].apply(
+                helpers.decode_message_attributedbody
+            )
     del df["attributed_body"]
 
     # Sort by date (sometimes the order gets messed up)
@@ -134,15 +138,15 @@ def build_df_from_csv(args):
 
     # Clean time column
     if "time" in df.columns:
-        # Set timezone and date format
+        # Parse dates vectorized; fallback to now for invalids
         try:
-            df["time"] = [helpers.parse_date(t) for t in df["time"]]
-        except ValueError:
-            # default to using now for all dates
-            df["time"] = [datetime.datetime.now()] * len(df)
+            df["time"] = pd.to_datetime(df["time"], errors="coerce")
+        except Exception:
+            df["time"] = pd.NaT
+        df["time"] = df["time"].fillna(pd.Timestamp.now())
     else:
         # default to using now for all dates
-        df["time"] = [datetime.datetime.now()] * len(df)
+        df["time"] = pd.Timestamp.now()
 
     # Trim dataframe based on date constraints
     df = filter_by_date(
@@ -154,9 +158,9 @@ def build_df_from_csv(args):
 
     # Clean type column
     if "type" in df.columns:
-        df["type"] = [t if type(t) is str else "text/plain" for t in df["type"]]
+        df["type"] = df["type"].fillna("text/plain").astype("string")
     else:
-        df["type"] = ["text/plain"] * len(df)
+        df["type"] = "text/plain"
 
     return df
 
@@ -181,32 +185,21 @@ def get_chat_members(df, args):
 def filter_by_date(df, from_date, to_date, use_seconds=True):
     offset = constants.TIME_OFFSET
 
-    if from_date:
-        if use_seconds:
-            df = df[
-                df["time"] >= helpers.date_to_time(from_date, end_of_day=False) - offset
-            ]
-        else:
-            df = df[
-                df.apply(
-                    lambda msg: helpers.date_to_time(msg.time),
-                    axis=1,
-                )
-                >= helpers.date_to_time(from_date, end_of_day=False)
-            ]
-
-    if to_date:
-        if use_seconds:
-            df = df[
-                df["time"] <= helpers.date_to_time(to_date, end_of_day=True) - offset
-            ]
-        else:
-            df = df[
-                df.apply(
-                    lambda msg: helpers.date_to_time(msg.time),
-                    axis=1,
-                )
-                <= helpers.date_to_time(to_date, end_of_day=True)
-            ]
+    if use_seconds:
+        # df['time'] is numeric nanoseconds; bounds are ns as well
+        start = helpers.date_to_time(from_date, end_of_day=False) if from_date else None
+        end = helpers.date_to_time(to_date, end_of_day=True) if to_date else None
+        if start is not None:
+            df = df[df["time"] >= (start - offset)]
+        if end is not None:
+            df = df[df["time"] <= (end - offset)]
+    else:
+        # df['time'] is datetime64
+        start = helpers.parse_date(from_date) if from_date else None
+        end = helpers.parse_date(to_date) if to_date else None
+        if start is not None:
+            df = df[df["time"] >= start]
+        if end is not None:
+            df = df[df["time"] <= end]
 
     return df
