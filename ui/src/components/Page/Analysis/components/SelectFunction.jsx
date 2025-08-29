@@ -48,7 +48,7 @@ const SelectFunction = () => {
 
   return (
     <div>
-      <h2 className="text-sm font-medium text-slate-700 mb-1">Function:</h2>
+      <h2 className="text-sm font-medium text-slate-700 mb-1">Analysis Type</h2>
       <SelectMenu
         value={func || "total"}
         onChange={(val) => {

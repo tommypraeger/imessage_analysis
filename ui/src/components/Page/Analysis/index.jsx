@@ -44,10 +44,10 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <aside className="lg:col-span-4">
-        <div className="bg-white rounded-md shadow p-5 sticky top-4">
-          <div className="space-y-3">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+      <aside className="lg:col-span-4 pr-6">
+        <div className="sticky top-4">
+          <div className="space-y-4">
             <div className="input-div">
               <SelectContact contacts={contacts} />
             </div>
@@ -76,16 +76,14 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
           </div>
         </div>
       </aside>
-      <main className="lg:col-span-8">
-        <div className="bg-white rounded-md shadow p-6 min-h-[320px]">
-          <Analysis
-            response={response}
-            category={category}
-            func={func}
-            fetchesInProgress={fetchesInProgress}
-            fetchSeconds={fetchSeconds}
-          />
-        </div>
+      <main className="lg:col-span-8 lg:border-l border-slate-200 lg:pl-6 min-h-[320px]">
+        <Analysis
+          response={response}
+          category={category}
+          func={func}
+          fetchesInProgress={fetchesInProgress}
+          fetchSeconds={fetchSeconds}
+        />
       </main>
     </div>
   );

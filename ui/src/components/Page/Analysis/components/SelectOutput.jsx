@@ -26,7 +26,7 @@ const SelectOutput = () => {
 
   return (
     <>
-    <h2 className="text-sm font-medium text-slate-700 mb-1">Output:</h2>
+    <h2 className="text-sm font-medium text-slate-700 mb-1">Output Type</h2>
     <SelectMenu
       value={outputType}
       onChange={(val) => {

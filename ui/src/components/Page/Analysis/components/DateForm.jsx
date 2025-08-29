@@ -26,7 +26,7 @@ const DateForm = () => {
   );
   return (
     <div className="input-div mt-2">
-      <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Date range</div>
+      <div className="text-sm font-medium text-slate-700 mb-1">Date Range</div>
       <div className="flex flex-wrap items-center gap-4">
         <DateField label="Start" selected={startDate} onChange={setStartDate} placeholder="No start limit" />
         <DateField label="End" selected={endDate} onChange={setEndDate} placeholder="No end limit" />

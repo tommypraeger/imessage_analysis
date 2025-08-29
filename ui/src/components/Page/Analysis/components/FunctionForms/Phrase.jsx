@@ -28,7 +28,7 @@ const PhraseForm = () => {
   return (
     <div>
       <div className="input-div">
-        <p>Phrase to search for:</p>
+        <p className="text-sm text-slate-700 mb-1">Phrase</p>
         <input
           type="text"
           value={phrase}
@@ -45,12 +45,10 @@ const PhraseForm = () => {
         <input type="checkbox" className="h-4 w-4 rounded accent-slate-900" checked={!!phraseSeparate} onChange={(e) => setPhraseSeparate(e.target.checked)} />
       </div>
       <div className="input-div flex items-center gap-3 mt-2">
-        <p className="m-0">Case-sensitive search?</p>
+        <p className="m-0">Case sensitive</p>
         <input type="checkbox" className="h-4 w-4 rounded accent-slate-900" checked={!!phraseCaseSensitive} onChange={(e) => setPhraseCaseSensitive(e.target.checked)} />
         <div className="sep-50"></div>
-        <p className="m-0">
-          Use <a className="underline text-slate-700 hover:text-slate-900" href="https://regexr.com/" target="_blank" rel="noreferrer">RegEx</a>?
-        </p>
+        <p className="m-0">Use <a className="underline text-slate-700 hover:text-slate-900" href="https://regexr.com/" target="_blank" rel="noreferrer">regex</a></p>
         <input type="checkbox" className="h-4 w-4 rounded accent-slate-900" checked={!!phraseRegex} onChange={(e) => setPhraseRegex(e.target.checked)} />
       </div>
     </div>

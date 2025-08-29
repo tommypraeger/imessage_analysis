@@ -21,7 +21,7 @@ const SelectContact = ({ contacts }) => {
 
   return (
     <>
-      <h2 className="text-sm font-medium text-slate-700 mb-1">Analysis for:</h2>
+      <h2 className="text-sm font-medium text-slate-700 mb-1">Contact/Group Chat</h2>
       <SelectMenu
         value={contactName || ""}
         onChange={(val) => {
@@ -30,7 +30,7 @@ const SelectContact = ({ contacts }) => {
           setCsv(val === "messages_csv");
         }}
         groups={groups}
-        placeholder="Select a contact"
+        placeholder="Select contact or group"
       />
     </>
   );

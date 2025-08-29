@@ -10,7 +10,7 @@ const CsvFilePicker = () => {
 
   return (
     <div className="input-div">
-      <h4>Messages CSV: </h4>
+      <h4 className="text-sm font-medium text-slate-700 mb-1">Messages CSV</h4>
       <input
         type="file"
         accept="text/csv"

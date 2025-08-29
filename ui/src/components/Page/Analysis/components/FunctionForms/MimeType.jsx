@@ -43,7 +43,7 @@ const MimeTypeForm = () => {
 
   return (
     <div className="input-div">
-      <p className="text-sm text-slate-700 mb-1">File type:</p>
+      <p className="text-sm text-slate-700 mb-1">File Type</p>
       <SelectMenu
         value={mimeType}
         onChange={(val) => setMimeType(val)}

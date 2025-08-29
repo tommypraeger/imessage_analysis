@@ -15,7 +15,7 @@ const SelectCategory = () => {
   if (outputType === "graph") {
     return (
       <div className="input-div">
-        <h2 className="text-sm font-medium text-slate-700 mb-1">Category:</h2>
+        <h2 className="text-sm font-medium text-slate-700 mb-1">Category</h2>
         <SelectMenu
           value={category || categories[0]}
           onChange={(val) => setCategory(val)}

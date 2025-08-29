@@ -20,7 +20,7 @@ const ReactionsReceivedForm = () => {
 
   return (
     <div className="input-div">
-      <p className="text-sm text-slate-700 mb-1">Reaction type (tables only):</p>
+      <p className="text-sm text-slate-700 mb-1">Reaction Type (tables only)</p>
       <SelectMenu
         value={reactionType || "all"}
         onChange={(val) => setReactionType(val)}
