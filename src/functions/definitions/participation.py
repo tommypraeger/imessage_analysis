@@ -1,5 +1,5 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 conversations_participated_in_category = "Conversations participated in"
 participation_rate_category = "Participation rate"
@@ -20,25 +20,12 @@ class Participation(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold
-        df["is conversation starter?"] = (
-            df["time"]
-            .diff()
-            .apply(
-                lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
-            )
-        )
-        df.at[0, "is conversation starter?"] = True
-        df["conversation number"] = 1
-        for msg_number in range(1, len(df)):
-            msg_idx = df.index[msg_number]
-            prev_msg_idx = df.index[msg_number - 1]
-            is_convo_starter = df.at[msg_idx, "is conversation starter?"]
-            previous_convo_number = df.at[prev_msg_idx, "conversation number"]
-            if is_convo_starter:
-                df.at[msg_idx, "conversation number"] = previous_convo_number + 1
-            else:
-                df.at[msg_idx, "conversation number"] = previous_convo_number
+        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
+        seconds = df["time"].diff().dt.total_seconds()
+        starters = seconds.gt(minutes_threshold * 60).fillna(True)
+        df["is conversation starter?"] = starters
+        # Conversation numbers start at 1 and increment on each starter
+        df["conversation number"] = starters.cumsum()
         return df
 
     @staticmethod

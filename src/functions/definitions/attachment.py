@@ -20,10 +20,9 @@ class Attachment(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is attachment?"] = df.apply(
-            lambda msg: helpers.is_attachment(msg.text, msg.type, msg.message_type),
-            axis=1,
-        )
+        mt = df["message_type"].astype("string")
+        is_game = mt.isin(["game", "game start"])  # exclude game messages
+        df["is attachment?"] = (df["type"].astype("string") != "text/plain") & (~is_game)
         return df
 
     @staticmethod

@@ -49,9 +49,8 @@ class Reaction(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is removed reaction?"] = df["message_type"].apply(
-            helpers.is_removed_reaction
-        )
+        mt = df["message_type"].astype("string")
+        df["is removed reaction?"] = mt.str.startswith("removed", na=False)
         return df
 
     @staticmethod
@@ -92,11 +91,13 @@ class Reaction(Function):
         )
 
         messages = helpers.get_messages(df, member_name, time_period)
-        reactions = len(messages[messages["message_type"].apply(helpers.is_reaction)])
-        removed_reacts = len(messages[messages["is removed reaction?"]])
+        mt_series = messages["message_type"].astype("string")
+        is_reaction = mt_series.isin(constants.REACTION_TYPES)
+        reactions = int(is_reaction.sum())
+        removed_reacts = int(messages["is removed reaction?"].sum())
 
-        # Count per reaction type
-        per_type_counts = {rt: len(messages[messages.message_type == rt]) for rt in constants.REACTION_TYPES}
+        # Count per reaction type (vectorized)
+        per_type_counts = {rt: int((mt_series == rt).sum()) for rt in constants.REACTION_TYPES}
 
         output_dict[removed_reactions].append(removed_reacts)
 

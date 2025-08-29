@@ -1,5 +1,5 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 conversations_started_category = "Conversations started"
 percent_started_category = "Percent of conversations started"
@@ -20,15 +20,9 @@ class ConversationStarter(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold
-        df["is conversation starter?"] = (
-            df["time"]
-            .diff()
-            .apply(
-                lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
-            )
-        )
-        df.at[df.index[0], "is conversation starter?"] = True
+        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
+        seconds = df["time"].diff().dt.total_seconds()
+        df["is conversation starter?"] = seconds.gt(minutes_threshold * 60).fillna(True)
         return df
 
     @staticmethod

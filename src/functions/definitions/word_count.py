@@ -1,7 +1,7 @@
 import math
 
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 # TODO: total word count
 average_word_count_category = "Average word count per message"
@@ -22,10 +22,13 @@ class WordCount(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is link?"] = df.apply(
-            lambda msg: helpers.is_link(msg.text, msg.message_type), axis=1
-        )
-        df["word count"] = df["text"].apply(helpers.message_word_count)
+        text = df["text"].astype("string")
+        mt = df["message_type"].astype("string")
+        not_reaction = ~mt.isin(constants.REACTION_TYPES)
+        link_mask = text.str.match(constants.LINK_REGEX, na=False)
+        df["is link?"] = (not_reaction & link_mask)
+        # Handle missing values: .str.len() returns <NA> for missing → fill with 0
+        df["word count"] = text.str.split().str.len().fillna(0).astype("int64")
         return df
 
     @staticmethod

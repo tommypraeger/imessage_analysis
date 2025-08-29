@@ -1,5 +1,5 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 tweets_category = "Messages that are tweets"
 percent_tweets_category = "Percent of messages that are tweets"
@@ -20,9 +20,14 @@ class Tweet(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is tweet?"] = df.apply(
-            lambda msg: helpers.is_tweet(msg.text, msg.message_type), axis=1
-        )
+        text = df["text"].astype("string")
+        mt = df["message_type"].astype("string")
+        not_reaction = ~mt.isin(constants.REACTION_TYPES)
+        # not using regex for speed and because it's prob not necessary
+        # support both twitter.com (🐦) and x.com (🤮)
+        has_domain = text.str.contains("/twitter.com", na=False) | text.str.contains("/x.com", na=False)
+        has_status = text.str.contains("status", na=False)
+        df["is tweet?"] = not_reaction & has_domain & has_status
         return df
 
     @staticmethod

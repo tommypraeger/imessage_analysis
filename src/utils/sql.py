@@ -4,10 +4,16 @@ import pandas as pd
 from src.utils import helpers
 
 
-# Create SQL connection
+# Create SQL cursor (legacy) and connection helpers
 def connect_to_db():
+    """Returns a cursor for legacy call sites."""
     conn = sqlite3.connect(f"/Users/{helpers.get_username()}/Library/Messages/chat.db")
     return conn.cursor()
+
+
+def _connect():
+    """Returns a sqlite3 connection for pandas read_sql_query."""
+    return sqlite3.connect(f"/Users/{helpers.get_username()}/Library/Messages/chat.db")
 
 
 # Test DB
@@ -40,12 +46,62 @@ def test_db():
 
 # Create DataFrame
 def get_df(name, group):
-    if group:
-        df_msg, df_att = get_group_df(name)
-    else:
-        df_msg, df_att = get_individual_df(name)
+    """Read messages and attachments in one pass via SQL and map sender names vectorized.
 
-    return df_msg.set_index("id").join(df_att.set_index("id"))
+    - Uses parameterized IN for chat ids
+    - LEFT JOIN attachments to avoid a second query
+    - Maps sender using `is_from_me` + `handle_id` → contact name via a prebuilt dict
+    """
+    chat_ids = helpers.get_chat_ids()[name]
+    placeholders = ",".join(["?"] * len(chat_ids))
+    query = f"""
+        SELECT m.ROWID AS id,
+               m.text,
+               m.is_from_me,
+               m.handle_id,
+               m.date AS time,
+               m.guid,
+               m.associated_message_guid AS reaction_to,
+               m.associated_message_type AS message_type,
+               m.attributedBody AS attributed_body,
+               att.mime_type AS type
+        FROM message m
+        INNER JOIN chat_message_join cmj
+            ON cmj.message_id = m.ROWID AND cmj.chat_id IN ({placeholders})
+        LEFT JOIN message_attachment_join maj ON maj.message_id = m.ROWID
+        LEFT JOIN attachment att ON att.ROWID = maj.attachment_id
+        ORDER BY m.date
+    """
+    with _connect() as conn:
+        df = pd.read_sql_query(query, conn, params=chat_ids)
+
+    # Maps contact IDs to names
+    id_to_name = {
+        contact_id: name
+        for name, contact_ids in helpers.get_contact_ids().items()
+        for contact_id in contact_ids
+    }
+    # Use handle_id unless is_from_me == 1, in which case 0
+    # Ensure integer dtype compatibility
+    sender_id = df["handle_id"].astype("Int64")
+    sender_id = sender_id.mask(df["is_from_me"] == 1, 0)
+    df["sender"] = sender_id.map(id_to_name)
+
+    # Final column order roughly matching previous shape
+    # Keep columns needed downstream
+    cols = [
+        "id",
+        "text",
+        "sender",
+        "time",
+        "guid",
+        "reaction_to",
+        "message_type",
+        "attributed_body",
+        "type",
+    ]
+    df = df[cols]
+    return df
 
 
 def get_group_df(name):

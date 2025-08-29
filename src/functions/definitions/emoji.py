@@ -1,5 +1,6 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
+import emoji as emoji_lib
 
 emoji_category = "Messages that contain emoji"
 percent_emoji_category = "Percent of messages that contain emoji"
@@ -20,9 +21,12 @@ class Emoji(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["includes emoji?"] = df.apply(
-            lambda msg: helpers.includes_emoji(msg.text, msg.message_type), axis=1
-        )
+        text = df["text"].astype("string")
+        mt = df["message_type"].astype("string")
+        not_reaction = ~mt.isin(constants.REACTION_TYPES)
+        # Handle <NA> by replacing with empty string before counting
+        has_emoji = text.fillna("").apply(emoji_lib.emoji_count).gt(0)
+        df["includes emoji?"] = not_reaction & has_emoji
         return df
 
     @staticmethod

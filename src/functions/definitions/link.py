@@ -1,5 +1,5 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 links_category = "Messages that are links"
 percent_links_category = "Percent of messages that are links"
@@ -20,9 +20,10 @@ class Link(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is link?"] = df.apply(
-            lambda msg: helpers.is_link(msg.text, msg.message_type), axis=1
-        )
+        text = df["text"].astype("string")
+        mt = df["message_type"].astype("string")
+        not_reaction = ~mt.isin(constants.REACTION_TYPES)
+        df["is link?"] = not_reaction & text.str.match(constants.LINK_REGEX, na=False)
         return df
 
     @staticmethod

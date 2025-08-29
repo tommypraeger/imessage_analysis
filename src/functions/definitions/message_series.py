@@ -1,5 +1,5 @@
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 
 message_series_category = "Total number of message series"
@@ -29,22 +29,15 @@ class MessageSeries(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold
-        df["is conversation starter?"] = (
-            df["time"]
-            .diff()
-            .apply(
-                lambda diff: helpers.is_conversation_starter(diff, minutes_threshold)
-            )
-        )
-        df.at[df.index[0], "is conversation starter?"] = True
-        df["is new message series?"] = df["sender"].apply(lambda x: True)
-        df["is new message series?"] = (
-            df["is new message series?"]
-            .shift()
-            .where(df["sender"].shift() != df["sender"], False)
-        )
-        df.at[df.index[0], "is new message series?"] = True
+        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
+        seconds = df["time"].diff().dt.total_seconds()
+        df["is conversation starter?"] = seconds.gt(minutes_threshold * 60).fillna(True)
+        # New series whenever sender changes vs previous row
+        is_new_series = df["sender"].ne(df["sender"].shift())
+        # Ensure first row is True
+        if len(df) > 0:
+            is_new_series.iloc[0] = True
+        df["is new message series?"] = is_new_series
         return df
 
     @staticmethod

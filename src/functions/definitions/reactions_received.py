@@ -52,49 +52,42 @@ class ReactionsReceived(Function):
         """
         Fill in results from analysis into the output dictionary using the processed dataframe.
         """
-        # Filter messages that belong to the specified member (if time_period is provided)
+        # Filter messages that belong to the specified member and/or time period
         if time_period is not None:
             df = df[df["time_period"] == time_period]
         if member_name is not None:
             df = df[df["sender"] == member_name]
 
-        # Calculate the total reactions received by the member
-        total_reactions_received = int(df["reaction_count"].sum())
-
-        # Calculate the number of messages sent by the member
+        # Totals
         total_messages_sent = len(df)
-        output_dict[total_messages_sent_category].append(total_messages_sent)
-
-        # Calculate the reactions received per message
+        total_reactions_received = int(df["reaction_count"].sum())
         reactions_received_per_message = round(
-            helpers.safe_divide(total_reactions_received, total_messages_sent),
-            4
+            helpers.safe_divide(total_reactions_received, total_messages_sent), 4
         )
 
-        # Calculate reactions by each person
-        reactions_by_person = defaultdict(lambda: defaultdict(int))
-        for _, row in df.iterrows():
-            for user, reaction in row["reactions_per_user"]:
-                if reaction in constants.REACTION_TYPES:
-                    reactions_by_person[user][reaction] += 1
-
-        # Update the output_dict with the calculated values
+        output_dict[total_messages_sent_category].append(total_messages_sent)
         output_dict[total_reactions_received_category].append(total_reactions_received)
-        output_dict[reactions_received_per_message_category].append(reactions_received_per_message)
+        output_dict[reactions_received_per_message_category].append(
+            reactions_received_per_message
+        )
 
-        # Reaction types stats: Like, Love, Laugh, etc.
+        # Per-type counts (reactor identity not needed here)
+        long = df[["reactions_per_user"]].explode("reactions_per_user")
+        if len(long) and "reactions_per_user" in long:
+            long = long.dropna(subset=["reactions_per_user"])  # drop messages with no reactions
+            if len(long):
+                # Extract reaction_type from tuple (user, reaction_type)
+                long["reaction_type"] = long["reactions_per_user"].str[1]
+                per_type_counts = long["reaction_type"].value_counts()
+            else:
+                per_type_counts = {}
+        else:
+            per_type_counts = {}
+
         for reaction_type in constants.REACTION_TYPES:
-            total_reacts = sum(
-                count
-                for user_reactions in reactions_by_person.values()
-                for react_type, count in user_reactions.items()
-                if react_type == reaction_type
-            )
+            total_reacts = int(per_type_counts.get(reaction_type, 0))
             rt_title = reaction_type.title()
             output_dict[f"{rt_title} reacts received"].append(total_reacts)
             output_dict[f"{rt_title} reacts received per message"].append(
-                round(
-                    helpers.safe_divide(total_reacts, total_messages_sent),
-                    4
-                )
+                round(helpers.safe_divide(total_reacts, total_messages_sent), 4)
             )

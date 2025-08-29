@@ -57,7 +57,7 @@ class ReactionMatrix(Function):
         }
 
         # Columns order
-        columns = ["total", "love", "like", "dislike", "laugh", "emphasize", "question", "custom emoji"]
+        columns = ["total"] + constants.REACTION_TYPES
 
         # Generate HTML
         html_table = "<table border=\"1\">"

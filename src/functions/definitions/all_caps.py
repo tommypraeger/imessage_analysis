@@ -1,5 +1,6 @@
 from src.functions import Function
 from src.utils import helpers
+import pandas as pd
 
 all_caps_category = "Messages in all caps"
 percent_all_caps_category = "Percent of messages that are in all caps"
@@ -20,7 +21,11 @@ class AllCaps(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        df["is all caps?"] = df["text"].apply(helpers.is_all_caps)
+        text = df["text"].astype("string")
+        letters = text.str.replace("[^a-zA-Z]", "", regex=True)
+        non_empty = letters.str.len().gt(0).fillna(False)
+        is_upper = letters.str.upper().eq(letters)
+        df["is all caps?"] = (non_empty & is_upper)
         return df
 
     @staticmethod
