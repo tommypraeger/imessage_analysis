@@ -24,11 +24,14 @@ class Total(Function):
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
-        total_messages_by_member = helpers.get_total_messages(
+        # Exclude reactions from total messages
+        total_messages_by_member = helpers.get_total_non_reaction_messages(
             df, member_name, time_period
         )
         output_dict[total_messages_category].append(total_messages_by_member)
-        total_messages = helpers.get_total_messages(df, time_period=time_period)
+        total_messages = helpers.get_total_non_reaction_messages(
+            df, time_period=time_period
+        )
         output_dict[percent_total_messages_category].append(
             round(
                 helpers.safe_divide(total_messages_by_member, total_messages) * 100,
