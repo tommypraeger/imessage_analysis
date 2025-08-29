@@ -33,14 +33,10 @@ const REACTION_PER_TYPE_COLUMNS = {
 };
 
 const formatDate = (date) => {
-  let strDate = date.toLocaleString().split(",")[0];
-  if (strDate.split("/")[0].length < 2) {
-    strDate = `0${strDate}`;
-  }
-  if (strDate.split("/")[1].length < 2) {
-    strDate = `${strDate.slice(0, 3)}0${strDate.slice(3)}`;
-  }
-  return strDate;
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 };
 
 const buildArgs = () => {

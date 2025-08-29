@@ -1,5 +1,6 @@
 import abc
 import datetime
+import pandas as pd
 from dateutil import relativedelta
 from src.utils import helpers, constants
 
@@ -156,29 +157,28 @@ class Function(abc.ABC):
                 graph_data[constants.GRAPH_TOTAL_KEY][category] = []
 
     def add_time_period_to_df(self, df, graph_time_interval):
+        t = df["time"]
         if graph_time_interval == "day":
-            df["time_period"] = df["time"].apply(helpers.get_day)
+            # ISO 8601 date
+            tp = t.dt.strftime("%Y-%m-%d")
         elif graph_time_interval == "week":
-            df["time_period"] = df["time"].apply(helpers.get_week)
+            # ISO week label YYYY-Www
+            iso = t.dt.isocalendar()
+            tp = iso["year"].astype(str) + "-W" + iso["week"].astype(str).str.zfill(2)
         elif graph_time_interval == "month":
-            df["time_period"] = df["time"].apply(helpers.get_month)
+            # ISO year-month
+            tp = t.dt.strftime("%Y-%m")
         elif graph_time_interval == "year":
-            df["time_period"] = df["time"].apply(helpers.get_year)
+            tp = t.dt.strftime("%Y")
+        else:
+            return
+        df["time_period"] = tp.astype("string")
 
     def format_graph_data(
         self, result_dict, graph_data, time_periods, category, graph_time_interval
     ):
-        if graph_time_interval == "day" or graph_time_interval == "week":
-            result_dict["labels"] = time_periods
-        elif graph_time_interval == "month":
-            result_dict["labels"] = [
-                f'{time_period.split("/")[0]}/{time_period.split("/")[2]}'
-                for time_period in time_periods
-            ]
-        elif graph_time_interval == "year":
-            result_dict["labels"] = [
-                f'20{time_period.split("/")[2]}' for time_period in time_periods
-            ]
+        # ISO8601 labels already in desired form for all intervals
+        result_dict["labels"] = time_periods
 
         result_dict["datasets"] = [
             {
@@ -191,33 +191,32 @@ class Function(abc.ABC):
         ]
 
     def get_time_periods(self, df, time_period_name):
-        day_fmt = "%m/%d/%y"
-        begin_date = datetime.datetime.strptime(df["time_period"].iloc[0], day_fmt)
-        end_date = datetime.datetime.strptime(df["time_period"].iloc[-1], day_fmt)
+        t = df["time"]
+        if len(t) == 0:
+            return []
+
+        start = t.min()
+        end = t.max()
 
         if time_period_name == "day":
-            num_days = (end_date - begin_date).days
-            return [
-                helpers.get_day(begin_date + relativedelta.relativedelta(days=i))
-                for i in range(num_days + 1)
-            ]
+            rng = pd.date_range(start=start.normalize(), end=end.normalize(), freq="D")
+            return [d.strftime("%Y-%m-%d") for d in rng.to_pydatetime()]
         if time_period_name == "week":
-            num_weeks = (end_date - begin_date).days // 7
-            return [
-                helpers.get_week(begin_date + relativedelta.relativedelta(days=i * 7))
-                for i in range(num_weeks + 1)
-            ]
+            start_monday = start - datetime.timedelta(days=start.weekday())
+            end_monday = end - datetime.timedelta(days=end.weekday())
+            rng = pd.date_range(start=start_monday, end=end_monday, freq="W-MON")
+            labels = []
+            for d in rng.to_pydatetime():
+                iso = d.isocalendar()
+                labels.append(f"{iso.year}-W{iso.week:02d}")
+            return labels
         if time_period_name == "month":
-            num_months = (end_date.year - begin_date.year) * 12 + (
-                end_date.month - begin_date.month
-            )
-            return [
-                helpers.get_month(begin_date + relativedelta.relativedelta(months=i))
-                for i in range(num_months + 1)
-            ]
+            start_month = start.replace(day=1)
+            end_month = end.replace(day=1)
+            rng = pd.date_range(start=start_month, end=end_month, freq="MS")
+            return [d.strftime("%Y-%m") for d in rng.to_pydatetime()]
         if time_period_name == "year":
-            num_years = end_date.year - begin_date.year
-            return [
-                helpers.get_year(begin_date + relativedelta.relativedelta(years=i))
-                for i in range(num_years + 1)
-            ]
+            start_year = start.replace(month=1, day=1)
+            end_year = end.replace(month=1, day=1)
+            rng = pd.date_range(start=start_year, end=end_year, freq="YS")
+            return [d.strftime("%Y") for d in rng.to_pydatetime()]

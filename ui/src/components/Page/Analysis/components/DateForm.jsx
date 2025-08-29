@@ -15,7 +15,7 @@ const DateForm = () => {
     <div className="date-input">
       <p>{label}:</p>
       <DatePicker
-        dateFormat="MM/dd/yyyy"
+        dateFormat="yyyy-MM-dd"
         selected={selected}
         onChange={onChange}
         placeholderText={placeholder}
