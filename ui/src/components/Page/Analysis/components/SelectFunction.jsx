@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import useAnalysisRunner from "../useAnalysisRunner";
+import SelectMenu from "components/common/SelectMenu";
 
 const SelectFunction = () => {
   const { outputType, func, setFunc, setCategory, graphIndividual } = useAnalysisForm(
@@ -14,62 +16,50 @@ const SelectFunction = () => {
   );
   const { fetchCategories } = useAnalysisRunner();
 
+  // Default to 'total' if no function selected yet
+  useEffect(() => {
+    if (!func) {
+      setFunc("total");
+      setCategory("");
+      fetchCategories("total", outputType, graphIndividual);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const options = [
+    { value: "total", label: "Total", desc: "How many messages each person sends" },
+    { value: "reaction", label: "Reactions sent", desc: "How many iMessage reactions each person sends" },
+    { value: "reactions_received", label: "Reactions received", desc: "How many iMessage reactions each person receives" },
+    { value: "reaction_matrix", label: "Reaction matrix", desc: "How many reactions each person receives from each other person" },
+    { value: "participation", label: "Participation", desc: "How often each person participates" },
+    { value: "conversation_starter", label: "Starters", desc: "How many times each person starts the conversation" },
+    { value: "phrase", label: "Word/Phrase", desc: "How many messages include a certain word/phrase" },
+    { value: "message_series", label: "Message Series", desc: "How many series of consecutive messages each person sends" },
+    { value: "word_count", label: "Word Count", desc: "Average word count per message" },
+    { value: "word_length", label: "Word Length", desc: "Average length of each word sent" },
+    { value: "attachment", label: "Attachments", desc: "How many messages are attachments" },
+    { value: "link", label: "Links", desc: "How many messages are links" },
+    { value: "emoji", label: "Emoji", desc: "How many messages include emoji" },
+    { value: "game", label: "Games", desc: "How many messages are iMessage games" },
+    { value: "tweet", label: "Tweets", desc: "How many messages are tweets" },
+    { value: "all_caps", label: "All Caps", desc: "How many messages are in all caps" },
+    { value: "mime_type", label: "File Type", desc: "How many messages are of a specific file type" },
+  ];
+
   return (
-    <>
-    <h2>Function:</h2>
-    <select
-      className="select"
-      value={func || "none"}
-      onChange={(event) => {
-        const nextFunc = event.target.value;
-        setFunc(nextFunc);
-        setCategory("");
-        fetchCategories(nextFunc, outputType, graphIndividual);
-      }}
-    >
-    <option value="none" disabled={true}>
-      Select a function
-    </option>
-
-    <option value="total">Total: How many messages each person sends</option>
-
-    <option value="reaction">Reactions sent: How many iMessage reactions each person sends</option>
-
-    <option value="reactions_received">Reactions received: How many iMessage reactions each person receives</option>
-
-    <option value="reaction_matrix">Reaction matrix: How many iMessage reactions each person receives from each other person</option>
-
-    <option value="participation">Participation: How often each person participates</option>
-
-    <option value="conversation_starter">
-      Starters: How many times each person starts the conversation
-    </option>
-
-    <option value="phrase">Word/Phrase: How many messages include a certain word/phrase</option>
-
-    <option value="message_series">
-      Message Series: How many series of consecutive messages each person sends
-    </option>
-
-    <option value="word_count">Word Count: The average word count in each message</option>
-
-    <option value="word_length">Word Length: The average length of each word sent</option>
-
-    <option value="attachment">Attachments: How many messages are attachments</option>
-
-    <option value="link">Links: How many messages are links</option>
-
-    <option value="emoji">Emoji: How many messages include emoji</option>
-
-    <option value="game">Games: How many messages are iMessage games</option>
-
-    <option value="tweet">Tweets: How many messages are tweets</option>
-
-    <option value="all_caps">All Caps: How many messages are in all caps</option>
-
-    <option value="mime_type">File Type: How many messages are of a specific file type</option>
-    </select>
-    </>
+    <div>
+      <h2 className="text-sm font-medium text-slate-700 mb-1">Function:</h2>
+      <SelectMenu
+        value={func || "total"}
+        onChange={(val) => {
+          setFunc(val);
+          setCategory("");
+          fetchCategories(val, outputType, graphIndividual);
+        }}
+        options={options}
+        placeholder="Select function"
+      />
+    </div>
   );
 };
 

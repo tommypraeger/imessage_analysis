@@ -1,6 +1,3 @@
-import $ from "jquery";
-import "datatables.net";
-import "datatables.net-dt/css/jquery.dataTables.css";
 import { postFetch } from "../utils";
 import useAnalysisForm from "state/analysisStore";
 
@@ -114,14 +111,52 @@ const runAnalysis = (setFetchesInProgress, setResponse) => {
 };
 
 const makeTableNice = () => {
-  const $table = $("#analysis-table").children("table");
-  if ($table.length === 0) return;
+  try {
+    const container = document.getElementById("analysis-table");
+    if (!container) return;
+    const table = container.querySelector("table");
+    if (!table) return;
+    if (table.dataset.sortInit === "1") return; // already wired
+    table.dataset.sortInit = "1";
 
-  // Enhance with DataTables
-  $table.DataTable({
-    paging: false,
-    searching: false,
-  });
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody") || table;
+    if (!thead || !tbody) return;
+
+    const ths = Array.from(thead.querySelectorAll("th"));
+    ths.forEach((th, colIdx) => {
+      th.style.cursor = "pointer";
+      th.title = "Click to sort";
+      th.addEventListener("click", () => {
+        const current = th.getAttribute("data-sort-dir") || "none";
+        const nextDir = current === "asc" ? "desc" : "asc";
+        ths.forEach((t) => t.setAttribute("data-sort-dir", "none"));
+        th.setAttribute("data-sort-dir", nextDir);
+
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const parsed = rows.map((tr) => {
+          const cell = tr.children[colIdx];
+          const text = (cell ? cell.textContent : "").trim();
+          // try numeric parse (strip %,$, commas and spaces)
+          const n = parseFloat(text.replace(/[%,\$,\s,]/g, ""));
+          const isNum = !Number.isNaN(n) && /^[0-9.,%\s-]+$/.test(text);
+          return { tr, key: isNum ? n : text.toLowerCase(), isNum };
+        });
+        const allNum = parsed.every((p) => p.isNum);
+        parsed.sort((a, b) => {
+          if (allNum) {
+            return nextDir === "asc" ? a.key - b.key : b.key - a.key;
+          }
+          if (a.key < b.key) return nextDir === "asc" ? -1 : 1;
+          if (a.key > b.key) return nextDir === "asc" ? 1 : -1;
+          return 0;
+        });
+        parsed.forEach(({ tr }) => tbody.appendChild(tr));
+      });
+    });
+  } catch (_) {
+    // fail silently
+  }
 };
 
 // Remove columns from a Pandas HTML table output matching reactionType selection
@@ -214,3 +249,39 @@ const getCategories = (func, outputType, graphIndividual, setCategories, setCate
 };
 
 export { runAnalysis, makeTableNice, getCategories };
+
+// --- HTML table parsing helpers ---
+
+// Parse a Pandas-rendered HTML table (single level) into headers and rows
+export const parsePandasHtmlTable = (html) => {
+  const container = document.createElement("div");
+  container.innerHTML = html || "";
+  const table = container.querySelector("table");
+  if (!table) return { headers: [], rows: [] };
+  const ths = Array.from(table.querySelectorAll("thead th"));
+  const headers = ths.map((th) => (th.textContent || "").trim());
+  const trs = Array.from(table.querySelectorAll("tbody tr"));
+  const rows = trs.map((tr) => Array.from(tr.children).map((td) => (td.textContent || "").trim()));
+  return { headers, rows };
+};
+
+// Extract any nested tables from a Pandas table where each tbody row contains a sub-table.
+// Returns array of sections: [{ name, html }] where `html` is the inner table HTML.
+export const extractNestedTables = (html) => {
+  const sections = [];
+  const container = document.createElement("div");
+  container.innerHTML = html || "";
+  const root = container.querySelector("table");
+  if (!root) return sections;
+  const bodyRows = Array.from(root.querySelectorAll("tbody tr"));
+  bodyRows.forEach((tr) => {
+    const cells = Array.from(tr.children);
+    const name = (cells[0]?.textContent || "").trim();
+    const innerHost = cells.find((td) => td.querySelector && td.querySelector("table"));
+    const innerTable = innerHost ? innerHost.querySelector("table") : null;
+    if (innerTable) {
+      sections.push({ name, html: innerTable.outerHTML });
+    }
+  });
+  return sections;
+};

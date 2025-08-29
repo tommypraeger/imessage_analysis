@@ -1,198 +1,35 @@
-.page {
-    display: block;
-    margin: auto;
-    width: 80%;
-}
+@import "tailwindcss";
 
-#nav-bar {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    background-color: #333;
+/* Tidy up server-rendered table output */
+#analysis-table table {
+  width: 100%;
+  border-collapse: collapse;
 }
+#analysis-table th, #analysis-table td {
+  border-bottom: 1px solid rgba(148,163,184,0.35); /* slate-300/35 */
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+#analysis-table thead th {
+  background: #f8fafc; /* slate-50 */
+  font-weight: 600;
+}
+#analysis-table tr:hover td { background: rgba(241,245,249,0.6); }
 
-#nav-bar li {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    flex-grow: 1;
+/* Style for analysis output tables (non-pandas, nested renders) */
+.analysis-output table {
+  width: 100%;
+  border-collapse: collapse;
 }
-
-#nav-bar li:hover:not(.active) {
-    background-color: #111;
+.analysis-output th, .analysis-output td {
+  border-bottom: 1px solid rgba(148,163,184,0.35);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.9rem;
 }
-
-#nav-bar .active {
-    background-color: #1982fc;
+.analysis-output thead th {
+  background: #f8fafc;
+  font-weight: 600;
 }
-
-.contact-list {
-    padding: 0;
-}
-
-.x-btn {
-    float: right;
-    padding: 5px 20px;
-}
-
-.contact {
-    display: block;
-    border: 1px solid black;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background-color: white;
-    cursor: pointer;
-}
-
-.group-chat-name {
-    display: inline-block;
-    padding: 5px 20px;
-}
-
-.contact-name {
-    display: inline-block;
-    padding: 5px 20px;
-    width: 20%;
-}
-
-.contact-number {
-    display: inline-block;
-    color: gray;
-    padding: 5px 20px;
-}
-
-.contacts-section-header {
-    display: block;
-}
-
-.contacts-section-header h3 {
-    display: inline-block;
-    margin-bottom: 0;
-}
-
-.contacts-section-header p {
-    float: right;
-    margin-bottom: 0;
-    cursor: pointer;
-}
-
-.modal {
-    width: 50%;
-    margin: auto;
-    margin-top: 50px;
-    background-color: white;
-    padding: 15px;
-    border: 1px solid black;
-    border-radius: 25px;
-}
-
-.modal-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: lightgray;
-}
-
-.modal-input {
-    margin-bottom: 20px !important;
-}
-
-.loading-gif {
-    width: 200px;
-    margin: 60px auto 20px auto;
-}
-
-.btn {
-    background-color: #1982fc;
-    padding: 10px;
-    color: white;
-    cursor: pointer;
-}
-
-.center-btn {
-    background-color: #1982fc;
-    display: block;
-    margin: 20px auto;
-    padding: 10px;
-    font-size: 16px;
-    color: white;
-    cursor: pointer;
-}
-
-.btn:disabled {
-    background-color: lightgray;
-    cursor: not-allowed;
-}
-
-.center-btn:disabled {
-    background-color: lightgray;
-    cursor: not-allowed;
-}
-
-.center-content {
-    text-align: center;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    max-width: 60%;
-}
-
-.input-div {
-    text-align: left;
-}
-
-.input-div h2 {
-    vertical-align: middle;
-    display: inline-block;
-    margin: 10px 10px 10px 0;
-}
-
-.input-div h4 {
-    vertical-align: middle;
-    display: inline-block;
-    margin: 10px 10px 10px 0;
-}
-
-.input-div p {
-    vertical-align: middle;
-    display: inline-block;
-    margin: 8px 10px 8px 0;
-}
-
-.select {
-    padding: 6px;
-    vertical-align: middle;
-    font-size: 16px;
-}
-
-.checkbox {
-    vertical-align: sub;
-}
-
-.radio {
-    vertical-align: text-top;
-    margin-left: 20px;
-}
-
-#analysis-table .dataTables_wrapper {
-    margin: auto;
-    margin-top: 25px;
-    width: 80%;
-}
-
-.dataTables_info {
-    display: none;
-}
-
-.date-input {
-    display: inline-block;
-    margin-left: 20px;
-}
-
-.sep-50 {
-    display: inline-block;
-    width: 50px;
-}
+.analysis-output tr:hover td { background: rgba(241,245,249,0.6); }

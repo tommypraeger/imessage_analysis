@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import useAnalysisRunner from "../useAnalysisRunner";
+import SelectMenu from "components/common/SelectMenu";
 
 const SelectOutput = () => {
   const { outputType, setOutputType, func, graphIndividual } = useAnalysisForm(
@@ -13,24 +15,33 @@ const SelectOutput = () => {
   );
   const { fetchCategories } = useAnalysisRunner();
 
+  const graphDisabled = func === "reaction_matrix";
+
+  // If reaction_matrix is selected while on graph, switch back to table
+  useEffect(() => {
+    if (graphDisabled && outputType === "graph") {
+      setOutputType("table");
+    }
+  }, [graphDisabled]);
+
   return (
     <>
-    <h2>Output:</h2>
-    <select
-      className="select"
+    <h2 className="text-sm font-medium text-slate-700 mb-1">Output:</h2>
+    <SelectMenu
       value={outputType}
-      onChange={(event) => {
-        const nextOutput = event.target.value;
-        setOutputType(nextOutput);
+      onChange={(val) => {
+        if (val === "graph" && graphDisabled) return;
+        setOutputType(val);
         if (func !== "") {
-          fetchCategories(func, nextOutput, graphIndividual);
+          fetchCategories(func, val, graphIndividual);
         }
       }}
-    >
-    <option value="table">Table</option>
-
-    <option value="graph">Line Graph</option>
-    </select>
+      options={[
+        { value: "table", label: "Table" },
+        { value: "graph", label: "Line Graph", disabled: graphDisabled },
+      ]}
+      placeholder="Select output"
+    />
     </>
   );
 };

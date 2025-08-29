@@ -33,7 +33,7 @@ const Contact = ({
         setFetchesInProgress={setFetchesInProgress}
       />
       <li
-        className="contact"
+        className="cursor-pointer rounded border border-slate-200 bg-white hover:border-slate-300 shadow-sm px-4 py-3 flex items-center justify-between"
         onClick={() => {
           if (number) {
             setEditContactModalOpen(true);
@@ -42,10 +42,12 @@ const Contact = ({
           }
         }}
       >
-        <p className={number ? "contact-name" : "group-chat-name"}>{name}</p>
-        {number ? <p className="contact-number">{formatNumber(number)}</p> : ""}
-        <p
-          className="x-btn"
+        <div className="flex items-baseline gap-3">
+          <p className="font-medium text-slate-900">{name}</p>
+          {number ? <p className="text-slate-500">{formatNumber(number)}</p> : ""}
+        </div>
+        <button
+          className="text-slate-400 hover:text-slate-600"
           onClick={(e) => {
             e.stopPropagation();
             if (number) {
@@ -56,7 +58,7 @@ const Contact = ({
           }}
         >
           &#x2715;
-        </p>
+        </button>
       </li>
     </React.Fragment>
   );

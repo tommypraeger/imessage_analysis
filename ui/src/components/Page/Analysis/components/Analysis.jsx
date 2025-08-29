@@ -1,12 +1,11 @@
-import { useEffect } from "react";
 import { Oval } from "react-loader-spinner";
-import { makeTableNice } from "../utils";
 import LineGraph from "./LineGraph";
+import NativeTable from "./NativeTable";
+import { useEffect } from "react";
+import { makeTableNice, parsePandasHtmlTable, extractNestedTables } from "../utils";
 
 const LoadingGif = () => (
-  <div className="loading-gif">
-    <Oval color="#1982fc" height={200} width={200} />
-  </div>
+  <Oval color="#0f172a" height={120} width={120} />
 );
 
 const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds }) => {
@@ -16,26 +15,40 @@ const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds })
 
   if (fetchesInProgress > 0) {
     return (
-      <div>
+      <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
         <LoadingGif />
-        {fetchSeconds > 1 &&
-          <p className="center-content">Request has been loading for {fetchSeconds} seconds</p>
-        }
+        {fetchSeconds > 1 && (
+          <p className="mt-4 text-slate-600">Request has been loading for {fetchSeconds} seconds</p>
+        )}
       </div>
     );
   } else if (Object.keys(response).length === 0) {
-    return <div />;
+    return (
+      <div className="flex items-center justify-center min-h-[200px] text-slate-500 text-sm">
+        Run an analysis to see results here.
+      </div>
+    );
   } else {
     if ("htmlTable" in response) {
-      return <div id="analysis-table" dangerouslySetInnerHTML={{ __html: response.htmlTable }} />;
+      const nested = extractNestedTables(response.htmlTable);
+      if (nested && nested.length > 0) {
+        return (
+          <div className="analysis-output space-y-6">
+            {nested.map((sec, i) => (
+              <div key={i} className="border border-slate-200 rounded">
+                <div className="px-3 py-2 text-sm font-medium bg-slate-50 border-b border-slate-200">{sec.name}</div>
+                <div className="overflow-x-auto p-3" dangerouslySetInnerHTML={{ __html: sec.html }} />
+              </div>
+            ))}
+          </div>
+        );
+      }
+      const { headers, rows } = parsePandasHtmlTable(response.htmlTable);
+      return <NativeTable headers={headers} rows={rows} defaultSortCol={1} />;
     } else if ("graphData" in response) {
-      return (
-        <div className="center-content">
-          <LineGraph data={response.graphData} category={category} func={func} />
-        </div>
-      );
+      return <LineGraph data={response.graphData} category={category} func={func} />;
     } else if ("errorMessage" in response) {
-      return <p className="center-content">{response.errorMessage}</p>;
+      return <p className="text-center">{response.errorMessage}</p>;
     } else {
       return <div />;
     }

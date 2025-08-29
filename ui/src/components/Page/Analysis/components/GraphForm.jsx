@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import useAnalysisRunner from "../useAnalysisRunner";
+import Tooltip from "components/common/Tooltip";
 
 const GraphFormSection = () => {
   const { outputType, graphTimeInterval, setGraphTimeInterval } = useAnalysisForm(
@@ -40,30 +41,33 @@ const GraphForm = () => {
   const { fetchCategories } = useAnalysisRunner();
 
   const TimeIntervalRadioGroup = ({ options }) => (
-    <>
+    <div className="flex items-center gap-4">
       {options.map((opt) => (
-        <label key={opt.value} style={{ marginRight: 8 }}>
+        <label key={opt.value} className="inline-flex items-center gap-2 cursor-pointer select-none">
           <input
-            className="radio"
+            className="h-4 w-4 rounded-full accent-slate-900"
             type="radio"
             name="time-interval"
             value={opt.value}
             checked={graphTimeInterval === opt.value}
             onChange={(e) => setGraphTimeInterval(e.target.value)}
           />
-          {opt.label}
+          <span className="text-sm text-slate-800">{opt.label}</span>
         </label>
       ))}
-    </>
+    </div>
   );
 
   return (
   <div>
-    <div className="input-div">
-      <p>Graph each person individually (as opposed to just the total)?</p>
+    <div className="input-div mb-2 flex items-center gap-2">
+      <p className="m-0 flex items-center">
+        Graph each person individually?
+        <Tooltip text={"Shows a separate line for each member instead of only the Total aggregation."} />
+      </p>
       <input
         type="checkbox"
-        className="checkbox"
+        className="h-4 w-4 rounded accent-slate-900"
         checked={!!graphIndividual}
         onChange={(event) => {
           setCategory("");
@@ -73,7 +77,7 @@ const GraphForm = () => {
       />
     </div>
     <div className="input-div">
-      <p>Group messages by:</p>
+      <p className="inline-block mr-2">Group messages by:</p>
       <TimeIntervalRadioGroup
         options={[
           { value: "day", label: "Day" },

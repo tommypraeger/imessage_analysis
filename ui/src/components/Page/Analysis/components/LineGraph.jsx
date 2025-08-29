@@ -1,4 +1,5 @@
 import { Line } from "react-chartjs-2";
+import { useEffect, useMemo, useState } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
@@ -10,11 +11,20 @@ const LineGraph = ({ data, category, func }) => {
   const { phrase, mimeType } = useAnalysisForm(
     useShallow((s) => ({ phrase: s.phrase, mimeType: s.mimeType }))
   );
-  const title = func === "phrase"
-    ? category.replace("the entered phrase", `"${phrase || ""}"`)
-    : func === "mime_type"
-      ? category.replace("the selected file type", `"${mimeType || ""}"`)
-      : category;
+
+  const computeTitle = (cat, f, phr, mime) => {
+    if (f === "phrase") return cat.replace("the entered phrase", `"${phr || ""}"`);
+    if (f === "mime_type") return cat.replace("the selected file type", `"${mime || ""}"`);
+    return cat;
+  };
+
+  // Freeze the title for the current analysis result; update only when new data arrives
+  const initialTitle = useMemo(() => computeTitle(category, func, phrase, mimeType), [data]);
+  const [title, setTitle] = useState(initialTitle);
+  useEffect(() => {
+    setTitle(computeTitle(category, func, phrase, mimeType));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
   return (
     <Line
       data={data}

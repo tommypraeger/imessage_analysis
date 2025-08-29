@@ -14,6 +14,7 @@ const CsvFilePicker = () => {
       <input
         type="file"
         accept="text/csv"
+        className="border border-slate-300 rounded px-3 py-2 text-sm bg-white hover:border-slate-400 cursor-pointer"
         onChange={(event) => {
           if (event.target.files.length === 1) {
             setCsvFileName(event.target.files[0].name);
@@ -27,4 +28,3 @@ const CsvFilePicker = () => {
 };
 
 export default CsvFilePicker;
-

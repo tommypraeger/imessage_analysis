@@ -32,7 +32,7 @@ const ContactsPage = ({ contacts, fetchesInProgress, setFetchesInProgress, setUp
   }
 
   return (
-    <div className="page">
+    <div>
       <AddContactModal
         open={addContactModalOpen}
         setOpen={setAddContactModalOpen}
@@ -47,12 +47,12 @@ const ContactsPage = ({ contacts, fetchesInProgress, setFetchesInProgress, setUp
         setFetchesInProgress={setFetchesInProgress}
         setUpdateContacts={setUpdateContacts}
       />
-      <div>
-        <div className="contacts-section-header">
-          <h3>Group Chats</h3>
-          <p onClick={() => setAddGroupChatModalOpen(true)}>&#x2795; Add Group Chat</p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold">Group Chats</h3>
+          <button className="text-slate-600 hover:text-slate-900" onClick={() => setAddGroupChatModalOpen(true)}>&#x2795; Add Group Chat</button>
         </div>
-        <ul className="contact-list">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0">
           {Object.keys(contacts)
             .filter((name) => contacts[name] === "group")
             .map((name) => (
@@ -68,11 +68,11 @@ const ContactsPage = ({ contacts, fetchesInProgress, setFetchesInProgress, setUp
         </ul>
       </div>
       <div>
-        <div className="contacts-section-header">
-          <h3>Contacts</h3>
-          <p onClick={() => setAddContactModalOpen(true)}>&#x2795; Add Contact</p>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold">Contacts</h3>
+          <button className="text-slate-600 hover:text-slate-900" onClick={() => setAddContactModalOpen(true)}>&#x2795; Add Contact</button>
         </div>
-        <ul className="contact-list">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0">
           {Object.keys(contacts)
             .filter((name) => contacts[name] !== "group")
             .map((name) => (

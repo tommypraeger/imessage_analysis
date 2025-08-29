@@ -9,9 +9,11 @@ const App = () => {
   const [page, setPage] = useState(pageParam);
 
   return (
-    <div className="App">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <NavBar page={page} setPage={setPage} />
-      <Page page={page} />
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6">
+        <Page page={page} />
+      </div>
     </div>
   );
 };

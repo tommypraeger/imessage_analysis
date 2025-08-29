@@ -1,6 +1,7 @@
 import React from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
+import SelectMenu from "components/common/SelectMenu";
 
 const MimeTypeForm = () => {
   const { mimeType, setMimeType } = useAnalysisForm(
@@ -42,14 +43,13 @@ const MimeTypeForm = () => {
 
   return (
     <div className="input-div">
-      <p>File type:</p>
-      <select className="select" value={mimeType} onChange={(e) => setMimeType(e.target.value)}>
-        {mimeTypes.map((mimeType) => (
-          <option key={mimeType} value={mimeType}>
-            {mimeType}
-          </option>
-        ))}
-      </select>
+      <p className="text-sm text-slate-700 mb-1">File type:</p>
+      <SelectMenu
+        value={mimeType}
+        onChange={(val) => setMimeType(val)}
+        options={mimeTypes.map((m) => ({ value: m, label: m }))}
+        placeholder="Select file type"
+      />
     </div>
   );
 };

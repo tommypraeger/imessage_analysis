@@ -44,37 +44,49 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
   };
 
   return (
-    <div>
-      <div className="center-content">
-        <div className="input-div">
-          <SelectContact contacts={contacts} />
-        </div>
-        <CsvFilePicker />
-        <div className="input-div">
-          <SelectFunction />
-        </div>
-        {func && (
-          <div className="select-div">
-            <FunctionForm />
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <aside className="lg:col-span-4">
+        <div className="bg-white rounded-md shadow p-5 sticky top-4">
+          <div className="space-y-3">
+            <div className="input-div">
+              <SelectContact contacts={contacts} />
+            </div>
+            <CsvFilePicker />
+            <div className="input-div">
+              <SelectFunction />
+            </div>
+            {func && (
+              <div className="select-div">
+                <FunctionForm />
+              </div>
+            )}
+            <div className="input-div">
+              <SelectOutput />
+            </div>
+            <SelectCategory />
+            <GraphFormSection />
+            <DateForm />
+            <button
+              className="inline-flex items-center px-4 py-2 rounded bg-slate-900 text-white disabled:bg-slate-300"
+              onClick={handleAnalyzeClick}
+              disabled={analyzeDisabled}
+            >
+              Analyze
+            </button>
           </div>
-        )}
-        <div className="input-div">
-          <SelectOutput />
         </div>
-        <SelectCategory />
-        <GraphFormSection />
-        <DateForm />
-        <button className="center-btn" onClick={handleAnalyzeClick} disabled={analyzeDisabled}>
-          Analyze
-        </button>
-      </div>
-      <Analysis
-        response={response}
-        category={category}
-        func={func}
-        fetchesInProgress={fetchesInProgress}
-        fetchSeconds={fetchSeconds}
-      />
+      </aside>
+      <main className="lg:col-span-8">
+        <div className="bg-white rounded-md shadow p-6 min-h-[320px]">
+          <Analysis
+            response={response}
+            category={category}
+            func={func}
+            fetchesInProgress={fetchesInProgress}
+            fetchSeconds={fetchSeconds}
+          />
+        </div>
+      </main>
     </div>
   );
 };
