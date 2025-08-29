@@ -198,25 +198,22 @@ class Function(abc.ABC):
         start = t.min()
         end = t.max()
 
+        # Use PeriodRange to avoid off-by-one issues and ensure inclusive endpoints
         if time_period_name == "day":
-            rng = pd.date_range(start=start.normalize(), end=end.normalize(), freq="D")
-            return [d.strftime("%Y-%m-%d") for d in rng.to_pydatetime()]
+            pr = pd.period_range(start=start.normalize(), end=end.normalize(), freq="D")
+            return [p.start_time.strftime("%Y-%m-%d") for p in pr]
         if time_period_name == "week":
-            start_monday = start - datetime.timedelta(days=start.weekday())
-            end_monday = end - datetime.timedelta(days=end.weekday())
-            rng = pd.date_range(start=start_monday, end=end_monday, freq="W-MON")
+            # ISO weeks starting Monday
+            pr = pd.period_range(start=start.to_period("W-MON"), end=end.to_period("W-MON"), freq="W-MON")
             labels = []
-            for d in rng.to_pydatetime():
+            for p in pr:
+                d = p.start_time
                 iso = d.isocalendar()
                 labels.append(f"{iso.year}-W{iso.week:02d}")
             return labels
         if time_period_name == "month":
-            start_month = start.replace(day=1)
-            end_month = end.replace(day=1)
-            rng = pd.date_range(start=start_month, end=end_month, freq="MS")
-            return [d.strftime("%Y-%m") for d in rng.to_pydatetime()]
+            pr = pd.period_range(start=start.to_period("M"), end=end.to_period("M"), freq="M")
+            return [p.start_time.strftime("%Y-%m") for p in pr]
         if time_period_name == "year":
-            start_year = start.replace(month=1, day=1)
-            end_year = end.replace(month=1, day=1)
-            rng = pd.date_range(start=start_year, end=end_year, freq="YS")
-            return [d.strftime("%Y") for d in rng.to_pydatetime()]
+            pr = pd.period_range(start=start.to_period("Y"), end=end.to_period("Y"), freq="Y")
+            return [p.start_time.strftime("%Y") for p in pr]
