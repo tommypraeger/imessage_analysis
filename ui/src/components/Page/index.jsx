@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import AnalysisPage from "./Analysis";
 import ContactsPage from "./Contacts";
 import { getFetch } from "./utils";

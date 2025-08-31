@@ -1,5 +1,4 @@
-import { Line } from "react-chartjs-2";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
@@ -25,26 +24,34 @@ const LineGraph = ({ data, category, func }) => {
     setTitle(computeTitle(category, func, phrase, mimeType));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-  return (
-    <Line
-      data={data}
-      options={{
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
-          title: {
-            display: true,
-            text: title,
-            font: {
-              size: 24,
-            },
-          },
-        },
-      }}
-    />
-  );
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    // Destroy any existing instance
+    if (chartRef.current) {
+      chartRef.current.destroy();
+      chartRef.current = null;
+    }
+    const ctx = canvasRef.current.getContext("2d");
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" },
+        title: { display: true, text: title, font: { size: 24 } },
+      },
+    };
+    chartRef.current = new Chart(ctx, { type: "line", data, options });
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, [data, title]);
+
+  return <canvas ref={canvasRef} />;
 };
 
 export default LineGraph;

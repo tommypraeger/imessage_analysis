@@ -1,10 +1,7 @@
 import { useState } from "react";
-import Modal from "react-modal";
+import Modal from "components/common/Modal";
 import { TextField, Autocomplete } from "@mui/material";
 import { addContact, phoneNumberFilterOptions } from "../utils";
-if (typeof document !== "undefined" && document.getElementById("root")) {
-  Modal.setAppElement("#root");
-}
 
 const AddContactModal = ({
   open,

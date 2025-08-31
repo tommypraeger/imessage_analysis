@@ -1,17 +1,13 @@
-import { Oval } from "react-loader-spinner";
 import LineGraph from "./LineGraph";
 import NativeTable from "./NativeTable";
 import { parsePandasHtmlTable, extractNestedTables } from "../utils";
-
-const LoadingGif = () => (
-  <Oval color="#0f172a" height={120} width={120} />
-);
+import LoadingSpinner from "components/common/LoadingSpinner";
 
 const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds }) => {
   if (fetchesInProgress > 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-        <LoadingGif />
+        <LoadingSpinner />
         {fetchSeconds > 1 && (
           <p className="mt-4 text-slate-600">Request has been loading for {fetchSeconds} seconds</p>
         )}

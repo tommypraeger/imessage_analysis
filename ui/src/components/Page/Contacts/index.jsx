@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Oval } from "react-loader-spinner";
+import LoadingSpinner from "components/common/LoadingSpinner";
 import AddContactModal from "./components/AddContactModal";
 import AddGroupChatModal from "./components/AddGroupChatModal";
 import Contact from "./components/Contact";
@@ -25,8 +25,8 @@ const ContactsPage = ({ contacts, fetchesInProgress, setFetchesInProgress, setUp
 
   if (fetchesInProgress > 0) {
     return (
-      <div className="loading-gif">
-        <Oval color="#1982fc" height={200} width={200} />
+      <div className="w-[200px] mx-auto mt-16 mb-5 flex items-center justify-center">
+        <LoadingSpinner size={64} />
       </div>
     );
   }
