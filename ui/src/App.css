@@ -1,22 +1,5 @@
 @import "tailwindcss";
 
-/* Tidy up server-rendered table output */
-#analysis-table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-#analysis-table th, #analysis-table td {
-  border-bottom: 1px solid rgba(148,163,184,0.35); /* slate-300/35 */
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-  font-size: 0.9rem;
-}
-#analysis-table thead th {
-  background: #f8fafc; /* slate-50 */
-  font-weight: 600;
-}
-#analysis-table tr:hover td { background: rgba(241,245,249,0.6); }
-
 /* Style for analysis output tables (non-pandas, nested renders) */
 .analysis-output table {
   width: 100%;

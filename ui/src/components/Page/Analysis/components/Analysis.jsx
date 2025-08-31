@@ -1,18 +1,13 @@
 import { Oval } from "react-loader-spinner";
 import LineGraph from "./LineGraph";
 import NativeTable from "./NativeTable";
-import { useEffect } from "react";
-import { makeTableNice, parsePandasHtmlTable, extractNestedTables } from "../utils";
+import { parsePandasHtmlTable, extractNestedTables } from "../utils";
 
 const LoadingGif = () => (
   <Oval color="#0f172a" height={120} width={120} />
 );
 
 const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds }) => {
-  useEffect(() => {
-    makeTableNice();
-  }, [response]);
-
   if (fetchesInProgress > 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] text-center">

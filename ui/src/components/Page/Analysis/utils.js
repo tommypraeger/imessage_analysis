@@ -110,55 +110,6 @@ const runAnalysis = (setFetchesInProgress, setResponse) => {
     .finally(() => setFetchesInProgress((fetches) => fetches - 1));
 };
 
-const makeTableNice = () => {
-  try {
-    const container = document.getElementById("analysis-table");
-    if (!container) return;
-    const table = container.querySelector("table");
-    if (!table) return;
-    if (table.dataset.sortInit === "1") return; // already wired
-    table.dataset.sortInit = "1";
-
-    const thead = table.querySelector("thead");
-    const tbody = table.querySelector("tbody") || table;
-    if (!thead || !tbody) return;
-
-    const ths = Array.from(thead.querySelectorAll("th"));
-    ths.forEach((th, colIdx) => {
-      th.style.cursor = "pointer";
-      th.title = "Click to sort";
-      th.addEventListener("click", () => {
-        const current = th.getAttribute("data-sort-dir") || "none";
-        const nextDir = current === "asc" ? "desc" : "asc";
-        ths.forEach((t) => t.setAttribute("data-sort-dir", "none"));
-        th.setAttribute("data-sort-dir", nextDir);
-
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-        const parsed = rows.map((tr) => {
-          const cell = tr.children[colIdx];
-          const text = (cell ? cell.textContent : "").trim();
-          // try numeric parse (strip %,$, commas and spaces)
-          const n = parseFloat(text.replace(/[%,\$,\s,]/g, ""));
-          const isNum = !Number.isNaN(n) && /^[0-9.,%\s-]+$/.test(text);
-          return { tr, key: isNum ? n : text.toLowerCase(), isNum };
-        });
-        const allNum = parsed.every((p) => p.isNum);
-        parsed.sort((a, b) => {
-          if (allNum) {
-            return nextDir === "asc" ? a.key - b.key : b.key - a.key;
-          }
-          if (a.key < b.key) return nextDir === "asc" ? -1 : 1;
-          if (a.key > b.key) return nextDir === "asc" ? 1 : -1;
-          return 0;
-        });
-        parsed.forEach(({ tr }) => tbody.appendChild(tr));
-      });
-    });
-  } catch (_) {
-    // fail silently
-  }
-};
-
 // Remove columns from a Pandas HTML table output matching reactionType selection
 const filterHtmlTableByReactionType = (func, reactionType, html) => {
   try {
@@ -248,7 +199,7 @@ const getCategories = (func, outputType, graphIndividual, setCategories, setCate
     .catch((err) => console.log(err));
 };
 
-export { runAnalysis, makeTableNice, getCategories };
+export { runAnalysis, getCategories };
 
 // --- HTML table parsing helpers ---
 
