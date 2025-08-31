@@ -1,51 +1,72 @@
 import sqlite3
+from functools import wraps
 import pandas as pd
 
 from src.utils import helpers
 
 
-# Create SQL cursor (legacy) and connection helpers
-def connect_to_db():
-    """Returns a cursor for legacy call sites."""
-    conn = sqlite3.connect(f"/Users/{helpers.get_username()}/Library/Messages/chat.db")
-    return conn.cursor()
+def _db_uri_readonly() -> str:
+    path = f"/Users/{helpers.get_username()}/Library/Messages/chat.db"
+    return f"file:{path}?mode=ro"
 
 
 def _connect():
-    """Returns a sqlite3 connection for pandas read_sql_query."""
-    return sqlite3.connect(f"/Users/{helpers.get_username()}/Library/Messages/chat.db")
+    """Returns a read-only sqlite3 connection for pandas/SQL reads."""
+    return sqlite3.connect(_db_uri_readonly(), uri=True)
 
 
-# Test DB
+def with_ro_conn(fn):
+    """Decorator that injects a read-only sqlite3 connection.
+
+    - If a `conn` kwarg is provided, it's reused and not closed here.
+    - Otherwise a new read-only connection is opened and closed around the call.
+    """
+
+    @wraps(fn)
+    def wrapper(*args, conn=None, **kwargs):
+        if conn is not None:
+            return fn(*args, conn=conn, **kwargs)
+        with _connect() as ro_conn:
+            return fn(*args, conn=ro_conn, **kwargs)
+
+    return wrapper
+
+
 def test_db():
+    """Attempt to open the Messages DB read-only and run a trivial query.
+
+    Returns a tuple (code, message) where code=0 indicates success.
+    """
     try:
-        c = connect_to_db()
-        cmd = "SELECT * FROM handle"
-        c.execute(cmd)
+        with _connect() as conn:
+            # Probe a known table to confirm schema access; LIMIT keeps it cheap.
+            conn.execute("SELECT ROWID FROM handle LIMIT 1")
         return 0, "Database has sufficient permissions."
     except sqlite3.OperationalError:
         ret = "\n===================================\n\n"
-        ret += "There was an error accessing the messages database.\n"
+        ret += "There was an error accessing the Messages database in read-only mode.\n"
 
         ret += "\nIf you do not want to access the messages database, "
         ret += "you can pass --skip-mac-setup to the install.py script. "
         ret += "You would then only be able to use this program by providing a CSV of messages. "
         ret += "See the README for more details.\n"
 
-        ret += "\nIf you are using a Mac and do want to access the messages database, do the following:\n"
+        ret += "\nIf you are using a Mac and do want to access the Messages database, do the following:\n"
         ret += "1. Open System Settings\n"
         ret += "2. Go to Privacy & Security\n"
         ret += "3. Go to Full Disk Access\n"
         ret += (
             "4. Give Terminal (or whatever application you're running this from) Full Disk Access, ",
         )
-        ret += "and then run the install.py script again\n"
+        ret += "and then run the install.py script again.\n"
+        ret += "\nNote: The app connects to the Messages database using read-only permissions.\n"
         ret += "\n===================================\n"
         return 1, ret
 
 
 # Create DataFrame
-def get_df(name, group):
+@with_ro_conn
+def get_df(name, group, *, conn):
     """Read messages and attachments in one pass via SQL and map sender names vectorized.
 
     - Uses parameterized IN for chat ids
@@ -72,8 +93,7 @@ def get_df(name, group):
         LEFT JOIN attachment att ON att.ROWID = maj.attachment_id
         ORDER BY m.date
     """
-    with _connect() as conn:
-        df = pd.read_sql_query(query, conn, params=chat_ids)
+    df = pd.read_sql_query(query, conn, params=chat_ids)
 
     # Maps contact IDs to names
     id_to_name = {
@@ -104,173 +124,60 @@ def get_df(name, group):
     return df
 
 
-def get_group_df(name):
-    c = connect_to_db()
-    chat_ids = helpers.get_chat_ids()[name]
-
-    # Get chat history
-    cmd1 = f"""
-    SELECT ROWID, text, handle_id, date, guid, associated_message_guid, associated_message_type, attributedBody \
-    FROM message T1 \
-    INNER JOIN chat_message_join T2 \
-        ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
-        AND T1.ROWID=T2.message_id \
-    ORDER BY T1.date
-    """
-    c.execute(cmd1)
-    df_msg = pd.DataFrame(
-        c.fetchall(),
-        columns=[
-            "id",
-            "text",
-            "sender",
-            "time",
-            "guid",
-            "reaction_to",
-            "message_type",
-            "attributed_body",
-        ],
-    )
-    df_msg["sender"] = [
-        helpers.contact_name_from_id(sender) for sender in df_msg["sender"]
-    ]
-
-    # Get attachment history
-    cmd2 = f'SELECT T1.ROWID, T2.mime_type \
-            FROM message T1 \
-            INNER JOIN chat_message_join T3 \
-                ON T1.ROWID=T3.message_id \
-            INNER JOIN attachment T2 \
-            INNER JOIN message_attachment_join T4 \
-                ON T2.ROWID=T4.attachment_id \
-                WHERE T4.message_id=T1.ROWID \
-                AND (T3.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}))'
-    c.execute(cmd2)
-    df_att = pd.DataFrame(c.fetchall(), columns=["id", "type"])
-
-    return df_msg, df_att
-
-
-def get_individual_df(name):
-    c = connect_to_db()
-    chat_ids = helpers.get_chat_ids()[name]
-    # Doesn't matter which contact ID we use, all will map to same name
-    contact_id = helpers.get_contact_ids()[name][0]
-
-    # Get chat history
-    cmd1 = f"""
-    SELECT ROWID, text, is_from_me, date, guid, associated_message_guid, associated_message_type, attributedBody \
-    FROM message T1 \
-    INNER JOIN chat_message_join T2 \
-        ON T2.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}) \
-        AND T1.ROWID=T2.message_id \
-    ORDER BY T1.date
-    """
-    c.execute(cmd1)
-    df_msg = pd.DataFrame(
-        c.fetchall(),
-        columns=[
-            "id",
-            "text",
-            "sender",
-            "time",
-            "guid",
-            "reaction_to",
-            "message_type",
-            "attributed_body",
-        ],
-    )
-    df_msg["sender"] = [
-        (
-            helpers.contact_name_from_id(0)
-            if sender == 1
-            else helpers.contact_name_from_id(contact_id)
-        )
-        for sender in df_msg["sender"]
-    ]
-
-    # Get attachment history
-    cmd2 = f'SELECT T1.ROWID, T2.mime_type \
-            FROM message T1 \
-            INNER JOIN chat_message_join T3 \
-                ON T1.ROWID=T3.message_id \
-            INNER JOIN attachment T2 \
-            INNER JOIN message_attachment_join T4 \
-                ON T2.ROWID=T4.attachment_id \
-                WHERE T4.message_id=T1.ROWID \
-                AND (T3.chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])}))'
-    c.execute(cmd2)
-    df_att = pd.DataFrame(c.fetchall(), columns=["id", "type"])
-
-    return df_msg, df_att
-
-
-def get_chat_members(chat_ids):
-    c = connect_to_db()
-    cmd = f'SELECT handle_id \
-            FROM chat_handle_join \
-            WHERE chat_id IN ({",".join([str(chat_id) for chat_id in chat_ids])})'
-    c.execute(cmd)
-    member_ids = c.fetchall()
+@with_ro_conn
+def get_chat_members(chat_ids, *, conn):
+    placeholders = ",".join(["?"] * len(chat_ids))
+    cmd = f"SELECT handle_id FROM chat_handle_join WHERE chat_id IN ({placeholders})"
+    cur = conn.execute(cmd, chat_ids)
+    member_ids = cur.fetchall()
     member_ids = [int(member_id[0]) for member_id in member_ids]
     member_ids.append(0)
     member_names = [helpers.contact_name_from_id(member_id) for member_id in member_ids]
     return member_names
 
 
-def get_contact_ids_from_phone_number(phone_number):
-    c = connect_to_db()
-    cmd = f'SELECT ROWID \
-            FROM handle \
-            WHERE id like "%{phone_number}%"'
-    c.execute(cmd)
-    contact_ids = c.fetchall()
+@with_ro_conn
+def get_contact_ids_from_phone_number(phone_number, *, conn):
+    cmd = 'SELECT ROWID FROM handle WHERE id LIKE ?'
+    cur = conn.execute(cmd, (f"%{phone_number}%",))
+    contact_ids = cur.fetchall()
     return [int(contact_id[0]) for contact_id in contact_ids]
 
 
-def get_chat_ids_from_phone_number(phone_number):
-    c = connect_to_db()
-    cmd = f'SELECT ROWID \
-            FROM chat \
-            WHERE chat_identifier like "%{phone_number}%"'
-    c.execute(cmd)
-    chat_ids = c.fetchall()
+@with_ro_conn
+def get_chat_ids_from_phone_number(phone_number, *, conn):
+    cmd = 'SELECT ROWID FROM chat WHERE chat_identifier LIKE ?'
+    cur = conn.execute(cmd, (f"%{phone_number}%",))
+    chat_ids = cur.fetchall()
     return [int(chat_id[0]) for chat_id in chat_ids]
 
 
-def get_chat_ids_from_chat_name(chat_name):
-    c = connect_to_db()
-    cmd = f'SELECT ROWID \
-            FROM chat \
-            WHERE display_name="{chat_name}"'
-    c.execute(cmd)
-    chat_ids = c.fetchall()
+@with_ro_conn
+def get_chat_ids_from_chat_name(chat_name, *, conn):
+    cmd = 'SELECT ROWID FROM chat WHERE display_name = ?'
+    cur = conn.execute(cmd, (chat_name,))
+    chat_ids = cur.fetchall()
     return [int(chat_id[0]) for chat_id in chat_ids]
 
 
-def get_phone_number_from_contact_id(contact_id):
-    c = connect_to_db()
-    cmd = f"SELECT id \
-            FROM handle \
-            WHERE ROWID={contact_id}"
-    c.execute(cmd)
-    return str(c.fetchone())
+@with_ro_conn
+def get_phone_number_from_contact_id(contact_id, *, conn):
+    cmd = "SELECT id FROM handle WHERE ROWID = ?"
+    cur = conn.execute(cmd, (contact_id,))
+    return str(cur.fetchone())
 
 
-def get_all_phone_numbers():
-    c = connect_to_db()
-    cmd = 'SELECT DISTINCT id \
-           FROM handle'
-    c.execute(cmd)
-    phone_numbers = c.fetchall()
+@with_ro_conn
+def get_all_phone_numbers(*, conn):
+    cmd = 'SELECT DISTINCT id FROM handle'
+    cur = conn.execute(cmd)
+    phone_numbers = cur.fetchall()
     return [str(phone_number[0]) for phone_number in phone_numbers]
 
 
-def get_all_chat_names():
-    c = connect_to_db()
-    cmd = 'SELECT DISTINCT display_name \
-           FROM chat \
-           WHERE display_name LIKE "_%";'
-    c.execute(cmd)
-    chat_names = c.fetchall()
+@with_ro_conn
+def get_all_chat_names(*, conn):
+    cmd = 'SELECT DISTINCT display_name FROM chat WHERE display_name LIKE "_%";'
+    cur = conn.execute(cmd)
+    chat_names = cur.fetchall()
     return [str(chat_name[0]) for chat_name in chat_names]
