@@ -90,7 +90,6 @@ class Function(abc.ABC):
 
     def get_table_results(self, result_dict, df, chat_members, args):
         df = self.process_messages_df(df, args)
-        df.to_csv("test.csv", index=False)
         for member_name in chat_members:
             helpers.initialize_member(member_name, result_dict)
             self.get_results(result_dict, df, args, member_name=member_name)

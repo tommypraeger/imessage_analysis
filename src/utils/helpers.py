@@ -1,8 +1,5 @@
-import ast
 import datetime
-import emoji
 import json
-import math
 import re
 import string
 import traceback
@@ -23,6 +20,8 @@ def initialize_member(member_name, result_dict):
 
 def get_messages(df, member_name=None, time_period=None):
     # Vectorized filter: exclude edits (messages starting with "Edited to")
+    # TODO: find way to link edits to the original message
+    # TODO: find better way to identify edits
     text_series = df["text"].astype("string")
     condition = ~text_series.str.startswith("Edited to", na=False)
     if time_period is not None:
@@ -152,20 +151,6 @@ def date_to_time(date, end_of_day=None):
     return timestamp * 1e9
 
 
-# TODO: find way to link edits to the original message
-# TODO: find better way to identify edits
-def is_edit(msg):
-    msg = str(msg)
-    return msg.startswith("Edited to")
-
-
-def is_not_edit(msg):
-    return not is_edit(msg)
-
-
-def convert_message_type(raw_message_type):
-    raw_message_type = int(raw_message_type)
-    return constants.MESSAGE_TYPES.get(raw_message_type, "")
 
 
 def is_reaction(message_type):
@@ -178,12 +163,6 @@ def is_removed_reaction(message_type):
     return message_type.startswith("removed")
 
 
-def is_not_reaction(message_type):
-    return not is_reaction(message_type) and not is_removed_reaction(message_type)
-
-
-def is_attachment(msg, mime, message_type):
-    return mime != "text/plain" and not is_game_message(message_type)
 
 
 def is_phrase_in(phrase, msg, message_type, case_sensitive, separate, regex):
@@ -221,84 +200,8 @@ def is_sub_list(small, big):
     return False
 
 
-def is_type(test, target):
-    return str(test) == target
 
 
-def includes_emoji(msg, message_type):
-    if is_reaction(message_type):
-        return False
-    msg = str(msg)
-    return emoji.emoji_count(msg) > 0
-
-
-def is_all_caps(msg):
-    only_letters = re.compile("[^a-zA-Z]")
-    msg = only_letters.sub("", str(msg))
-    return len(msg) > 0 and msg == msg.upper()
-
-
-def is_tweet(msg, message_type):
-    if is_reaction(message_type):
-        return False
-    msg = str(msg)
-    # not using regex for speed and because it's prob not necessary
-    return (("/twitter.com" in msg
-            or "/x.com" in msg) # 🤮
-            and "status" in msg)
-
-
-def is_conversation_starter(time_diff, threshold):
-    if threshold is None:
-        threshold = constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
-    time_diff_in_seconds = time_diff.total_seconds()
-
-    # shouldn't actually be necessary to check for nan
-    # because I already set the first message as a conversation starter
-    # but might as well
-    return math.isnan(time_diff_in_seconds) or time_diff_in_seconds > (threshold * 60)
-
-
-def message_word_count(msg):
-    return len(str(msg).split())
-
-
-def message_letter_count(msg):
-    msg = str(msg)
-    return len(re.sub("[^a-zA-Z]+", "", msg))
-
-
-def is_link(msg, message_type):
-    if is_reaction(message_type):
-        return False
-    if re.match(constants.LINK_REGEX, str(msg)):
-        return True
-    return False
-
-
-def is_game_message(message_type):
-    return message_type == "game" or message_type == "game start"
-
-
-def is_game_start(message_type):
-    return message_type == "game start"
-
-
-def get_day(date):
-    return f"{date.month}/{date.day}/{str(date.year)[-2:]}"
-
-
-def get_week(date):
-    last_monday = date - datetime.timedelta(days=date.weekday())
-    return f"{last_monday.month}/{last_monday.day}/{str(last_monday.year)[-2:]}"
-
-
-def get_month(date):
-    return f"{date.month}/1/{str(date.year)[-2:]}"
-
-
-def get_year(date):
-    return f"1/1/{str(date.year)[-2:]}"
 
 
 # huge thank you to this reddit comment and the post as a whole
