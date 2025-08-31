@@ -1,11 +1,11 @@
 const NavBar = ({ page, setPage }) => {
   const pages = ["contacts", "analysis"];
-  const urlParams = new URLSearchParams(window.location.search);
-
   const onClick = (name) => {
     setPage(name);
-    urlParams.set("page", name);
-    window.location.search = urlParams.toString();
+    // Update the URL query param without reloading the page
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", name);
+    window.history.replaceState(null, "", url.toString());
   };
 
   return (
