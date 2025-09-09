@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
@@ -11,7 +11,7 @@ const DateForm = () => {
       setEndDate: s.setEndDate,
     }))
   );
-  const DateField = ({ label, selectedDate, onChange, placeholder }) => {
+  const DateField = ({ label, selectedDate, setDate, placeholder }) => {
     const formatDate = (d) => {
       if (!(d instanceof Date)) return "";
       const y = d.getFullYear();
@@ -20,22 +20,18 @@ const DateForm = () => {
       return `${y}-${m}-${day}`;
     };
 
-    const [text, setText] = useState(selectedDate ? formatDate(selectedDate) : "");
-
-    useEffect(() => {
-      setText(selectedDate ? formatDate(selectedDate) : "");
-    }, [selectedDate]);
+    const initial = useMemo(() => (selectedDate ? formatDate(selectedDate) : ""), [selectedDate]);
 
     const tryCommit = (s) => {
-      if (s.length === 0) {
-        onChange("");
+      if (!s) {
+        setDate("");
         return;
       }
-      if (s.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(s)) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
         const [y, m, d] = s.split("-").map((n) => parseInt(n, 10));
         const dt = new Date(y, m - 1, d);
         if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) {
-          onChange(dt);
+          setDate(dt);
         }
       }
     };
@@ -44,13 +40,10 @@ const DateForm = () => {
       <div className="flex items-center gap-2">
         <p className="m-0 text-sm text-slate-700">{label}:</p>
         <input
-          type="text"
-          value={text}
-          onChange={(e) => {
-            const v = e.target.value;
-            setText(v);
-            tryCommit(v);
-          }}
+          key={initial}
+          type="date"
+          defaultValue={initial}
+          onBlur={(e) => tryCommit(e.target.value)}
           placeholder={placeholder || "YYYY-MM-DD"}
           className="border border-slate-300 rounded px-3 py-2 text-sm bg-white"
         />
@@ -61,8 +54,8 @@ const DateForm = () => {
     <div className="input-div mt-2">
       <div className="text-sm font-medium text-slate-700 mb-1">Date Range</div>
       <div className="flex flex-wrap items-center gap-4">
-        <DateField label="Start" selectedDate={startDate} onChange={setStartDate} placeholder="YYYY-MM-DD" />
-        <DateField label="End" selectedDate={endDate} onChange={setEndDate} placeholder="YYYY-MM-DD" />
+        <DateField label="Start" selectedDate={startDate} setDate={setStartDate} placeholder="YYYY-MM-DD" />
+        <DateField label="End" selectedDate={endDate} setDate={setEndDate} placeholder="YYYY-MM-DD" />
       </div>
     </div>
   );
