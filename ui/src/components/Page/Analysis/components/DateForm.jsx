@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
@@ -21,6 +21,7 @@ const DateForm = () => {
     };
 
     const initial = useMemo(() => (selectedDate ? formatDate(selectedDate) : ""), [selectedDate]);
+    const inputRef = useRef(null);
 
     const tryCommit = (s) => {
       if (!s) {
@@ -39,14 +40,33 @@ const DateForm = () => {
     return (
       <div className="flex items-center gap-2">
         <p className="m-0 text-sm text-slate-700">{label}:</p>
-        <input
-          key={initial}
-          type="date"
-          defaultValue={initial}
-          onBlur={(e) => tryCommit(e.target.value)}
-          placeholder={placeholder || "YYYY-MM-DD"}
-          className="border border-slate-300 rounded px-3 py-2 text-sm bg-white"
-        />
+        <div className="relative">
+          <input
+            key={initial}
+            type="date"
+            defaultValue={initial}
+            onBlur={(e) => tryCommit(e.target.value)}
+            placeholder={placeholder || "YYYY-MM-DD"}
+            className="border border-slate-300 rounded px-3 py-2 pr-9 text-sm bg-white"
+            ref={inputRef}
+          />
+          <button
+            type="button"
+            aria-label="Clear date"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => {
+              if (inputRef.current) {
+                inputRef.current.value = "";
+                inputRef.current.focus();
+              }
+              setDate("");
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-1 text-slate-500 hover:text-slate-700"
+            title="Clear date"
+          >
+            ×
+          </button>
+        </div>
       </div>
     );
   };
