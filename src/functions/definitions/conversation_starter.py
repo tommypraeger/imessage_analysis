@@ -20,10 +20,12 @@ class ConversationStarter(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
-        seconds = df["time"].diff().dt.total_seconds()
-        df["is conversation starter?"] = seconds.gt(minutes_threshold * 60).fillna(True)
-        return df
+        # Use global helper to ensure reactions never start conversations and
+        # reactions inherit the parent's conversation.
+        return helpers.compute_conversation_columns(
+            df,
+            minutes_threshold=args.minutes_threshold,
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

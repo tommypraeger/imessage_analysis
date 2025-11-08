@@ -4,6 +4,8 @@ import re
 import string
 import traceback
 
+import pandas as pd
+
 from typedstream.stream import TypedStreamReader
 
 from src.utils import constants, sql
@@ -233,3 +235,82 @@ def add_reactions_for_each_message(df):
     _mapped = base["guid"].map(tuples)
     base["reactions_per_user"] = _mapped.apply(lambda x: x if isinstance(x, list) else [])
     return base
+
+
+def compute_conversation_columns(df, minutes_threshold=None):
+    """
+    Mutates and returns df with two columns:
+      - "is conversation starter?": True only for non-reaction rows that start a conversation
+      - "conversation number": 1-based consecutive conversation id across all rows
+
+    Rules:
+      - Only non-reaction messages can start conversations (gap > threshold or first non-reaction)
+      - Reactions are assigned to the same conversation as their parent message (via reaction_to)
+    """
+
+    if minutes_threshold is None:
+        minutes_threshold = constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
+
+    # Determine reaction flags (including removed reactions)
+    mt = df.get("message_type")
+    mt = mt.astype("string") if mt is not None else pd.Series([""] * len(df), index=df.index, dtype="string")
+    is_removed = mt.str.startswith("removed", na=False)
+    is_reaction_type = mt.isin(constants.REACTION_TYPES)
+    is_reaction_row = (is_removed | is_reaction_type)
+
+    # Compute starters among non-reaction rows only
+    non_reaction_idx = df.index[~is_reaction_row]
+    starters = pd.Series(False, index=df.index)
+    if len(non_reaction_idx) > 0:
+        times = df.loc[non_reaction_idx, "time"]
+        # Vectorized diff in seconds among non-reactions
+        seconds = times.diff().dt.total_seconds()
+        starters_nr = seconds.gt(minutes_threshold * 60).fillna(True)
+        starters.loc[non_reaction_idx] = starters_nr
+    # Reactions never start conversations
+    starters.loc[is_reaction_row] = False
+    df["is conversation starter?"] = starters
+
+    # Conversation number: cumsum of starters on non-reactions, propagate to all rows
+    conv = pd.Series(pd.NA, index=df.index, dtype="Int64")
+    if len(non_reaction_idx) > 0:
+        conv_nr = starters.loc[non_reaction_idx].astype("int64").cumsum()
+        # Start from 1 (first non-reaction should be True -> 1). In case it isn't, coerce min to 1.
+        if len(conv_nr) > 0 and conv_nr.iloc[0] == 0:
+            conv_nr = conv_nr + 1
+        conv.loc[non_reaction_idx] = conv_nr.astype("Int64")
+
+    # Attempt to map reactions to their parent conversation via reaction_to
+    # Normalize GUIDs similarly to add_reactions_for_each_message
+    guid_norm = df.get("guid").astype("string").str.replace(r"^p:0/", "", regex=True) if "guid" in df.columns else None
+    reaction_to = df.get("reaction_to")
+    reaction_to_norm = (
+        reaction_to.astype("string").str.replace(r"^p:0/", "", regex=True)
+        if reaction_to is not None
+        else None
+    )
+    if guid_norm is not None and reaction_to_norm is not None:
+        # Build map from base message guid -> conversation number (non-reactions only)
+        base_guid_to_conv = {}
+        for g, c in zip(guid_norm.loc[non_reaction_idx], conv.loc[non_reaction_idx]):
+            if pd.notna(c):
+                base_guid_to_conv[str(g)] = int(c)
+        # Assign mapped conversation numbers to reactions where possible
+        reaction_idx = df.index[is_reaction_row]
+        if len(reaction_idx) > 0:
+            mapped = reaction_to_norm.loc[reaction_idx].map(base_guid_to_conv)
+            # Prefer explicit parent mapping; otherwise leave as NA to be filled below
+            for i, val in mapped.items():
+                if pd.notna(val):
+                    conv.loc[i] = int(val)
+
+    # Fallback: forward-fill conversation numbers by time so reactions inherit nearest prior conversation
+    # This also covers reactions with missing/invalid parent mappings (e.g., CSV inputs without reaction_to)
+    conv = conv.ffill()
+    # If still NA at beginning, back-fill
+    conv = conv.bfill()
+    # Final safety: set any remaining NA to 1
+    conv = conv.fillna(1)
+    df["conversation number"] = conv.astype("int64")
+
+    return df

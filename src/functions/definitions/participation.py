@@ -20,13 +20,11 @@ class Participation(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
-        seconds = df["time"].diff().dt.total_seconds()
-        starters = seconds.gt(minutes_threshold * 60).fillna(True)
-        df["is conversation starter?"] = starters
-        # Conversation numbers start at 1 and increment on each starter
-        df["conversation number"] = starters.cumsum()
-        return df
+        # Delegate to helper for consistent conversation logic and numbering
+        return helpers.compute_conversation_columns(
+            df,
+            minutes_threshold=args.minutes_threshold,
+        )
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

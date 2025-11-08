@@ -29,9 +29,12 @@ class MessageSeries(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        minutes_threshold = args.minutes_threshold or constants.DEFAULT_CONVERSATION_STARTER_THRESHOLD_MINUTES
-        seconds = df["time"].diff().dt.total_seconds()
-        df["is conversation starter?"] = seconds.gt(minutes_threshold * 60).fillna(True)
+        # Populate conversation columns using the shared helper so that
+        # reactions never start conversations and inherit parent conversations.
+        df = helpers.compute_conversation_columns(
+            df,
+            minutes_threshold=args.minutes_threshold,
+        )
         # New series whenever sender changes vs previous row
         is_new_series = df["sender"].ne(df["sender"].shift())
         # Ensure first row is True
