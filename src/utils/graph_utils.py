@@ -65,6 +65,13 @@ def generate_scatter_image(
     slug: str,
     add_regression: bool = False,
     add_residuals: bool = False,
+    x_percent: bool = False,
+    y_percent: bool = False,
+    add_quadrant_axes: bool = False,
+    x_left_label: Optional[str] = None,
+    x_right_label: Optional[str] = None,
+    y_bottom_label: Optional[str] = None,
+    y_top_label: Optional[str] = None,
 ) -> Dict[str, str]:
     """
     Generate a scatter image under ui/public/analysis and return {imagePath, title, subtitle}.
@@ -105,6 +112,16 @@ def generate_scatter_image(
     ax_main.set_ylabel(y_label)
     fig.suptitle(title, y=0.88, fontsize=14, fontweight="bold")
     ax_main.grid(True, linestyle=":", alpha=0.4)
+
+    # Optional percentage tick formatting
+    if x_percent:
+        from matplotlib.ticker import FuncFormatter
+
+        ax_main.xaxis.set_major_formatter(FuncFormatter(lambda v, pos: f"{v:.0f}%"))
+    if y_percent:
+        from matplotlib.ticker import FuncFormatter
+
+        ax_main.yaxis.set_major_formatter(FuncFormatter(lambda v, pos: f"{v:.0f}%"))
 
     # Regression line and residuals
     subtitle_text = subtitle
@@ -147,6 +164,25 @@ def generate_scatter_image(
     # Render subtitle as axes title so it appears beneath the main figure title
     if subtitle_text:
         ax_main.set_title(subtitle_text, fontsize=10, color="#374151")
+
+    # Optional quadrant axes drawn at midpoints with directional labels
+    if add_quadrant_axes:
+        # After initial draw, use current limits to place midlines
+        x_min, x_max = ax_main.get_xlim()
+        y_min, y_max = ax_main.get_ylim()
+        x_mid = (x_min + x_max) / 2.0
+        y_mid = (y_min + y_max) / 2.0
+        ax_main.axvline(x_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8)
+        ax_main.axhline(y_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8)
+        # Use axes-fraction coords for labels so they hug the edges
+        if x_left_label:
+            ax_main.annotate(x_left_label, xy=(0.02, 0.52), xycoords="axes fraction", ha="left", va="center", fontsize=10, color="#374151")
+        if x_right_label:
+            ax_main.annotate(x_right_label, xy=(0.98, 0.52), xycoords="axes fraction", ha="right", va="center", fontsize=10, color="#374151")
+        if y_top_label:
+            ax_main.annotate(y_top_label, xy=(0.5, 0.98), xycoords="axes fraction", ha="center", va="top", fontsize=10, color="#374151")
+        if y_bottom_label:
+            ax_main.annotate(y_bottom_label, xy=(0.5, 0.02), xycoords="axes fraction", ha="center", va="bottom", fontsize=10, color="#374151")
 
     fig.tight_layout(rect=[0, 0, 1, 0.92])
 
