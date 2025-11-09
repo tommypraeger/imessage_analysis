@@ -94,14 +94,8 @@ def generate_scatter_image(
     xs = np.array(xs_list, dtype=float)
     ys = np.array(ys_list, dtype=float)
 
-    # Determine layout: residuals requires 2 rows
-    if add_residuals and xs.size >= 2:
-        fig, (ax_main, ax_res) = plt.subplots(
-            2, 1, figsize=(8, 8), gridspec_kw={"height_ratios": [3, 1]}, sharex=True
-        )
-    else:
-        fig, ax_main = plt.subplots(1, 1, figsize=(8, 6))
-        ax_res = None
+    # Single-axes layout; residuals (if any) are drawn on the main plot
+    fig, ax_main = plt.subplots(1, 1, figsize=(8, 6))
 
     # Main scatter plot
     ax_main.scatter(xs, ys, c="#1f78b4", alpha=0.85, edgecolors="white", linewidths=0.5)
@@ -131,15 +125,24 @@ def generate_scatter_image(
                 subtitle_text = f"{subtitle_text} ({r2_text})"
             else:
                 subtitle_text = r2_text
-
-            if add_residuals and ax_res is not None:
+            # Optional residuals as vertical dotted lines on main plot
+            if add_residuals:
                 y_pred = slope * xs + intercept
-                residuals = ys - y_pred
-                ax_res.axhline(0.0, color="#999999", linewidth=1.0)
-                ax_res.scatter(xs, residuals, c="#33a02c", alpha=0.85, edgecolors="white", linewidths=0.5)
-                ax_res.set_ylabel("Residuals")
-                ax_res.set_xlabel(x_label)
-                ax_res.grid(True, linestyle=":", alpha=0.4)
+                for xi, yi, yhat in zip(xs, ys, y_pred):
+                    # Vertical dotted line from predicted (on regression) to actual point
+                    ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
+                    # Show residual magnitude next to the line (absolute difference)
+                    resid_mag = abs(float(yi - yhat))
+                    mid_y = (float(yi) + float(yhat)) / 2.0
+                    ax_main.annotate(
+                        f"{resid_mag:.2f}",
+                        (xi, mid_y),
+                        textcoords="offset points",
+                        xytext=(6, 0),
+                        va="center",
+                        fontsize=8,
+                        color="#6b7280",
+                    )
 
     # Render subtitle as axes title so it appears beneath the main figure title
     if subtitle_text:

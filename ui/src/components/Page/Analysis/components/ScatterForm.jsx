@@ -163,8 +163,9 @@ const ScatterForm = () => {
             className="h-4 w-4 rounded accent-slate-900"
             checked={!!store.scatterResiduals}
             onChange={(e) => store.setScatterResiduals(!!e.target.checked)}
+            disabled={!store.scatterRegression}
           />
-          <span className="text-sm text-slate-800">Show residuals subplot</span>
+          <span className="text-sm text-slate-800">Show residuals</span>
         </label>
       </div>
     </div>
