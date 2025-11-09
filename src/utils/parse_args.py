@@ -55,7 +55,7 @@ def get_analysis_args(args):
     parser.add_argument(
         "--function",
         type=str,
-        required=True,
+        required=("--scatter" not in sys.argv),
         choices=get_functions(),
         help="name of function to call",
     )
@@ -66,6 +66,9 @@ def get_analysis_args(args):
     )
     output_group.add_argument(
         "--graph", action="store_true", help="output results to view in a line graph"
+    )
+    output_group.add_argument(
+        "--scatter", action="store_true", help="output results to view in a scatter plot image"
     )
     parser.add_argument(
         "--category",
@@ -79,6 +82,50 @@ def get_analysis_args(args):
         required="--graph" in sys.argv,
         choices=["day", "week", "month", "year"],
         help="which time interval to group the data by",
+    )
+
+    # Scatter-specific options
+    parser.add_argument(
+        "--scatter-preset",
+        type=str,
+        help="use a predefined scatter preset (e.g., lfwt)",
+        required=False,
+    )
+    parser.add_argument(
+        "--x-function",
+        type=str,
+        choices=get_functions(),
+        help="function to compute X-axis metric",
+        required=("--scatter" in sys.argv and "--scatter-preset" not in sys.argv),
+    )
+    parser.add_argument(
+        "--x-category",
+        type=str,
+        help="category from X function to use",
+        required=("--scatter" in sys.argv and "--scatter-preset" not in sys.argv),
+    )
+    parser.add_argument(
+        "--y-function",
+        type=str,
+        choices=get_functions(),
+        help="function to compute Y-axis metric",
+        required=("--scatter" in sys.argv and "--scatter-preset" not in sys.argv),
+    )
+    parser.add_argument(
+        "--y-category",
+        type=str,
+        help="category from Y function to use",
+        required=("--scatter" in sys.argv and "--scatter-preset" not in sys.argv),
+    )
+    parser.add_argument(
+        "--scatter-regression",
+        action="store_true",
+        help="overlay a best-fit regression line on the scatter",
+    )
+    parser.add_argument(
+        "--scatter-residuals",
+        action="store_true",
+        help="include a residuals subplot below the scatter",
     )
     return parser.parse_args(args)
 

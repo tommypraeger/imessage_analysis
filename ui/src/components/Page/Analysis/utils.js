@@ -69,11 +69,22 @@ const buildArgs = () => {
     }
   }
 
-  // Output + graph-specific args
+  // Output + graph/scatter-specific args
   args[outputType] = "";
   if (outputType === "graph") {
     if (s.graphIndividual) args["graph-individual"] = "";
     if (s.graphTimeInterval) args["graph-time-interval"] = s.graphTimeInterval;
+  } else if (outputType === "scatter") {
+    if (s.scatterMode === "preset") {
+      if (s.scatterPreset) args["scatter-preset"] = s.scatterPreset;
+    } else {
+      if (s.scatterXFunction) args["x-function"] = s.scatterXFunction;
+      if (s.scatterXCategory) args["x-category"] = s.scatterXCategory;
+      if (s.scatterYFunction) args["y-function"] = s.scatterYFunction;
+      if (s.scatterYCategory) args["y-category"] = s.scatterYCategory;
+    }
+    if (s.scatterRegression) args["scatter-regression"] = "";
+    if (s.scatterResiduals) args["scatter-residuals"] = "";
   }
 
   if (category) args.category = category;

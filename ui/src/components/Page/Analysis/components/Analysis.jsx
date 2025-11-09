@@ -20,7 +20,13 @@ const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds })
       </div>
     );
   } else {
-    if ("htmlTable" in response) {
+    if ("imagePath" in response) {
+      return (
+        <div className="space-y-2">
+          <img src={response.imagePath} alt={response.title || "Scatter plot"} />
+        </div>
+      );
+    } else if ("htmlTable" in response) {
       const nested = extractNestedTables(response.htmlTable);
       if (nested && nested.length > 0) {
         return (

@@ -32,13 +32,14 @@ const SelectOutput = () => {
       onChange={(val) => {
         if (val === "graph" && graphDisabled) return;
         setOutputType(val);
-        if (func !== "") {
+        if (func !== "" && (val === "table" || val === "graph")) {
           fetchCategories(func, val, graphIndividual);
         }
       }}
       options={[
         { value: "table", label: "Table" },
         { value: "graph", label: "Line Graph", disabled: graphDisabled },
+        { value: "scatter", label: "Scatter Plot" },
       ]}
       placeholder="Select output"
     />

@@ -21,6 +21,15 @@ const initialState = {
   phraseRegex: false,
   graphIndividual: false,
   graphTimeInterval: "",
+  // Scatter
+  scatterMode: "preset", // 'preset' | 'custom'
+  scatterPreset: "lfwt",
+  scatterXFunction: "",
+  scatterXCategory: "",
+  scatterYFunction: "",
+  scatterYCategory: "",
+  scatterRegression: false,
+  scatterResiduals: false,
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -47,16 +56,34 @@ const useAnalysisForm = create((set, get) => ({
   setPhraseRegex: (val) => set({ phraseRegex: !!val }),
   setGraphIndividual: (val) => set({ graphIndividual: !!val }),
   setGraphTimeInterval: (val) => set({ graphTimeInterval: val }),
+  // Scatter setters
+  setScatterMode: (val) => set({ scatterMode: val }),
+  setScatterPreset: (val) => set({ scatterPreset: val }),
+  setScatterXFunction: (val) => set({ scatterXFunction: val }),
+  setScatterXCategory: (val) => set({ scatterXCategory: val }),
+  setScatterYFunction: (val) => set({ scatterYFunction: val }),
+  setScatterYCategory: (val) => set({ scatterYCategory: val }),
+  setScatterRegression: (val) => set({ scatterRegression: !!val }),
+  setScatterResiduals: (val) => set({ scatterResiduals: !!val }),
 
   getAnalyzeDisabled: () => {
     const s = get();
     const { contactName, func, outputType, category, csv, csvFileName } = s;
-    if (!contactName || !func) return true;
+    if (!contactName) return true;
+    // For scatter we don't require primary func selection
+    if (outputType !== "scatter" && !func) return true;
     if (func === "phrase" && !s.phrase) return true;
     if (func === "mime_type" && !s.mimeType) return true;
     if ((func === "message_series" || func === "conversation_starter" || func === "participation") && !s.minutesThreshold)
       return true;
     if (outputType === "graph" && (!category || !s.graphTimeInterval)) return true;
+    if (outputType === "scatter") {
+      if (s.scatterMode === "preset") {
+        if (!s.scatterPreset) return true;
+      } else {
+        if (!s.scatterXFunction || !s.scatterXCategory || !s.scatterYFunction || !s.scatterYCategory) return true;
+      }
+    }
     if (csv && csvFileName === "") return true;
     return false;
   },

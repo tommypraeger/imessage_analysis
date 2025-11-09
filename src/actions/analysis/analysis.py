@@ -5,6 +5,7 @@ import pandas as pd
 
 from src import functions
 from src.utils import constants, helpers, sql
+from src.actions.analysis.scatter import run_scatter as run_scatter_action
 
 
 def main(args):
@@ -46,7 +47,14 @@ def main(args):
     except Exception as e:
         return helpers.make_error_message(e)
 
-    # Process df based on function
+    # Scatter image flow (delegates to scatter action for presets/custom)
+    if getattr(args, "scatter", False):
+        try:
+            return run_scatter_action(df, args, chat_members)
+        except Exception as e:
+            return helpers.make_error_message(e)
+
+    # Process df based on function (table/graph)
     try:
         function = functions.get_function_class_by_name(args.function)
         result_dict, df = function.run(df, args, chat_members)

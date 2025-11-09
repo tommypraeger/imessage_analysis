@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import DateForm from "./components/DateForm";
 import FunctionForm from "./components/FunctionForms";
 import GraphFormSection from "./components/GraphForm";
+import ScatterFormSection from "./components/ScatterForm";
 import CsvFilePicker from "./components/CsvFilePicker";
 import SelectCategory from "./components/SelectCategory";
 import SelectContact from "./components/SelectContact";
@@ -13,11 +14,12 @@ import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
 const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => {
-  const { contactName, func, category, analyzeDisabled } = useAnalysisForm(
+  const { contactName, func, category, analyzeDisabled, outputType } = useAnalysisForm(
     useShallow((s) => ({
       contactName: s.contactName,
       func: s.func,
       category: s.category,
+      outputType: s.outputType,
       analyzeDisabled: s.getAnalyzeDisabled(),
     }))
   );
@@ -53,18 +55,23 @@ const AnalysisPage = ({ contacts, fetchesInProgress, setFetchesInProgress }) => 
             </div>
             <CsvFilePicker />
             <div className="input-div">
-              <SelectFunction />
-            </div>
-            {func && (
-              <div className="select-div">
-                <FunctionForm />
-              </div>
-            )}
-            <div className="input-div">
               <SelectOutput />
             </div>
+            {outputType !== "scatter" && (
+              <>
+                <div className="input-div">
+                  <SelectFunction />
+                </div>
+                {func && (
+                  <div className="select-div">
+                    <FunctionForm />
+                  </div>
+                )}
+              </>
+            )}
             <SelectCategory />
             <GraphFormSection />
+            <ScatterFormSection />
             <DateForm />
             <button
               className="inline-flex items-center px-4 py-2 rounded bg-slate-900 text-white disabled:bg-slate-300"
