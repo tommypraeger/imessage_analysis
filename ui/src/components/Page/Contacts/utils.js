@@ -31,7 +31,7 @@ const addGroup = (name, setFetchesInProgress, setUpdateContacts) => {
     .finally(() => setFetchesInProgress((fetches) => fetches - 1));
 };
 
-const editContact = (name, oldName, number, setFetchesInProgress, setUpdateContacts) => {
+const editContact = (name, number, oldName, setFetchesInProgress, setUpdateContacts) => {
   postFetch(
     "edit_contact",
     {

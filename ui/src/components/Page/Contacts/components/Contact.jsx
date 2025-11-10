@@ -24,6 +24,7 @@ const Contact = ({
         number={number}
         allPhoneNumbers={allPhoneNumbers}
         setFetchesInProgress={setFetchesInProgress}
+        setUpdateContacts={setUpdateContacts}
       />
       <EditGroupChatModal
         open={editGroupChatModalOpen}
@@ -31,6 +32,7 @@ const Contact = ({
         name={name}
         allChatNames={allChatNames}
         setFetchesInProgress={setFetchesInProgress}
+        setUpdateContacts={setUpdateContacts}
       />
       <li
         className="cursor-pointer rounded border border-slate-200 bg-white hover:border-slate-300 shadow-sm px-4 py-3 flex items-center justify-between"
