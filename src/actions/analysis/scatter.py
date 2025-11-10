@@ -78,12 +78,12 @@ def _compute_points_lfwt(df: pd.DataFrame, args, chat_members: List[str]) -> Tup
 
 def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, str]:
     # Determine mode: preset or custom
-    if getattr(args, "scatter_preset", None):
-        preset = args.scatter_preset.lower()
-        if preset == "lfwt":
+    preset_lower = (getattr(args, "scatter_preset", None) or "").lower()
+    if preset_lower:
+        if preset_lower == "lfwt":
             points, title, subtitle, slug, x_label, y_label = _compute_points_lfwt(df, args, chat_members)
         else:
-            raise ValueError(f"Unknown scatter preset: {preset}")
+            raise ValueError(f"Unknown scatter preset: {preset_lower}")
     else:
         # Custom X/Y metrics from functions/categories
         if not (getattr(args, "x_function", None) and getattr(args, "x_category", None) and getattr(args, "y_function", None) and getattr(args, "y_category", None)):
@@ -117,12 +117,12 @@ def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, st
         slug=slug,
         add_regression=getattr(args, "scatter_regression", False),
         add_residuals=(getattr(args, "scatter_regression", False) and getattr(args, "scatter_residuals", False)),
-        x_percent=(getattr(args, "scatter_preset", "").lower() == "lfwt"),
-        y_percent=(getattr(args, "scatter_preset", "").lower() == "lfwt"),
-        add_quadrant_axes=(getattr(args, "scatter_preset", "").lower() == "lfwt"),
-        x_left_label=("← Feeder" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
-        x_right_label=("Leader →" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
-        y_bottom_label=("Walker ↓" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
-        y_top_label=("Talker ↑" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
+        x_percent=(preset_lower == "lfwt"),
+        y_percent=(preset_lower == "lfwt"),
+        add_quadrant_axes=(preset_lower == "lfwt"),
+        x_left_label=("← Feeder" if preset_lower == "lfwt" else None),
+        x_right_label=("Leader →" if preset_lower == "lfwt" else None),
+        y_bottom_label=("Walker ↓" if preset_lower == "lfwt" else None),
+        y_top_label=("Talker ↑" if preset_lower == "lfwt" else None),
         footer_text=date_range_text,
     )
