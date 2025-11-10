@@ -99,11 +99,16 @@ def build_df(args):
                 error_msg = f"Please add {args.name} as a contact"
             raise Exception(error_msg)
 
-        # Trim dataframe based on date constraints
-        df = filter_by_date(df, args.from_date, args.to_date)
+        # Convert Apple-epoch ns to local naive datetimes
+        local_tz = datetime.datetime.now().astimezone().tzinfo
+        df["time"] = (
+            pd.to_datetime(df["time"] + constants.TIME_OFFSET, unit="ns", utc=True)
+            .dt.tz_convert(local_tz)
+            .dt.tz_localize(None)
+        )
 
-        # Set timezone and date format (vectorized)
-        df["time"] = pd.to_datetime(df["time"] + constants.TIME_OFFSET, unit="ns")
+        # Trim dataframe based on date constraints using datetime (local-naive) filtering
+        df = filter_by_date(df, args.from_date, args.to_date, use_seconds=False)
 
         # Clean type column
         # Ensure mime type is string; default to text/plain
