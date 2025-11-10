@@ -75,7 +75,12 @@ const ScatterForm = () => {
             name="scatter-mode"
             value="preset"
             checked={store.scatterMode === "preset"}
-            onChange={() => store.setScatterMode("preset")}
+            onChange={() => {
+              store.setScatterMode("preset");
+              // Clear regression/residuals when switching to preset (presets are opinionated)
+              store.setScatterRegression(false);
+              store.setScatterResiduals(false);
+            }}
           />
           <span className="text-sm text-slate-800">Preset</span>
         </label>
@@ -98,7 +103,10 @@ const ScatterForm = () => {
           <SelectMenu
             value={store.scatterPreset}
             onChange={(val) => store.setScatterPreset(val)}
-            options={[{ value: "lfwt", label: "LFWT: Leader/Feeder vs Walker/Talker" }]}
+            options={[
+              { value: "lfwt", label: "LFWT: Leader/Feeder vs Walker/Talker" },
+              { value: "rroe", label: "RROE: Reactions Received Over Expected" },
+            ]}
             placeholder="Select preset"
           />
         </div>
@@ -147,30 +155,31 @@ const ScatterForm = () => {
         </div>
       )}
 
-      <div className="flex items-center gap-6">
-        <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-          <input
-            type="checkbox"
-            className="h-4 w-4 rounded accent-slate-900"
-            checked={!!store.scatterRegression}
-            onChange={(e) => store.setScatterRegression(!!e.target.checked)}
-          />
-          <span className="text-sm text-slate-800">Add regression line</span>
-        </label>
-        <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-          <input
-            type="checkbox"
-            className="h-4 w-4 rounded accent-slate-900"
-            checked={!!store.scatterResiduals}
-            onChange={(e) => store.setScatterResiduals(!!e.target.checked)}
-            disabled={!store.scatterRegression}
-          />
-          <span className="text-sm text-slate-800">Show residuals</span>
-        </label>
-      </div>
+      {store.scatterMode === "custom" && (
+        <div className="flex items-center gap-6">
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded accent-slate-900"
+              checked={!!store.scatterRegression}
+              onChange={(e) => store.setScatterRegression(!!e.target.checked)}
+            />
+            <span className="text-sm text-slate-800">Add regression line</span>
+          </label>
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded accent-slate-900"
+              checked={!!store.scatterResiduals}
+              onChange={(e) => store.setScatterResiduals(!!e.target.checked)}
+              disabled={!store.scatterRegression}
+            />
+            <span className="text-sm text-slate-800">Show residuals</span>
+          </label>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ScatterFormSection;
-

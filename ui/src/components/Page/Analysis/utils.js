@@ -83,8 +83,10 @@ const buildArgs = () => {
       if (s.scatterYFunction) args["y-function"] = s.scatterYFunction;
       if (s.scatterYCategory) args["y-category"] = s.scatterYCategory;
     }
-    if (s.scatterRegression) args["scatter-regression"] = "";
-    if (s.scatterResiduals) args["scatter-residuals"] = "";
+    if (s.scatterMode === "custom") {
+      if (s.scatterRegression) args["scatter-regression"] = "";
+      if (s.scatterResiduals) args["scatter-residuals"] = "";
+    }
   }
 
   if (category) args.category = category;

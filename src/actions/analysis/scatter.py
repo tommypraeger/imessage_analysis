@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 import pandas as pd
 
 from src import functions
-from src.utils import helpers
+from src.utils import helpers, constants
 from src.utils.graph_utils import generate_scatter_image
 
 
@@ -76,12 +76,110 @@ def _compute_points_lfwt(df: pd.DataFrame, args, chat_members: List[str]) -> Tup
     return points, title, subtitle, slug, x_label, y_label
 
 
+def _compute_points_rroe(df: pd.DataFrame, args, chat_members: List[str]) -> Tuple[List[Tuple[str, float, float]], str, str, str, str, str]:
+    """
+    Reactions Received Over Expected (RROE) preset.
+
+    - Y (actual): reactions received per non-reaction message sent by the member
+    - X (expected): expected reactions per message from a smooth baseline
+      expected_i = base * (1 - s_react_i)^beta * (1 - s_msg_i)^alpha
+      where base = R_sent / M, s_msg_i = m_i/M, s_react_i = r_sent_i/R_sent, and alpha=beta=0.5
+      Then normalize expected so that mean(expected) == mean(actual) across members with m_i>0
+    """
+    # Build per-original-message table with reaction counts
+    base = helpers.add_reactions_for_each_message(df)
+
+    # Totals for shares
+    mt = df["message_type"].astype("string")
+    is_reaction = mt.isin(constants.REACTION_TYPES)
+    R_sent = int(is_reaction.sum())
+    M = int(len(base))
+
+    # Guard: avoid division by zero
+    if M == 0 or R_sent == 0:
+        # Degenerate case: everyone has expected=0 and actual=0
+        points: List[Tuple[str, float, float]] = [(member, 0.0, 0.0) for member in chat_members]
+        title = "Reactions Received Over Expected (rroe)"
+        subtitle = "actual vs expected reactions per message"
+        slug = "rroe"
+        x_label = "Expected reactions per message"
+        y_label = "Actual reactions per message"
+        return points, title, subtitle, slug, x_label, y_label
+
+    # Reactions sent per member
+    reactions_sent_by_member = (
+        df[is_reaction]
+        .groupby("sender")
+        .size()
+        .astype(int)
+        .to_dict()
+    )
+
+    alpha = 1
+    beta = 1
+    EPS = 1e-6
+    base_rate = R_sent / M
+
+    actuals: List[float] = []
+    expected: List[float] = []
+    member_order: List[str] = []
+
+    # Pre-compute messages per member (non-reaction) and reactions received
+    msgs_per_member = {name: 0 for name in chat_members}
+    reacts_received_per_member = {name: 0 for name in chat_members}
+    for member in chat_members:
+        b = base[base["sender"] == member]
+        msgs_per_member[member] = int(len(b))
+        reacts_received_per_member[member] = int(b["reaction_count"].sum())
+
+    # Compute expected and actual per member
+    for member in chat_members:
+        m_i = msgs_per_member.get(member, 0)
+        r_sent_i = int(reactions_sent_by_member.get(member, 0))
+        s_msg_i = m_i / M if M > 0 else 0.0
+        s_react_i = r_sent_i / R_sent if R_sent > 0 else 0.0
+        # clamp
+        s_msg_i = max(EPS, min(1 - EPS, s_msg_i))
+        s_react_i = max(EPS, min(1 - EPS, s_react_i))
+
+        attn = (1.0 - s_msg_i) ** alpha
+        supply = (1.0 - s_react_i) ** beta
+        exp_i = base_rate * supply * attn
+        expected.append(exp_i)
+
+        y_i = helpers.safe_divide(reacts_received_per_member.get(member, 0), m_i)
+        actuals.append(y_i)
+        member_order.append(member)
+
+    # Normalize expected to match mean actual among members with m_i>0
+    nonzero_mask = [msgs_per_member[m] > 0 for m in member_order]
+    if any(nonzero_mask):
+        exp_mean = sum(exp_i for exp_i, nz in zip(expected, nonzero_mask) if nz) / max(1, sum(1 for nz in nonzero_mask if nz))
+        act_mean = sum(a for a, nz in zip(actuals, nonzero_mask) if nz) / max(1, sum(1 for nz in nonzero_mask if nz))
+        if exp_mean > 0:
+            k = act_mean / exp_mean
+            expected = [exp_i * k for exp_i in expected]
+
+    points: List[Tuple[str, float, float]] = [
+        (name, exp_i, act_i) for name, exp_i, act_i in zip(member_order, expected, actuals)
+    ]
+
+    title = "Reactions Received Over Expected (rroe)"
+    subtitle = "actual vs expected reactions per message"
+    slug = "rroe"
+    x_label = "Expected reactions per message"
+    y_label = "Actual reactions per message"
+    return points, title, subtitle, slug, x_label, y_label
+
+
 def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, str]:
     # Determine mode: preset or custom
     preset_lower = (getattr(args, "scatter_preset", None) or "").lower()
     if preset_lower:
         if preset_lower == "lfwt":
             points, title, subtitle, slug, x_label, y_label = _compute_points_lfwt(df, args, chat_members)
+        elif preset_lower == "rroe":
+            points, title, subtitle, slug, x_label, y_label = _compute_points_rroe(df, args, chat_members)
         else:
             raise ValueError(f"Unknown scatter preset: {preset_lower}")
     else:
@@ -125,4 +223,6 @@ def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, st
         y_bottom_label=("Walker ↓" if preset_lower == "lfwt" else None),
         y_top_label=("Talker ↑" if preset_lower == "lfwt" else None),
         footer_text=date_range_text,
+        add_identity_line=(preset_lower == "rroe"),
+        residuals_to_identity=(preset_lower == "rroe"),
     )

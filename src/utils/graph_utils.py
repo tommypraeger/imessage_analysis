@@ -73,6 +73,8 @@ def generate_scatter_image(
     y_bottom_label: Optional[str] = None,
     y_top_label: Optional[str] = None,
     footer_text: Optional[str] = None,
+    add_identity_line: bool = False,
+    residuals_to_identity: bool = False,
 ) -> Dict[str, str]:
     """
     Generate a scatter image under ui/public/analysis and return {imagePath, title, subtitle}.
@@ -149,11 +151,11 @@ def generate_scatter_image(
                 for xi, yi, yhat in zip(xs, ys, y_pred):
                     # Vertical dotted line from predicted (on regression) to actual point
                     ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
-                    # Show residual magnitude next to the line (absolute difference)
-                    resid_mag = abs(float(yi - yhat))
+                    # Show signed residual next to the line
+                    resid_val = float(yi - yhat)
                     mid_y = (float(yi) + float(yhat)) / 2.0
                     ax_main.annotate(
-                        f"{resid_mag:.2f}",
+                        f"{resid_val:+.2f}",
                         (xi, mid_y),
                         textcoords="offset points",
                         xytext=(6, 0),
@@ -161,6 +163,41 @@ def generate_scatter_image(
                         fontsize=8,
                         color="#6b7280",
                     )
+
+    # Optional y = x identity line (useful when both axes share units)
+    if add_identity_line and xs.size >= 1:
+        # Draw y = x only within the current view box without expanding limits
+        x_min, x_max = ax_main.get_xlim()
+        y_min, y_max = ax_main.get_ylim()
+        lo = max(x_min, y_min)
+        hi = min(x_max, y_max)
+        if lo < hi:
+            diag_x = np.array([lo, hi], dtype=float)
+            ax_main.plot(diag_x, diag_x, color="#6b7280", linestyle="-.", linewidth=1.0, alpha=0.8, label="y = x")
+            # Restore original limits to avoid autoscale widening
+            ax_main.set_xlim(x_min, x_max)
+            ax_main.set_ylim(y_min, y_max)
+            # Only show legend if something else also provided a legend entry
+            handles, labels = ax_main.get_legend_handles_labels()
+            if handles and labels:
+                ax_main.legend()
+
+    # Residuals to identity (y = x): draw even if regression is not requested
+    if residuals_to_identity and xs.size >= 1:
+        for xi, yi in zip(xs, ys):
+            yhat = xi  # identity baseline
+            ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
+            resid_val = float(yi - yhat)
+            mid_y = (float(yi) + float(yhat)) / 2.0
+            ax_main.annotate(
+                f"{resid_val:+.2f}",
+                (xi, mid_y),
+                textcoords="offset points",
+                xytext=(6, 0),
+                va="center",
+                fontsize=8,
+                color="#6b7280",
+            )
 
     # Render subtitle as axes title so it appears beneath the main figure title
     if subtitle_text:
