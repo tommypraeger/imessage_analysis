@@ -90,6 +90,23 @@ def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, st
             raise ValueError("Custom scatter requires x-function, x-category, y-function, and y-category")
         points, title, subtitle, slug, x_label, y_label = _compute_points_custom(df, args, chat_members)
 
+    # Compute date range text: prefer explicit args; fallback to df time bounds
+    def _fmt_date(d):
+        try:
+            return d.strftime("%Y-%m-%d")
+        except Exception:
+            return str(d)
+
+    try:
+        start_dt = helpers.parse_date(args.from_date)
+    except Exception:
+        start_dt = pd.to_datetime(df["time"].min())
+    try:
+        end_dt = helpers.parse_date(args.to_date)
+    except Exception:
+        end_dt = pd.to_datetime(df["time"].max())
+    date_range_text = f"Date range: {_fmt_date(start_dt)} — {_fmt_date(end_dt)}"
+
     # Generate image
     return generate_scatter_image(
         points,
@@ -107,4 +124,5 @@ def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, st
         x_right_label=("Leader →" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
         y_bottom_label=("Walker ↓" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
         y_top_label=("Talker ↑" if getattr(args, "scatter_preset", "").lower() == "lfwt" else None),
+        footer_text=date_range_text,
     )

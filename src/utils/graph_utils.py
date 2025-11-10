@@ -72,6 +72,7 @@ def generate_scatter_image(
     x_right_label: Optional[str] = None,
     y_bottom_label: Optional[str] = None,
     y_top_label: Optional[str] = None,
+    footer_text: Optional[str] = None,
 ) -> Dict[str, str]:
     """
     Generate a scatter image under ui/public/analysis and return {imagePath, title, subtitle}.
@@ -185,6 +186,11 @@ def generate_scatter_image(
             ax_main.annotate(y_bottom_label, xy=(0.5, 0.02), xycoords="axes fraction", ha="center", va="bottom", fontsize=10, color="#374151")
 
     fig.tight_layout(rect=[0, 0, 1, 0.92])
+
+    # Optional footer text (e.g., date range)
+    if footer_text:
+        # Bottom-right corner, slightly lower
+        fig.text(0.995, 0.005, footer_text, ha="right", va="bottom", fontsize=9, color="#4b5563")
 
     # Save image
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
