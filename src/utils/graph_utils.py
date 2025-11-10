@@ -10,6 +10,7 @@ import matplotlib
 # Use non-interactive backend suitable for servers/CLI
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.patheffects as path_effects  # noqa: E402
 
 
 IMAGES_DIR = os.path.join("images")
@@ -109,8 +110,19 @@ def generate_scatter_image(
 
     # Main scatter plot
     ax_main.scatter(xs, ys, c="#1f78b4", alpha=0.85, edgecolors="white", linewidths=0.5)
+    # Create text labels with a small offset; keep simple and predictable
     for i, name in enumerate(labels):
-        ax_main.annotate(name, (xs[i], ys[i]), textcoords="offset points", xytext=(5, 5), fontsize=9, alpha=0.9)
+        t = ax_main.annotate(
+            name,
+            (xs[i], ys[i]),
+            textcoords="offset points",
+            xytext=(5, 5),
+            fontsize=9,
+            color="#111111",
+        )
+        t.set_path_effects([
+            path_effects.withStroke(linewidth=2, foreground="white", alpha=0.85)
+        ])
     ax_main.set_xlabel(x_label)
     ax_main.set_ylabel(y_label)
     fig.suptitle(title, y=0.88, fontsize=14, fontweight="bold")
@@ -154,14 +166,15 @@ def generate_scatter_image(
                     # Show signed residual next to the line
                     resid_val = float(yi - yhat)
                     mid_y = (float(yi) + float(yhat)) / 2.0
+                    _col = "#059669" if resid_val >= 0 else "#b91c1c"
                     ax_main.annotate(
                         f"{resid_val:+.2f}",
                         (xi, mid_y),
                         textcoords="offset points",
-                        xytext=(6, 0),
+                        xytext=(2, 0),
                         va="center",
                         fontsize=8,
-                        color="#6b7280",
+                        color=_col,
                     )
 
     # Optional y = x identity line (useful when both axes share units)
@@ -189,14 +202,15 @@ def generate_scatter_image(
             ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
             resid_val = float(yi - yhat)
             mid_y = (float(yi) + float(yhat)) / 2.0
+            _col = "#059669" if resid_val >= 0 else "#b91c1c"
             ax_main.annotate(
                 f"{resid_val:+.2f}",
                 (xi, mid_y),
                 textcoords="offset points",
-                xytext=(6, 0),
+                xytext=(2, 0),
                 va="center",
                 fontsize=8,
-                color="#6b7280",
+                color=_col,
             )
 
     # Render subtitle as axes title so it appears beneath the main figure title
