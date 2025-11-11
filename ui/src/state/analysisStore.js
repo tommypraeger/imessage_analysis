@@ -30,6 +30,8 @@ const initialState = {
   scatterYCategory: "",
   scatterRegression: false,
   scatterResiduals: false,
+  scatterAlpha: 1,
+  scatterBeta: 1,
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -65,6 +67,8 @@ const useAnalysisForm = create((set, get) => ({
   setScatterYCategory: (val) => set({ scatterYCategory: val }),
   setScatterRegression: (val) => set({ scatterRegression: !!val }),
   setScatterResiduals: (val) => set({ scatterResiduals: !!val }),
+  setScatterAlpha: (val) => set({ scatterAlpha: val }),
+  setScatterBeta: (val) => set({ scatterBeta: val }),
 
   getAnalyzeDisabled: () => {
     const s = get();

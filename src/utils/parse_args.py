@@ -92,6 +92,18 @@ def get_analysis_args(args):
         required=False,
     )
     parser.add_argument(
+        "--alpha",
+        type=float,
+        help="smoothing exponent alpha (typically 0.5 to 2)",
+        required=False,
+    )
+    parser.add_argument(
+        "--beta",
+        type=float,
+        help="smoothing exponent beta (typically 0.5 to 2)",
+        required=False,
+    )
+    parser.add_argument(
         "--x-function",
         type=str,
         choices=get_functions(),

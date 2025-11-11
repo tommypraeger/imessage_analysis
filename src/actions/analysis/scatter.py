@@ -189,8 +189,9 @@ def _compute_points_rroe(
         return (zero_points, title, subtitle, slug, x_label, y_label)
 
     # Parameters for the baseline (intentionally simple and smooth)
-    alpha = 1  # weight for (1 - message_share)
-    beta = 2   # weight for (1 - reaction_sent_share)
+    # Allow frontend-configured smoothing exponents; default preserves prior behavior
+    alpha = float(getattr(args, "alpha", 1) or 1)  # weight for (1 - message_share)
+    beta = float(getattr(args, "beta", 1) or 1)    # weight for (1 - reaction_sent_share)
 
     # Compute per-member actuals and expected baseline
     actual_values_list: List[float] = []

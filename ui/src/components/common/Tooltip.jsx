@@ -12,11 +12,10 @@ const Tooltip = ({ text }) => (
         clipRule="evenodd"
       />
     </svg>
-    <span className="absolute z-20 hidden group-hover:block group-focus-within:block left-1/2 -translate-x-1/2 mt-2 max-w-xs whitespace-normal rounded bg-slate-800 px-2 py-1 text-xs text-white shadow-lg">
+    <span className="absolute z-50 hidden group-hover:block group-focus-within:block left-1/2 -translate-x-1/2 mt-2 w-80 whitespace-normal break-words rounded bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
       {text}
     </span>
   </span>
 );
 
 export default Tooltip;
-

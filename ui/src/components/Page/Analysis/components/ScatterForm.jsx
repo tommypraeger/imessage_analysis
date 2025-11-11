@@ -3,6 +3,7 @@ import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import SelectMenu from "components/common/SelectMenu";
 import { getFunctionOptions } from "../functionOptions";
+import Tooltip from "components/common/Tooltip";
 import { postFetch } from "../../utils";
 
 const ScatterFormSection = () => {
@@ -26,6 +27,10 @@ const ScatterForm = () => {
       setScatterRegression: s.setScatterRegression,
       scatterResiduals: s.scatterResiduals,
       setScatterResiduals: s.setScatterResiduals,
+      scatterAlpha: s.scatterAlpha,
+      setScatterAlpha: s.setScatterAlpha,
+      scatterBeta: s.scatterBeta,
+      setScatterBeta: s.setScatterBeta,
       scatterXFunction: s.scatterXFunction,
       setScatterXFunction: s.setScatterXFunction,
       scatterXCategory: s.scatterXCategory,
@@ -38,6 +43,19 @@ const ScatterForm = () => {
   );
 
   const functionOptions = useMemo(() => getFunctionOptions({ forScatter: true }), []);
+
+  // Local editable text state for alpha/beta to avoid controlled-number quirks
+  const [alphaText, setAlphaText] = useState("");
+  const [betaText, setBetaText] = useState("");
+
+  // Initialize local text when preset switches or store values change
+  useEffect(() => {
+    console.log(store.scatterAlpha, store.scatterBeta);
+    if (store.scatterPreset === "rroe") {
+      setAlphaText(String(Number.isFinite(store.scatterAlpha) ? store.scatterAlpha : 1));
+      setBetaText(String(Number.isFinite(store.scatterBeta) ? store.scatterBeta : 1));
+    }
+  }, [store.scatterPreset, store.scatterAlpha, store.scatterBeta]);
 
   const [xCategories, setXCategories] = useState([]);
   const [yCategories, setYCategories] = useState([]);
@@ -109,6 +127,48 @@ const ScatterForm = () => {
             ]}
             placeholder="Select preset"
           />
+          {store.scatterPreset === "rroe" && (
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <div>
+                <label className="block text-xs text-slate-600 mb-1 flex items-center">
+                  Message-share weight (alpha)
+                  <Tooltip text={"Controls how much a member's share of total messages reduces expected reactions per message. Suggested values: 0.5 (soft), 1.0 (linear), 2.0 (strong)."} />
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    step={0.1}
+                    value={alphaText}
+                    onChange={(e) => setAlphaText(e.target.value)}
+                    onBlur={() => {
+                      const v = parseFloat(alphaText);
+                      if (!Number.isNaN(v)) store.setScatterAlpha(v);
+                    }}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-600 mb-1 flex items-center">
+                  Reactions-sent weight (beta)
+                  <Tooltip text={"Controls how much a member's share of reactions sent reduces expected reactions per message. Suggested values: 0.5 (soft), 1.0 (linear), 2.0 (strong)."} />
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    step={0.1}
+                    value={betaText}
+                    onChange={(e) => setBetaText(e.target.value)}
+                    onBlur={() => {
+                      const v = parseFloat(betaText);
+                      if (!Number.isNaN(v)) store.setScatterBeta(v);
+                    }}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-4">

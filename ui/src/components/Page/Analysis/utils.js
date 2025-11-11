@@ -77,6 +77,10 @@ const buildArgs = () => {
   } else if (outputType === "scatter") {
     if (s.scatterMode === "preset") {
       if (s.scatterPreset) args["scatter-preset"] = s.scatterPreset;
+      if (s.scatterPreset === "rroe") {
+        if (Number.isFinite(s.scatterAlpha)) args["alpha"] = s.scatterAlpha;
+        if (Number.isFinite(s.scatterBeta)) args["beta"] = s.scatterBeta;
+      }
     } else {
       if (s.scatterXFunction) args["x-function"] = s.scatterXFunction;
       if (s.scatterXCategory) args["x-category"] = s.scatterXCategory;
