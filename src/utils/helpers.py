@@ -218,23 +218,55 @@ def decode_message_attributedbody(data):
 
 
 def add_reactions_for_each_message(df):
-    # Keep only reaction rows, normalize reaction_to GUIDs
-    mt = df["message_type"].astype("string")
-    reactions = df[mt.isin(constants.REACTION_TYPES)].copy()
-    reactions["reaction_to"] = reactions["reaction_to"].astype("string").str.replace(r"^p:0/", "", regex=True)
+    """
+    Given a DataFrame of messages + reactions, return only the original (non-reaction)
+    messages enriched with two columns:
 
-    # Count and collect tuples (user, reaction) per original message guid
-    counts = reactions.groupby("reaction_to").size()
-    tuples = reactions.groupby("reaction_to").apply(
+    - "reaction_count": total number of reactions that message received
+    - "reactions_per_user": list of (reactor_name, reaction_type) tuples for that message
+
+    Notes
+    - Reaction rows are identified by message_type ∈ constants.REACTION_TYPES and are
+      matched back to the original message via the "reaction_to" column.
+    - Some databases prefix reaction_to with "p:0/"; we normalize by stripping that
+      prefix so it matches the original message "guid" column.
+    - Removed reactions (message_type starting with "removed …") are not counted here;
+      only actual reaction rows in REACTION_TYPES are considered.
+
+    Example (schematic)
+    - Originals:  g1 (Alice), g2 (Bob)
+    - Reactions:  like(Bob → g1), like(Carol → g1), laugh(Alice → g2)
+    Output rows for g1 and g2 include reaction_count and reactions_per_user
+    such as:
+      g1: reaction_count=2, reactions_per_user=[("Bob", "like"), ("Carol", "like")]
+      g2: reaction_count=1, reactions_per_user=[("Alice", "laugh")]
+    """
+
+    # Select only reaction rows and normalize their reaction_to GUIDs
+    message_type_series = df["message_type"].astype("string")
+    reactions_df = df[message_type_series.isin(constants.REACTION_TYPES)].copy()
+    reactions_df["reaction_to"] = (
+        reactions_df["reaction_to"].astype("string").str.replace(r"^p:0/", "", regex=True)
+    )
+
+    # Build aggregations keyed by the original message guid that was reacted to
+    # 1) reaction_counts_by_guid: guid -> number of reactions
+    # 2) reactions_by_guid: guid -> list[(reactor_name, reaction_type)]
+    reaction_counts_by_guid = reactions_df.groupby("reaction_to").size()
+    reactions_by_guid = reactions_df.groupby("reaction_to").apply(
         lambda g: list(zip(g["sender"].tolist(), g["message_type"].tolist()))
     )
 
-    # Only original messages (not reactions)
-    base = df[df["reaction_to"].isna()].copy()
-    base["reaction_count"] = base["guid"].map(counts).fillna(0).astype("int64")
-    _mapped = base["guid"].map(tuples)
-    base["reactions_per_user"] = _mapped.apply(lambda x: x if isinstance(x, list) else [])
-    return base
+    # Keep only original messages (not reactions) and enrich them with the aggregations
+    originals_df = df[df["reaction_to"].isna()].copy()
+    originals_df["reaction_count"] = (
+        originals_df["guid"].map(reaction_counts_by_guid).fillna(0).astype("int64")
+    )
+    mapped_reactions_list = originals_df["guid"].map(reactions_by_guid)
+    originals_df["reactions_per_user"] = mapped_reactions_list.apply(
+        lambda x: x if isinstance(x, list) else []
+    )
+    return originals_df
 
 
 def compute_conversation_columns(df, minutes_threshold=None):

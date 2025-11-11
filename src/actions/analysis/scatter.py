@@ -76,99 +76,158 @@ def _compute_points_lfwt(df: pd.DataFrame, args, chat_members: List[str]) -> Tup
     return points, title, subtitle, slug, x_label, y_label
 
 
-def _compute_points_rroe(df: pd.DataFrame, args, chat_members: List[str]) -> Tuple[List[Tuple[str, float, float]], str, str, str, str, str]:
+def _aggregate_rroe_inputs(df: pd.DataFrame, members: List[str]):
+    """Gather per-member aggregates for RROE in a descriptive way.
+
+    Returns a tuple:
+      originals_df, total_reactions_sent, messages_per_member, reactions_received_per_member,
+      reactions_sent_by_member, total_messages
     """
-    Reactions Received Over Expected (RROE) preset.
+    originals_df = helpers.add_reactions_for_each_message(df)
 
-    - Y (actual): reactions received per non-reaction message sent by the member
-    - X (expected): expected reactions per message from a smooth baseline
-      expected_i = base * (1 - s_react_i)^beta * (1 - s_msg_i)^alpha
-      where base = R_sent / M, s_msg_i = m_i/M, s_react_i = r_sent_i/R_sent, and alpha=beta=0.5
-      Then normalize expected so that mean(expected) == mean(actual) across members with m_i>0
-    """
-    # Build per-original-message table with reaction counts
-    base = helpers.add_reactions_for_each_message(df)
+    # Total reaction rows in dataset
+    msg_type = df["message_type"].astype("string")
+    is_reaction = msg_type.isin(constants.REACTION_TYPES)
+    total_reactions_sent = int(is_reaction.sum())
 
-    # Totals for shares
-    mt = df["message_type"].astype("string")
-    is_reaction = mt.isin(constants.REACTION_TYPES)
-    R_sent = int(is_reaction.sum())
-    M = int(len(base))
+    # Per-member message counts (non-reaction originals) and reactions received
+    messages_per_member: Dict[str, int] = {}
+    reactions_received_per_member: Dict[str, int] = {}
+    for name in members:
+        own_originals = originals_df[originals_df["sender"] == name]
+        messages_per_member[name] = int(len(own_originals))
+        reactions_received_per_member[name] = int(own_originals["reaction_count"].sum())
 
-    # Guard: avoid division by zero
-    if M == 0 or R_sent == 0:
-        # Degenerate case: everyone has expected=0 and actual=0
-        points: List[Tuple[str, float, float]] = [(member, 0.0, 0.0) for member in chat_members]
-        title = "Reactions Received Over Expected (rroe)"
-        subtitle = "actual vs expected reactions per message"
-        slug = "rroe"
-        x_label = "Expected reactions per message"
-        y_label = "Actual reactions per message"
-        return points, title, subtitle, slug, x_label, y_label
-
-    # Reactions sent per member
-    reactions_sent_by_member = (
-        df[is_reaction]
-        .groupby("sender")
-        .size()
-        .astype(int)
-        .to_dict()
+    # Reactions sent per member (from reaction rows only)
+    reactions_sent_by_member: Dict[str, int] = (
+        df[is_reaction].groupby("sender").size().astype(int).to_dict()
     )
 
-    alpha = 1
-    beta = 1
-    EPS = 1e-6
-    base_rate = R_sent / M
+    total_messages = int(len(originals_df))
+    return (
+        originals_df,
+        total_reactions_sent,
+        messages_per_member,
+        reactions_received_per_member,
+        reactions_sent_by_member,
+        total_messages,
+    )
 
-    actuals: List[float] = []
-    expected: List[float] = []
-    member_order: List[str] = []
 
-    # Pre-compute messages per member (non-reaction) and reactions received
-    msgs_per_member = {name: 0 for name in chat_members}
-    reacts_received_per_member = {name: 0 for name in chat_members}
-    for member in chat_members:
-        b = base[base["sender"] == member]
-        msgs_per_member[member] = int(len(b))
-        reacts_received_per_member[member] = int(b["reaction_count"].sum())
+def _scale_expected_to_match_actual_mean(
+    expected_values_list: List[float],
+    actual_values_list: List[float],
+    message_counts_by_member: Dict[str, int],
+    member_order: List[str],
+) -> List[float]:
+    """
+    Make the expected scale comparable to the observed (actual) scale by multiplying all
+    expected values by a single scalar so that the group mean of expected matches the
+    group mean of actual.
 
-    # Compute expected and actual per member
-    for member in chat_members:
-        m_i = msgs_per_member.get(member, 0)
-        r_sent_i = int(reactions_sent_by_member.get(member, 0))
-        s_msg_i = m_i / M if M > 0 else 0.0
-        s_react_i = r_sent_i / R_sent if R_sent > 0 else 0.0
-        # clamp
-        s_msg_i = max(EPS, min(1 - EPS, s_msg_i))
-        s_react_i = max(EPS, min(1 - EPS, s_react_i))
+    Why: The baseline formula gives relative expectations. A single scalar preserves
+    relative differences between members while lining up expected and actual magnitudes.
 
-        attn = (1.0 - s_msg_i) ** alpha
-        supply = (1.0 - s_react_i) ** beta
-        exp_i = base_rate * supply * attn
-        expected.append(exp_i)
+    Implementation:
+    - Consider only members who have at least one original message; otherwise the mean
+      would be skewed by empty participants.
+    - k = mean(actual) / mean(expected) over those members
+    - Return expected_scaled_i = k * expected_i
+    """
+    nonzero_mask = [message_counts_by_member.get(name, 0) > 0 for name in member_order]
+    if not any(nonzero_mask):
+        return expected_values_list
 
-        y_i = helpers.safe_divide(reacts_received_per_member.get(member, 0), m_i)
-        actuals.append(y_i)
-        member_order.append(member)
+    expected_included = [v for v, include in zip(expected_values_list, nonzero_mask) if include]
+    actual_included = [v for v, include in zip(actual_values_list, nonzero_mask) if include]
+    if not expected_included:
+        return expected_values_list
 
-    # Normalize expected to match mean actual among members with m_i>0
-    nonzero_mask = [msgs_per_member[m] > 0 for m in member_order]
-    if any(nonzero_mask):
-        exp_mean = sum(exp_i for exp_i, nz in zip(expected, nonzero_mask) if nz) / max(1, sum(1 for nz in nonzero_mask if nz))
-        act_mean = sum(a for a, nz in zip(actuals, nonzero_mask) if nz) / max(1, sum(1 for nz in nonzero_mask if nz))
-        if exp_mean > 0:
-            k = act_mean / exp_mean
-            expected = [exp_i * k for exp_i in expected]
+    expected_mean = sum(expected_included) / len(expected_included)
+    actual_mean = sum(actual_included) / len(actual_included) if actual_included else 0.0
+    if expected_mean <= 0:
+        return expected_values_list
 
-    points: List[Tuple[str, float, float]] = [
-        (name, exp_i, act_i) for name, exp_i, act_i in zip(member_order, expected, actuals)
-    ]
+    k = actual_mean / expected_mean
+    return [v * k for v in expected_values_list]
 
+
+def _clamp_share(value: float, eps: float = 1e-6) -> float:
+    """Clamp a proportion into (eps, 1-eps) to avoid edge behaviour in powers."""
+    return max(eps, min(1 - eps, value))
+
+
+def _compute_points_rroe(
+    df: pd.DataFrame, args, chat_members: List[str]
+) -> Tuple[List[Tuple[str, float, float]], str, str, str, str, str]:
+    """
+    Compute scatter points for the RROE preset.
+
+    Returns (points, title, subtitle, slug, x_label, y_label) where:
+    - points: list of (member_name, expected_per_message, actual_per_message)
+      • actual_per_message = reactions_received_on_member_messages / original_messages_sent
+      • expected_per_message = a smooth baseline: (1 - message_share)^alpha * (1 - reaction_sent_share)^beta,
+        scaled afterward so its mean matches the mean of actual_per_message.
+    """
     title = "Reactions Received Over Expected (rroe)"
     subtitle = "actual vs expected reactions per message"
     slug = "rroe"
     x_label = "Expected reactions per message"
     y_label = "Actual reactions per message"
+    (
+        originals_df,
+        total_reactions_sent,
+        messages_per_member,
+        reactions_received_per_member,
+        reactions_sent_by_member,
+        total_original_messages,
+    ) = _aggregate_rroe_inputs(df, chat_members)
+
+    # If no messages or no reactions are present, return zeros
+    if total_original_messages == 0 or total_reactions_sent == 0:
+        zero_points = [(name, 0.0, 0.0) for name in chat_members]
+        return (zero_points, title, subtitle, slug, x_label, y_label)
+
+    # Parameters for the baseline (intentionally simple and smooth)
+    alpha = 1  # weight for (1 - message_share)
+    beta = 2   # weight for (1 - reaction_sent_share)
+
+    # Compute per-member actuals and expected baseline
+    actual_values_list: List[float] = []
+    expected_values_list: List[float] = []
+    member_order: List[str] = []
+
+    for name in chat_members:
+        messages_sent = messages_per_member.get(name, 0)
+        reactions_sent = int(reactions_sent_by_member.get(name, 0))
+
+        # Shares of group totals (clamped to avoid 0 or 1 exactly)
+        message_share = _clamp_share(
+            (messages_sent / total_original_messages) if total_original_messages > 0 else 0.0
+        )
+        reaction_sent_share = _clamp_share(
+            (reactions_sent / total_reactions_sent) if total_reactions_sent > 0 else 0.0
+        )
+
+        attention_factor = (1.0 - message_share) ** alpha
+        supply_factor = (1.0 - reaction_sent_share) ** beta
+        # We omit the base scale here and rely on the subsequent scaling step to
+        # align expected to actual magnitudes, keeping only relative effects.
+        expected_values_list.append(attention_factor * supply_factor)
+
+        actual_values_list.append(
+            helpers.safe_divide(reactions_received_per_member.get(name, 0), messages_sent)
+        )
+        member_order.append(name)
+
+    # Normalize expected to match actual means (over members with at least one message)
+    expected_values_list = _scale_expected_to_match_actual_mean(
+        expected_values_list, actual_values_list, messages_per_member, member_order
+    )
+
+    # Build points preserving the member order
+    points = [(n, x, y) for n, x, y in zip(member_order, expected_values_list, actual_values_list)]
+
     return points, title, subtitle, slug, x_label, y_label
 
 
