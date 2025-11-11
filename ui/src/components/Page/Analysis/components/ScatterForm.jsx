@@ -139,10 +139,13 @@ const ScatterForm = () => {
                     type="number"
                     step={0.1}
                     value={alphaText}
-                    onChange={(e) => setAlphaText(e.target.value)}
-                    onBlur={() => {
-                      const v = parseFloat(alphaText);
-                      if (!Number.isNaN(v)) store.setScatterAlpha(v);
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      setAlphaText(raw);
+                      const v = parseFloat(raw);
+                      if (!Number.isNaN(v)) {
+                        store.setScatterAlpha(v);
+                      }
                     }}
                     className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
                   />
@@ -158,10 +161,13 @@ const ScatterForm = () => {
                     type="number"
                     step={0.1}
                     value={betaText}
-                    onChange={(e) => setBetaText(e.target.value)}
-                    onBlur={() => {
-                      const v = parseFloat(betaText);
-                      if (!Number.isNaN(v)) store.setScatterBeta(v);
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      setBetaText(raw);
+                      const v = parseFloat(raw);
+                      if (!Number.isNaN(v)) {
+                        store.setScatterBeta(v);
+                      }
                     }}
                     className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
                   />
