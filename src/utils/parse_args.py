@@ -51,6 +51,16 @@ def get_analysis_args(args):
         type=int,
         help="Threshold in minutes from last messages for a message to be considered a conversation starter",
     )
+    parser.add_argument(
+        "--cva-volume-weight",
+        type=float,
+        help="Weight (0-100) assigned to volume stats for CVA+",
+    )
+    parser.add_argument(
+        "--cva-efficiency-weight",
+        type=float,
+        help="Weight (0-100) assigned to efficiency stats for CVA+",
+    )
 
     parser.add_argument(
         "--function",
@@ -189,6 +199,26 @@ def get_analysis_args(args):
         "--y-minutes-threshold",
         type=int,
         help="Minutes threshold override for Y-axis conversation-based functions",
+    )
+    parser.add_argument(
+        "--x-cva-volume-weight",
+        type=float,
+        help="Weight (0-100) assigned to volume stats on X-axis CVA+",
+    )
+    parser.add_argument(
+        "--x-cva-efficiency-weight",
+        type=float,
+        help="Weight (0-100) assigned to efficiency stats on X-axis CVA+",
+    )
+    parser.add_argument(
+        "--y-cva-volume-weight",
+        type=float,
+        help="Weight (0-100) assigned to volume stats on Y-axis CVA+",
+    )
+    parser.add_argument(
+        "--y-cva-efficiency-weight",
+        type=float,
+        help="Weight (0-100) assigned to efficiency stats on Y-axis CVA+",
     )
     parser.add_argument(
         "--scatter-regression",

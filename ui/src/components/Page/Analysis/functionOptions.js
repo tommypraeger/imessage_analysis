@@ -8,6 +8,8 @@ export const FUNCTION_OPTIONS = [
   { value: "reaction_matrix", label: "Reaction matrix", desc: "How many reactions each person receives from each other person", supportsScatter: false },
   { value: "participation", label: "Participation", desc: "How often each person participates", supportsScatter: true },
   { value: "conversation_starter", label: "Starters", desc: "How many times each person starts the conversation", supportsScatter: true },
+  { value: "solo_conversations", label: "Solo Conversations", desc: "How often a member starts a conversation that no one joins", supportsScatter: true },
+  { value: "cva_plus", label: "CVA+ (Conversational Value Added)", desc: "Blended volume/efficiency score with adjustable weights", supportsScatter: true },
   { value: "phrase", label: "Word/Phrase", desc: "How many messages include a certain word/phrase", supportsScatter: true },
   { value: "message_series", label: "Message Series", desc: "How many series of consecutive messages each person sends", supportsScatter: true },
   { value: "word_count", label: "Word Count", desc: "Average word count per message", supportsScatter: true },
@@ -26,4 +28,3 @@ export const getFunctionOptions = (opts = {}) => {
   if (!forScatter) return FUNCTION_OPTIONS;
   return FUNCTION_OPTIONS.filter((o) => o.supportsScatter);
 };
-

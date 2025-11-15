@@ -18,6 +18,8 @@ from src.functions.definitions.total import Total
 from src.functions.definitions.tweet import Tweet
 from src.functions.definitions.word_count import WordCount
 from src.functions.definitions.word_length import WordLength
+from src.functions.definitions.cva_plus import CVAPlus
+from src.functions.definitions.solo_conversations import SoloConversations
 
 def get_function_class_by_name(function_name):
     return [

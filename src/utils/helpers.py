@@ -346,3 +346,41 @@ def compute_conversation_columns(df, minutes_threshold=None):
     df["conversation number"] = conv.astype("int64")
 
     return df
+
+
+def summarize_conversations(df, time_period=None):
+    """
+    Return (participants_by_conversation, starter_by_conversation, member_conversations)
+    using the conversation columns populated by compute_conversation_columns.
+    """
+    msgs = get_non_reaction_messages(df, time_period=time_period)
+    msgs = msgs[msgs["sender"].notna()].copy()
+    if "conversation number" not in msgs.columns:
+        return {}, {}, {}
+    participants_by_conv = {}
+    starter_by_conv = {}
+    grouped = msgs.groupby("conversation number", dropna=True)
+    for conv_id, group in grouped:
+        if pd.isna(conv_id):
+            continue
+        conv_int = int(conv_id)
+        senders = group["sender"].dropna().astype("string")
+        if len(senders) == 0:
+            continue
+        participants = set(str(s) for s in senders)
+        participants_by_conv[conv_int] = participants
+        if "is conversation starter?" in group.columns:
+            starter_mask = group["is conversation starter?"].fillna(False).astype("bool")
+            starter_rows = group[starter_mask]
+        else:
+            starter_rows = pd.DataFrame()
+        starter_candidates = starter_rows["sender"].dropna().astype("string") if len(starter_rows) > 0 else pd.Series([], dtype="string")
+        if len(starter_candidates) > 0:
+            starter_by_conv[conv_int] = str(starter_candidates.iloc[0])
+        else:
+            starter_by_conv[conv_int] = str(senders.iloc[0])
+    member_conversations = {}
+    for conv_id, participants in participants_by_conv.items():
+        for member in participants:
+            member_conversations.setdefault(member, set()).add(conv_id)
+    return participants_by_conv, starter_by_conv, member_conversations

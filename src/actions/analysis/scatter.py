@@ -30,10 +30,17 @@ def _axis_specific_overrides(args, axis: str, fn_name: str) -> Dict:
         mime_type_val = getattr(args, f"{prefix}mime_type", None)
         if mime_type_val:
             overrides["mime_type"] = mime_type_val
-    elif fn_name in ("message_series", "conversation_starter", "participation"):
+    elif fn_name in ("message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus"):
         minutes_val = getattr(args, f"{prefix}minutes_threshold", None)
         if minutes_val is not None:
             overrides["minutes_threshold"] = minutes_val
+    if fn_name == "cva_plus":
+        vol = getattr(args, f"{prefix}cva_volume_weight", None)
+        eff = getattr(args, f"{prefix}cva_efficiency_weight", None)
+        if vol is not None:
+            overrides["cva_volume_weight"] = vol
+        if eff is not None:
+            overrides["cva_efficiency_weight"] = eff
     return overrides
 
 

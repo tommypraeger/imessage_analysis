@@ -45,6 +45,12 @@ const initialState = {
   scatterYPhraseRegex: false,
   scatterYMinutesThreshold: 60,
   scatterYMimeType: "image/png",
+  cvaVolumeWeight: 50,
+  cvaEfficiencyWeight: 50,
+  scatterXCvaVolumeWeight: 50,
+  scatterXCvaEfficiencyWeight: 50,
+  scatterYCvaVolumeWeight: 50,
+  scatterYCvaEfficiencyWeight: 50,
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -95,6 +101,18 @@ const useAnalysisForm = create((set, get) => ({
   setScatterYPhraseRegex: (val) => set({ scatterYPhraseRegex: !!val }),
   setScatterYMinutesThreshold: (val) => set({ scatterYMinutesThreshold: Number.isNaN(val) ? undefined : val }),
   setScatterYMimeType: (val) => set({ scatterYMimeType: val }),
+  setCvaVolumeWeight: (val) => {
+    const vol = Math.min(100, Math.max(0, Number(val) || 0));
+    set({ cvaVolumeWeight: vol, cvaEfficiencyWeight: 100 - vol });
+  },
+  setScatterXCvaVolumeWeight: (val) => {
+    const vol = Math.min(100, Math.max(0, Number(val) || 0));
+    set({ scatterXCvaVolumeWeight: vol, scatterXCvaEfficiencyWeight: 100 - vol });
+  },
+  setScatterYCvaVolumeWeight: (val) => {
+    const vol = Math.min(100, Math.max(0, Number(val) || 0));
+    set({ scatterYCvaVolumeWeight: vol, scatterYCvaEfficiencyWeight: 100 - vol });
+  },
 
   getAnalyzeDisabled: () => {
     const s = get();
@@ -104,7 +122,7 @@ const useAnalysisForm = create((set, get) => ({
     if (outputType !== "scatter" && !func) return true;
     if (func === "phrase" && !s.phrase) return true;
     if (func === "mime_type" && !s.mimeType) return true;
-    if ((func === "message_series" || func === "conversation_starter" || func === "participation") && !s.minutesThreshold)
+    if ((func === "message_series" || func === "conversation_starter" || func === "participation" || func === "solo_conversations" || func === "cva_plus") && !s.minutesThreshold)
       return true;
     if (outputType === "graph" && (!category || !s.graphTimeInterval)) return true;
     if (outputType === "scatter") {
@@ -115,12 +133,15 @@ const useAnalysisForm = create((set, get) => ({
         const needsMinutes = (fn) => ["message_series", "conversation_starter", "participation"].includes(fn);
         const needsPhrase = (fn) => fn === "phrase";
         const needsMime = (fn) => fn === "mime_type";
+        const needsCva = (fn) => fn === "cva_plus";
         if (needsPhrase(s.scatterXFunction) && !s.scatterXPhrase) return true;
         if (needsPhrase(s.scatterYFunction) && !s.scatterYPhrase) return true;
         if (needsMime(s.scatterXFunction) && !s.scatterXMimeType) return true;
         if (needsMime(s.scatterYFunction) && !s.scatterYMimeType) return true;
         if (needsMinutes(s.scatterXFunction) && !s.scatterXMinutesThreshold) return true;
         if (needsMinutes(s.scatterYFunction) && !s.scatterYMinutesThreshold) return true;
+        if (needsCva(s.scatterXFunction) && !Number.isFinite(s.scatterXCvaVolumeWeight)) return true;
+        if (needsCva(s.scatterYFunction) && !Number.isFinite(s.scatterYCvaVolumeWeight)) return true;
       }
     }
     if (csv && csvFileName === "") return true;

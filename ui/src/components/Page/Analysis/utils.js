@@ -63,7 +63,12 @@ const buildArgs = () => {
   if (func === "mime_type") {
     args["mime-type"] = s.mimeType;
   }
-  if (func === "message_series" || func === "conversation_starter" || func === "participation") {
+  const functionsRequiringMinutes = ["message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus"];
+  if (func === "cva_plus") {
+    if (Number.isFinite(s.cvaVolumeWeight)) args["cva-volume-weight"] = s.cvaVolumeWeight;
+    if (Number.isFinite(s.cvaEfficiencyWeight)) args["cva-efficiency-weight"] = s.cvaEfficiencyWeight;
+  }
+  if (functionsRequiringMinutes.includes(func)) {
     if (typeof s.minutesThreshold === "number" && !Number.isNaN(s.minutesThreshold)) {
       args["minutes-threshold"] = s.minutesThreshold;
     }
@@ -103,11 +108,17 @@ const buildArgs = () => {
           const mimeVal = getStateVal("MimeType");
           if (mimeVal) args[`${axis}-mime-type`] = mimeVal;
         }
-        if (["message_series", "conversation_starter", "participation"].includes(fnName)) {
+        if (["message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus"].includes(fnName)) {
           const minutesVal = getStateVal("MinutesThreshold");
           if (typeof minutesVal === "number" && !Number.isNaN(minutesVal)) {
             args[`${axis}-minutes-threshold`] = minutesVal;
           }
+        }
+        if (fnName === "cva_plus") {
+          const vol = getStateVal("CvaVolumeWeight");
+          const eff = getStateVal("CvaEfficiencyWeight");
+          if (Number.isFinite(vol)) args[`${axis}-cva-volume-weight`] = vol;
+          if (Number.isFinite(eff)) args[`${axis}-cva-efficiency-weight`] = eff;
         }
       };
       appendAxisArgs("x", s.scatterXFunction);

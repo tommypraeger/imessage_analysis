@@ -7,7 +7,7 @@ import Tooltip from "components/common/Tooltip";
 import { postFetch } from "../../utils";
 import FunctionForm from "./FunctionForms";
 
-const FUNCTIONS_WITH_EXTRA_FORMS = new Set(["phrase", "mime_type", "message_series", "conversation_starter", "participation"]);
+const FUNCTIONS_WITH_EXTRA_FORMS = new Set(["phrase", "mime_type", "message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus"]);
 
 const ScatterFormSection = () => {
   const { outputType } = useAnalysisForm(useShallow((s) => ({ outputType: s.outputType })));

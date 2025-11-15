@@ -5,6 +5,7 @@ import ParticipationForm from "./Participation";
 import PhraseForm from "./Phrase";
 import ReactionForm from "./Reaction";
 import ReactionsReceivedForm from "./ReactionsReceived";
+import CVAPlusForm from "./CVAPlus";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
@@ -13,6 +14,9 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
   const activeFunc = overrideFunc || func;
   switch (activeFunc) {
     case "conversation_starter":
+      return <ConvoStarterForm scope={scope} />;
+
+    case "solo_conversations":
       return <ConvoStarterForm scope={scope} />;
 
     case "message_series":
@@ -26,6 +30,9 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
 
     case "phrase":
       return <PhraseForm scope={scope} />;
+
+    case "cva_plus":
+      return <CVAPlusForm scope={scope} />;
 
     case "reaction":
       return <ReactionForm />;
