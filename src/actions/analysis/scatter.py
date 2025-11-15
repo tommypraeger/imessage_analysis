@@ -334,6 +334,6 @@ def run_scatter(df: pd.DataFrame, args, chat_members: List[str]) -> Dict[str, st
         y_bottom_label=("Walker ↓" if preset_lower == "lfwt" else None),
         y_top_label=("Talker ↑" if preset_lower == "lfwt" else None),
         footer_text=date_range_text,
-        add_identity_line=(preset_lower == "rroe"),
+        add_identity_line=(preset_lower == "rroe") or getattr(args, "scatter_identity", False),
         residuals_to_identity=(preset_lower == "rroe"),
     )

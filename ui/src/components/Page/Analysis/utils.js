@@ -116,6 +116,7 @@ const buildArgs = () => {
     if (s.scatterMode === "custom") {
       if (s.scatterRegression) args["scatter-regression"] = "";
       if (s.scatterResiduals) args["scatter-residuals"] = "";
+      if (s.scatterIdentity) args["scatter-identity"] = "";
     }
   }
 

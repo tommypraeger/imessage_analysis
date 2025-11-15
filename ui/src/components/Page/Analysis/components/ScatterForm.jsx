@@ -42,6 +42,8 @@ const ScatterForm = () => {
       setScatterYFunction: s.setScatterYFunction,
       scatterYCategory: s.scatterYCategory,
       setScatterYCategory: s.setScatterYCategory,
+      scatterIdentity: s.scatterIdentity,
+      setScatterIdentity: s.setScatterIdentity,
     }))
   );
 
@@ -236,7 +238,7 @@ const ScatterForm = () => {
       )}
 
       {store.scatterMode === "custom" && (
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 flex-wrap">
           <label className="inline-flex items-center gap-2 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -255,6 +257,15 @@ const ScatterForm = () => {
               disabled={!store.scatterRegression}
             />
             <span className="text-sm text-slate-800">Show residuals</span>
+          </label>
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded accent-slate-900"
+              checked={!!store.scatterIdentity}
+              onChange={(e) => store.setScatterIdentity(!!e.target.checked)}
+            />
+            <span className="text-sm text-slate-800">Add y=x line</span>
           </label>
         </div>
       )}

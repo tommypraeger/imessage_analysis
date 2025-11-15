@@ -200,6 +200,11 @@ def get_analysis_args(args):
         action="store_true",
         help="include a residuals subplot below the scatter",
     )
+    parser.add_argument(
+        "--scatter-identity",
+        action="store_true",
+        help="draw the y = x identity line on the scatter",
+    )
     return parser.parse_args(args)
 
 
