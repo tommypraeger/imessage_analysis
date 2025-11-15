@@ -2,18 +2,33 @@ import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import Tooltip from "components/common/Tooltip";
 
-const PhraseForm = () => {
-  const {
-    phrase,
-    setPhrase,
-    phraseSeparate,
-    setPhraseSeparate,
-    phraseCaseSensitive,
-    setPhraseCaseSensitive,
-    phraseRegex,
-    setPhraseRegex,
-  } = useAnalysisForm(
-    useShallow((s) => ({
+const PhraseForm = ({ scope = "primary" }) => {
+  const selectors = (s) => {
+    if (scope === "scatter-x") {
+      return {
+        phrase: s.scatterXPhrase,
+        setPhrase: s.setScatterXPhrase,
+        phraseSeparate: s.scatterXPhraseSeparate,
+        setPhraseSeparate: s.setScatterXPhraseSeparate,
+        phraseCaseSensitive: s.scatterXPhraseCaseSensitive,
+        setPhraseCaseSensitive: s.setScatterXPhraseCaseSensitive,
+        phraseRegex: s.scatterXPhraseRegex,
+        setPhraseRegex: s.setScatterXPhraseRegex,
+      };
+    }
+    if (scope === "scatter-y") {
+      return {
+        phrase: s.scatterYPhrase,
+        setPhrase: s.setScatterYPhrase,
+        phraseSeparate: s.scatterYPhraseSeparate,
+        setPhraseSeparate: s.setScatterYPhraseSeparate,
+        phraseCaseSensitive: s.scatterYPhraseCaseSensitive,
+        setPhraseCaseSensitive: s.setScatterYPhraseCaseSensitive,
+        phraseRegex: s.scatterYPhraseRegex,
+        setPhraseRegex: s.setScatterYPhraseRegex,
+      };
+    }
+    return {
       phrase: s.phrase,
       setPhrase: s.setPhrase,
       phraseSeparate: s.phraseSeparate,
@@ -22,7 +37,10 @@ const PhraseForm = () => {
       setPhraseCaseSensitive: s.setPhraseCaseSensitive,
       phraseRegex: s.phraseRegex,
       setPhraseRegex: s.setPhraseRegex,
-    }))
+    };
+  };
+  const { phrase, setPhrase, phraseSeparate, setPhraseSeparate, phraseCaseSensitive, setPhraseCaseSensitive, phraseRegex, setPhraseRegex } = useAnalysisForm(
+    useShallow(selectors)
   );
 
   return (

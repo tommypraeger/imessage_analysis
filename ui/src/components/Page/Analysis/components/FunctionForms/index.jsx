@@ -8,23 +8,24 @@ import ReactionsReceivedForm from "./ReactionsReceived";
 import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 
-const FunctionForm = () => {
+const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
   const { func } = useAnalysisForm(useShallow((s) => ({ func: s.func })));
-  switch (func) {
+  const activeFunc = overrideFunc || func;
+  switch (activeFunc) {
     case "conversation_starter":
-      return <ConvoStarterForm />;
+      return <ConvoStarterForm scope={scope} />;
 
     case "message_series":
-      return <MessageSeriesForm />;
+      return <MessageSeriesForm scope={scope} />;
 
     case "mime_type":
-      return <MimeTypeForm />;
+      return <MimeTypeForm scope={scope} />;
 
     case "participation":
-      return <ParticipationForm />;
+      return <ParticipationForm scope={scope} />;
 
     case "phrase":
-      return <PhraseForm />;
+      return <PhraseForm scope={scope} />;
 
     case "reaction":
       return <ReactionForm />;

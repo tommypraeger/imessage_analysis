@@ -5,6 +5,9 @@ import SelectMenu from "components/common/SelectMenu";
 import { getFunctionOptions } from "../functionOptions";
 import Tooltip from "components/common/Tooltip";
 import { postFetch } from "../../utils";
+import FunctionForm from "./FunctionForms";
+
+const FUNCTIONS_WITH_EXTRA_FORMS = new Set(["phrase", "mime_type", "message_series", "conversation_starter", "participation"]);
 
 const ScatterFormSection = () => {
   const { outputType } = useAnalysisForm(useShallow((s) => ({ outputType: s.outputType })));
@@ -50,7 +53,6 @@ const ScatterForm = () => {
 
   // Initialize local text when preset switches or store values change
   useEffect(() => {
-    console.log(store.scatterAlpha, store.scatterBeta);
     if (store.scatterPreset === "rroe") {
       setAlphaText(String(Number.isFinite(store.scatterAlpha) ? store.scatterAlpha : 1));
       setBetaText(String(Number.isFinite(store.scatterBeta) ? store.scatterBeta : 1));
@@ -59,6 +61,16 @@ const ScatterForm = () => {
 
   const [xCategories, setXCategories] = useState([]);
   const [yCategories, setYCategories] = useState([]);
+  const renderAxisFunctionForm = (axis) => {
+    const fn = axis === "x" ? store.scatterXFunction : store.scatterYFunction;
+    if (!fn || !FUNCTIONS_WITH_EXTRA_FORMS.has(fn)) return null;
+    const scope = axis === "x" ? "scatter-x" : "scatter-y";
+    return (
+      <div className="mt-2">
+        <FunctionForm func={fn} scope={scope} />
+      </div>
+    );
+  };
 
   // Fetch categories for a function in table mode
   const fetchCategories = (fnName, setCategories) => {
@@ -197,6 +209,7 @@ const ScatterForm = () => {
                 placeholder="Select category"
               />
             </div>
+            {renderAxisFunctionForm("x")}
           </div>
           <div>
             <h3 className="text-sm font-medium text-slate-700 mb-1">Y Axis</h3>
@@ -217,6 +230,7 @@ const ScatterForm = () => {
                 placeholder="Select category"
               />
             </div>
+            {renderAxisFunctionForm("y")}
           </div>
         </div>
       )}

@@ -2,10 +2,17 @@ import useAnalysisForm from "state/analysisStore";
 import { useShallow } from "zustand/react/shallow";
 import Tooltip from "components/common/Tooltip";
 
-const MessageSeriesForm = () => {
-  const { minutesThreshold, setMinutesThreshold } = useAnalysisForm(
-    useShallow((s) => ({ minutesThreshold: s.minutesThreshold, setMinutesThreshold: s.setMinutesThreshold }))
-  );
+const MessageSeriesForm = ({ scope = "primary" }) => {
+  const selectors = (s) => {
+    if (scope === "scatter-x") {
+      return { minutesThreshold: s.scatterXMinutesThreshold, setMinutesThreshold: s.setScatterXMinutesThreshold };
+    }
+    if (scope === "scatter-y") {
+      return { minutesThreshold: s.scatterYMinutesThreshold, setMinutesThreshold: s.setScatterYMinutesThreshold };
+    }
+    return { minutesThreshold: s.minutesThreshold, setMinutesThreshold: s.setMinutesThreshold };
+  };
+  const { minutesThreshold, setMinutesThreshold } = useAnalysisForm(useShallow(selectors));
   return (
     <div className="input-div">
       <p className="m-0 text-sm text-slate-700 flex items-center gap-2">

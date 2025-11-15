@@ -103,6 +103,37 @@ def get_analysis_args(args):
         help="smoothing exponent beta (typically 0.5 to 2)",
         required=False,
     )
+    # Custom axis overrides
+    parser.add_argument(
+        "--x-phrase",
+        type=str,
+        help="phrase to search for on the X-axis function",
+        required=False,
+    )
+    parser.add_argument(
+        "--x-separate",
+        action="store_true",
+        help="search whole words for X-axis phrase",
+    )
+    parser.add_argument(
+        "--x-case-sensitive",
+        action="store_true",
+        help="make the X-axis phrase search case sensitive",
+    )
+    parser.add_argument(
+        "--x-regex", action="store_true", help="treat the X-axis phrase as a regex"
+    )
+    parser.add_argument(
+        "--x-mime-type",
+        type=str,
+        help="MIME type filter for X-axis function",
+        required=False,
+    )
+    parser.add_argument(
+        "--x-minutes-threshold",
+        type=int,
+        help="Minutes threshold override for X-axis conversation-based functions",
+    )
     parser.add_argument(
         "--x-function",
         type=str,
@@ -128,6 +159,36 @@ def get_analysis_args(args):
         type=str,
         help="category from Y function to use",
         required=("--scatter" in sys.argv and "--scatter-preset" not in sys.argv),
+    )
+    parser.add_argument(
+        "--y-phrase",
+        type=str,
+        help="phrase to search for on the Y-axis function",
+        required=False,
+    )
+    parser.add_argument(
+        "--y-separate",
+        action="store_true",
+        help="search whole words for Y-axis phrase",
+    )
+    parser.add_argument(
+        "--y-case-sensitive",
+        action="store_true",
+        help="make the Y-axis phrase search case sensitive",
+    )
+    parser.add_argument(
+        "--y-regex", action="store_true", help="treat the Y-axis phrase as a regex"
+    )
+    parser.add_argument(
+        "--y-mime-type",
+        type=str,
+        help="MIME type filter for Y-axis function",
+        required=False,
+    )
+    parser.add_argument(
+        "--y-minutes-threshold",
+        type=int,
+        help="Minutes threshold override for Y-axis conversation-based functions",
     )
     parser.add_argument(
         "--scatter-regression",

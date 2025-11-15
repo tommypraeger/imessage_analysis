@@ -86,6 +86,32 @@ const buildArgs = () => {
       if (s.scatterXCategory) args["x-category"] = s.scatterXCategory;
       if (s.scatterYFunction) args["y-function"] = s.scatterYFunction;
       if (s.scatterYCategory) args["y-category"] = s.scatterYCategory;
+      const appendAxisArgs = (axis, fnName) => {
+        if (!fnName) return;
+        const axisUpper = axis.toUpperCase();
+        const getStateVal = (suffix) => s[`scatter${axisUpper}${suffix}`];
+        if (fnName === "phrase") {
+          const phraseVal = getStateVal("Phrase");
+          if (phraseVal) {
+            args[`${axis}-phrase`] = phraseVal;
+            if (getStateVal("PhraseSeparate")) args[`${axis}-separate`] = "";
+            if (getStateVal("PhraseCaseSensitive")) args[`${axis}-case-sensitive`] = "";
+            if (getStateVal("PhraseRegex")) args[`${axis}-regex`] = "";
+          }
+        }
+        if (fnName === "mime_type") {
+          const mimeVal = getStateVal("MimeType");
+          if (mimeVal) args[`${axis}-mime-type`] = mimeVal;
+        }
+        if (["message_series", "conversation_starter", "participation"].includes(fnName)) {
+          const minutesVal = getStateVal("MinutesThreshold");
+          if (typeof minutesVal === "number" && !Number.isNaN(minutesVal)) {
+            args[`${axis}-minutes-threshold`] = minutesVal;
+          }
+        }
+      };
+      appendAxisArgs("x", s.scatterXFunction);
+      appendAxisArgs("y", s.scatterYFunction);
     }
     if (s.scatterMode === "custom") {
       if (s.scatterRegression) args["scatter-regression"] = "";

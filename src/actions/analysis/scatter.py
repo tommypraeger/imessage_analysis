@@ -14,11 +14,60 @@ def _copy_args(args, **overrides):
     return SimpleNamespace(**d)
 
 
-def _run_function_table(df: pd.DataFrame, args, chat_members: List[str], fn_name: str) -> Dict:
+def _axis_specific_overrides(args, axis: str, fn_name: str) -> Dict:
+    if axis not in ("x", "y"):
+        return {}
+    prefix = f"{axis}_"
+    overrides: Dict[str, object] = {}
+    if fn_name == "phrase":
+        phrase_val = getattr(args, f"{prefix}phrase", None)
+        if phrase_val:
+            overrides["phrase"] = phrase_val
+            overrides["separate"] = bool(getattr(args, f"{prefix}separate", False))
+            overrides["case_sensitive"] = bool(getattr(args, f"{prefix}case_sensitive", False))
+            overrides["regex"] = bool(getattr(args, f"{prefix}regex", False))
+    elif fn_name == "mime_type":
+        mime_type_val = getattr(args, f"{prefix}mime_type", None)
+        if mime_type_val:
+            overrides["mime_type"] = mime_type_val
+    elif fn_name in ("message_series", "conversation_starter", "participation"):
+        minutes_val = getattr(args, f"{prefix}minutes_threshold", None)
+        if minutes_val is not None:
+            overrides["minutes_threshold"] = minutes_val
+    return overrides
+
+
+def _run_function_table(
+    df: pd.DataFrame, args, chat_members: List[str], fn_name: str, axis: str = None
+) -> Dict:
+    override_kwargs = dict(function=fn_name, table=True, graph=False, scatter=False)
+    override_kwargs.update(_axis_specific_overrides(args, axis, fn_name))
     fn = functions.get_function_class_by_name(fn_name)
-    table_args = _copy_args(args, function=fn_name, table=True, graph=False, scatter=False)
+    table_args = _copy_args(args, **override_kwargs)
     result_dict, _ = fn.run(df, table_args, chat_members)
     return result_dict
+
+
+def _resolve_category_name(result_dict: Dict, requested_category: str, fn_name: str, axis: str, args) -> str:
+    """
+    Phrase results replace 'the entered phrase' with the actual search term, so custom
+    scatter categories using the placeholder need to resolve to the rewritten key.
+    """
+    if requested_category in result_dict:
+        return requested_category
+    if fn_name == "phrase":
+        phrase_val = None
+        if axis == "x":
+            phrase_val = getattr(args, "x_phrase", None)
+        elif axis == "y":
+            phrase_val = getattr(args, "y_phrase", None)
+        if not phrase_val:
+            phrase_val = getattr(args, "phrase", None)
+        if phrase_val:
+            actual_key = requested_category.replace("the entered phrase", f'"{phrase_val}"')
+            if actual_key in result_dict:
+                return actual_key
+    return requested_category
 
 
 def _series_by_member(result_dict: Dict, category: str) -> Dict[str, float]:
@@ -29,22 +78,24 @@ def _series_by_member(result_dict: Dict, category: str) -> Dict[str, float]:
 
 def _compute_points_custom(df: pd.DataFrame, args, chat_members: List[str]) -> Tuple[List[Tuple[str, float, float]], str, str, str, str, str]:
     # X metric
-    x_results = _run_function_table(df, args, chat_members, args.x_function)
-    x_map = _series_by_member(x_results, args.x_category)
+    x_results = _run_function_table(df, args, chat_members, args.x_function, axis="x")
+    resolved_x_category = _resolve_category_name(x_results, args.x_category, args.x_function, "x", args)
+    x_map = _series_by_member(x_results, resolved_x_category)
     # Y metric
-    y_results = _run_function_table(df, args, chat_members, args.y_function)
-    y_map = _series_by_member(y_results, args.y_category)
+    y_results = _run_function_table(df, args, chat_members, args.y_function, axis="y")
+    resolved_y_category = _resolve_category_name(y_results, args.y_category, args.y_function, "y", args)
+    y_map = _series_by_member(y_results, resolved_y_category)
 
     # Join by member name
     points = []
     for name in set(x_map.keys()).intersection(y_map.keys()):
         points.append((name, x_map[name], y_map[name]))
 
-    title = f"{args.x_category} vs {args.y_category}"
+    title = f"{resolved_x_category} vs {resolved_y_category}"
     subtitle = ""
     slug = "custom"
-    x_label = args.x_category
-    y_label = args.y_category
+    x_label = resolved_x_category
+    y_label = resolved_y_category
     return points, title, subtitle, slug, x_label, y_label
 
 
@@ -72,7 +123,7 @@ def _compute_points_lfwt(df: pd.DataFrame, args, chat_members: List[str]) -> Tup
     Walker/Talker: how often you participate in conversations"""
     slug = "lfwt"
     x_label = "Conversations started / Conversations participated in (%)"
-    y_label = "Conversation participation in / Total conversations (%)"
+    y_label = "Conversations participation in / Total conversations (%)"
     return points, title, subtitle, slug, x_label, y_label
 
 

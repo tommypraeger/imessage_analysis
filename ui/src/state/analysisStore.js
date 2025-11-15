@@ -32,6 +32,18 @@ const initialState = {
   scatterResiduals: false,
   scatterAlpha: 1,
   scatterBeta: 1,
+  scatterXPhrase: "",
+  scatterXPhraseSeparate: false,
+  scatterXPhraseCaseSensitive: false,
+  scatterXPhraseRegex: false,
+  scatterXMinutesThreshold: 60,
+  scatterXMimeType: "image/png",
+  scatterYPhrase: "",
+  scatterYPhraseSeparate: false,
+  scatterYPhraseCaseSensitive: false,
+  scatterYPhraseRegex: false,
+  scatterYMinutesThreshold: 60,
+  scatterYMimeType: "image/png",
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -69,6 +81,18 @@ const useAnalysisForm = create((set, get) => ({
   setScatterResiduals: (val) => set({ scatterResiduals: !!val }),
   setScatterAlpha: (val) => set({ scatterAlpha: val }),
   setScatterBeta: (val) => set({ scatterBeta: val }),
+  setScatterXPhrase: (val) => set({ scatterXPhrase: val }),
+  setScatterXPhraseSeparate: (val) => set({ scatterXPhraseSeparate: !!val }),
+  setScatterXPhraseCaseSensitive: (val) => set({ scatterXPhraseCaseSensitive: !!val }),
+  setScatterXPhraseRegex: (val) => set({ scatterXPhraseRegex: !!val }),
+  setScatterXMinutesThreshold: (val) => set({ scatterXMinutesThreshold: Number.isNaN(val) ? undefined : val }),
+  setScatterXMimeType: (val) => set({ scatterXMimeType: val }),
+  setScatterYPhrase: (val) => set({ scatterYPhrase: val }),
+  setScatterYPhraseSeparate: (val) => set({ scatterYPhraseSeparate: !!val }),
+  setScatterYPhraseCaseSensitive: (val) => set({ scatterYPhraseCaseSensitive: !!val }),
+  setScatterYPhraseRegex: (val) => set({ scatterYPhraseRegex: !!val }),
+  setScatterYMinutesThreshold: (val) => set({ scatterYMinutesThreshold: Number.isNaN(val) ? undefined : val }),
+  setScatterYMimeType: (val) => set({ scatterYMimeType: val }),
 
   getAnalyzeDisabled: () => {
     const s = get();
@@ -86,6 +110,15 @@ const useAnalysisForm = create((set, get) => ({
         if (!s.scatterPreset) return true;
       } else {
         if (!s.scatterXFunction || !s.scatterXCategory || !s.scatterYFunction || !s.scatterYCategory) return true;
+        const needsMinutes = (fn) => ["message_series", "conversation_starter", "participation"].includes(fn);
+        const needsPhrase = (fn) => fn === "phrase";
+        const needsMime = (fn) => fn === "mime_type";
+        if (needsPhrase(s.scatterXFunction) && !s.scatterXPhrase) return true;
+        if (needsPhrase(s.scatterYFunction) && !s.scatterYPhrase) return true;
+        if (needsMime(s.scatterXFunction) && !s.scatterXMimeType) return true;
+        if (needsMime(s.scatterYFunction) && !s.scatterYMimeType) return true;
+        if (needsMinutes(s.scatterXFunction) && !s.scatterXMinutesThreshold) return true;
+        if (needsMinutes(s.scatterYFunction) && !s.scatterYMinutesThreshold) return true;
       }
     }
     if (csv && csvFileName === "") return true;
