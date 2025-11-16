@@ -3,6 +3,7 @@ import glob
 import math
 from datetime import datetime
 from typing import Iterable, List, Tuple, Optional, Dict
+import textwrap
 
 import numpy as np
 import matplotlib
@@ -125,7 +126,8 @@ def generate_scatter_image(
         ])
     ax_main.set_xlabel(x_label)
     ax_main.set_ylabel(y_label)
-    fig.suptitle(title, y=0.88, fontsize=14, fontweight="bold")
+    wrapped_title = textwrap.fill(title, width=60)
+    fig.suptitle(wrapped_title, y=0.9, fontsize=14, fontweight="bold")
     ax_main.grid(True, linestyle=":", alpha=0.4)
 
     # Optional percentage tick formatting
