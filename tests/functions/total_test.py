@@ -15,8 +15,8 @@ from tests.testutils import *
             [],
             {
                 "names": ["A", "B", "C"],
-                total_messages_category: [6, 3, 3],
-                percent_total_messages_category: [50, 25, 25],
+                total_messages_category: [5, 3, 3],
+                percent_total_messages_category: [45.45, 27.27, 27.27],
             },
         ),
         (
@@ -24,8 +24,8 @@ from tests.testutils import *
             [],
             {
                 "names": ["A", "B"],
-                total_messages_category: [5, 5],
-                percent_total_messages_category: [50, 50],
+                total_messages_category: [4, 5],
+                percent_total_messages_category: [44.44, 55.56],
             },
         ),
     ],
@@ -45,7 +45,7 @@ def test_table(csv, fn_args, expected_result):
             False,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"Total": [4, 8]},
+                "datasets": {"Total": [4, 7]},
             },
         ),
         (
@@ -55,7 +55,7 @@ def test_table(csv, fn_args, expected_result):
             True,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"A": [2, 4], "B": [1, 2], "C": [1, 2]},
+                "datasets": {"A": [2, 3], "B": [1, 2], "C": [1, 2]},
             },
         ),
         (
@@ -65,7 +65,7 @@ def test_table(csv, fn_args, expected_result):
             True,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"A": [50, 50], "B": [25, 25], "C": [25, 25]},
+                "datasets": {"A": [50.0, 42.86], "B": [25.0, 28.57], "C": [25.0, 28.57]},
             },
         ),
         (
@@ -75,7 +75,7 @@ def test_table(csv, fn_args, expected_result):
             False,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"Total": [5, 5]},
+                "datasets": {"Total": [4, 5]},
             },
         ),
         (
@@ -85,7 +85,7 @@ def test_table(csv, fn_args, expected_result):
             True,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"A": [3, 2], "B": [2, 3]},
+                "datasets": {"A": [2, 2], "B": [2, 3]},
             },
         ),
         (
@@ -95,7 +95,7 @@ def test_table(csv, fn_args, expected_result):
             True,
             {
                 "labels": ["1/1/00", "1/2/00"],
-                "datasets": {"A": [60, 40], "B": [40, 60]},
+                "datasets": {"A": [50.0, 40.0], "B": [50.0, 60.0]},
             },
         ),
     ],

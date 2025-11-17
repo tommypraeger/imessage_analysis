@@ -140,7 +140,7 @@ from tests.testutils import *
     ids=format_param,
 )
 def test_table(csv, fn_args, expected_result):
-    run_table_test(Phrase(), "phrase", csv, fn_args, expected_result)
+    run_table_test(Phrase(), "phrase", csv, fn_args, apply_phrase_labels(expected_result, fn_args))
 
 
 @pytest.mark.parametrize(
@@ -233,3 +233,24 @@ def test_graph(csv, fn_args, category, graph_individual, expected_result):
     run_graph_test(
         Phrase(), "phrase", csv, fn_args, category, graph_individual, expected_result
     )
+
+
+def apply_phrase_labels(expected_result, fn_args):
+    phrase_val = None
+    for i, arg in enumerate(fn_args):
+        if arg == "--phrase" and i + 1 < len(fn_args):
+            phrase_val = fn_args[i + 1]
+            break
+    if phrase_val is None:
+        return expected_result
+    phrase_label = phrase_category.replace("the entered phrase", f'"{phrase_val}"')
+    percent_label = percent_phrase_category.replace("the entered phrase", f'"{phrase_val}"')
+    remapped = {}
+    for key, value in expected_result.items():
+        if key == phrase_category:
+            remapped[phrase_label] = value
+        elif key == percent_phrase_category:
+            remapped[percent_label] = value
+        else:
+            remapped[key] = value
+    return remapped

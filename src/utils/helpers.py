@@ -297,7 +297,8 @@ def compute_conversation_columns(df, minutes_threshold=None):
         times = df.loc[non_reaction_idx, "time"]
         # Vectorized diff in seconds among non-reactions
         seconds = times.diff().dt.total_seconds()
-        starters_nr = seconds.gt(minutes_threshold * 60).fillna(True)
+        starters_nr = seconds.gt(minutes_threshold * 60)
+        starters_nr.loc[seconds.isna()] = True
         starters.loc[non_reaction_idx] = starters_nr
     # Reactions never start conversations
     starters.loc[is_reaction_row] = False
