@@ -7,6 +7,27 @@ average_messages_category = "Average messages per series"
 percent_series_category = "Percent of total message series"
 
 
+def add_message_series_columns(df, minutes_threshold=None):
+    """Annotate df with conversation and message-series markers."""
+    df = helpers.compute_conversation_columns(df, minutes_threshold=minutes_threshold)
+    is_new_series = df["sender"].ne(df["sender"].shift())
+    if len(df) > 0:
+        is_new_series.iloc[0] = True
+    df["is new message series?"] = is_new_series
+    return df
+
+
+def message_series_count_by_sender(df, member_name=None, time_period=None):
+    """Count message series per sender, matching MessageSeries semantics."""
+    msgs = helpers.get_messages(df, member_name, time_period)
+    if "is new message series?" not in msgs.columns:
+        msgs = add_message_series_columns(msgs)
+    series_mask = msgs["is new message series?"].fillna(False)
+    starter_mask = msgs.get("is conversation starter?", False)
+    combined = series_mask | starter_mask
+    return msgs[combined].groupby("sender").size().to_dict()
+
+
 class MessageSeries(Function):
     @staticmethod
     def get_function_name():
@@ -29,19 +50,7 @@ class MessageSeries(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        # Populate conversation columns using the shared helper so that
-        # reactions never start conversations and inherit parent conversations.
-        df = helpers.compute_conversation_columns(
-            df,
-            minutes_threshold=args.minutes_threshold,
-        )
-        # New series whenever sender changes vs previous row
-        is_new_series = df["sender"].ne(df["sender"].shift())
-        # Ensure first row is True
-        if len(df) > 0:
-            is_new_series.iloc[0] = True
-        df["is new message series?"] = is_new_series
-        return df
+        return add_message_series_columns(df, minutes_threshold=args.minutes_threshold)
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

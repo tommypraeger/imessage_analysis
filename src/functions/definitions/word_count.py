@@ -7,6 +7,35 @@ from src.utils import helpers, constants
 average_word_count_category = "Average word count per message"
 
 
+def add_word_count_columns(df):
+    text = df["text"].astype("string")
+    mt = df["message_type"].astype("string")
+    not_reaction = ~mt.isin(constants.REACTION_TYPES)
+    link_only_mask = text.str.strip().str.fullmatch(constants.LINK_REGEX, na=False)
+    df["is link?"] = (not_reaction & link_only_mask)
+    # Handle missing values: .str.len() returns <NA> for missing → fill with 0
+    df["word count"] = text.str.split().str.len().fillna(0).astype("int64")
+    return df
+
+
+def total_word_count_by_sender(df, member_name=None, time_period=None):
+    """Aggregate total word count per sender, excluding reactions and link-only messages."""
+
+    nr_messages = helpers.get_non_reaction_messages(df, member_name, time_period)
+    working = nr_messages
+    if "word count" not in working.columns or "is link?" not in working.columns:
+        working = add_word_count_columns(working.copy())
+
+    mask = (working["word count"] != 0) & (~working["is link?"])
+    return (
+        working.loc[mask]
+        .groupby("sender")["word count"]
+        .sum()
+        .astype("int64")
+        .to_dict()
+    )
+
+
 class WordCount(Function):
     @staticmethod
     def get_function_name():
@@ -22,14 +51,7 @@ class WordCount(Function):
 
     @staticmethod
     def process_messages_df(df, args):
-        text = df["text"].astype("string")
-        mt = df["message_type"].astype("string")
-        not_reaction = ~mt.isin(constants.REACTION_TYPES)
-        link_mask = text.str.match(constants.LINK_REGEX, na=False)
-        df["is link?"] = (not_reaction & link_mask)
-        # Handle missing values: .str.len() returns <NA> for missing → fill with 0
-        df["word count"] = text.str.split().str.len().fillna(0).astype("int64")
-        return df
+        return add_word_count_columns(df)
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):

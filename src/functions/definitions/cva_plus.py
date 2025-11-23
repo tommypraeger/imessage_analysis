@@ -3,6 +3,8 @@ from typing import Dict, Optional, Tuple
 import pandas as pd
 
 from src.functions import Function
+from src.functions.definitions.message_series import add_message_series_columns, message_series_count_by_sender
+from src.functions.definitions.word_count import add_word_count_columns, total_word_count_by_sender
 from src.utils import helpers, constants
 
 CVA_PLUS_CATEGORY = "CVA+ Rating"
@@ -27,20 +29,24 @@ VOLUME_METRIC_KEYS = [
     "conversations_participated",
     "reactions_received",
     "reactions_sent",
+    "message_series",
+    "total_word_count",
 ]
-CVA_METRIC_WEIGHTS = {
-    "messages_sent": 1.0,
-    "conversations_started": 1.5,
-    "conversations_participated": 1.0,
-    "reactions_received": 0.5,
-    "reactions_sent": 1.0,
-    "weighted_reactions_per_message": 1.5,
-    "non_solo_conversation_rate": 1.0,
-}
 EFFICIENCY_METRIC_KEYS = [
     "weighted_reactions_per_message",
     "non_solo_conversation_rate",
 ]
+CVA_METRIC_WEIGHTS = {
+    "messages_sent": 0.3,
+    "conversations_started": 1.5,
+    "conversations_participated": 1.0,
+    "reactions_received": 0.5,
+    "reactions_sent": 1.0,
+    "message_series": 0.8,
+    "total_word_count": 0.5,
+    "weighted_reactions_per_message": 1.5,
+    "non_solo_conversation_rate": 1.0,
+}
 
 
 class CVAPlus(Function):
@@ -68,6 +74,8 @@ class CVAPlus(Function):
     def process_messages_df(self, df, args):
         minutes_threshold = getattr(args, "minutes_threshold", None)
         df = helpers.compute_conversation_columns(df, minutes_threshold=minutes_threshold)
+        df = add_message_series_columns(df, minutes_threshold=minutes_threshold)
+        df = add_word_count_columns(df)
         self._original_messages_df = helpers.add_reactions_for_each_message(df)
         self._member_stats_cache.clear()
         self._score_cache.clear()
@@ -132,6 +140,9 @@ class CVAPlus(Function):
 
         sender_series = messages["sender"].astype("string")
         member_names = sorted([str(name) for name in sender_series.unique().tolist()])
+
+        word_counts = total_word_count_by_sender(df, time_period=time_period)
+        message_series_counts = message_series_count_by_sender(df, time_period=time_period)
         stats = {}
         for member in member_names:
             member_non_reaction_count = int(non_reaction_counts.get(member, 0))
@@ -176,6 +187,8 @@ class CVAPlus(Function):
                 "conversations_participated": float(member_participation),
                 "reactions_received": float(reactions_received),
                 "reactions_sent": float(reactions_sent_counts.get(member, 0)),
+                "message_series": float(message_series_counts.get(member, 0)),
+                "total_word_count": float(word_counts.get(member, 0)),
                 "weighted_reactions_per_message": weighted_reactions_per_message,
                 "non_solo_conversation_rate": non_solo_rate,
             }
