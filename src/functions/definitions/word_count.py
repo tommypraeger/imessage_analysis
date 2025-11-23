@@ -3,8 +3,8 @@ import math
 from src.functions import Function
 from src.utils import helpers, constants
 
-# TODO: total word count
 average_word_count_category = "Average word count per message"
+total_word_count_category = "Total word count"
 
 
 def add_word_count_columns(df):
@@ -43,11 +43,11 @@ class WordCount(Function):
 
     @staticmethod
     def get_categories():
-        return [average_word_count_category]
+        return [average_word_count_category, total_word_count_category]
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [average_word_count_category]
+        return [average_word_count_category, total_word_count_category]
 
     @staticmethod
     def process_messages_df(df, args):
@@ -64,3 +64,9 @@ class WordCount(Function):
         output_dict[average_word_count_category].append(
             round(average_message_word_count, 2)
         )
+        totals_by_sender = total_word_count_by_sender(df, member_name, time_period)
+        if member_name is None:
+            total_words = int(sum(totals_by_sender.values()))
+        else:
+            total_words = int(totals_by_sender.get(member_name, 0))
+        output_dict[total_word_count_category].append(total_words)

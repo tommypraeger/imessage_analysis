@@ -1,5 +1,9 @@
 import pytest
-from src.functions.definitions.word_count import WordCount, average_word_count_category
+from src.functions.definitions.word_count import (
+    WordCount,
+    average_word_count_category,
+    total_word_count_category,
+)
 from tests.testutils import *
 
 
@@ -12,6 +16,7 @@ from tests.testutils import *
             {
                 "names": ["A", "B", "C"],
                 average_word_count_category: [1, 2, 3],
+                total_word_count_category: [3, 10, 3],
             },
         ),
         (
@@ -20,6 +25,7 @@ from tests.testutils import *
             {
                 "names": ["A", "B"],
                 average_word_count_category: [1, 2],
+                total_word_count_category: [4, 10],
             },
         ),
     ],
