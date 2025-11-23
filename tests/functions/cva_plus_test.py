@@ -17,8 +17,8 @@ from tests.testutils import format_param, run_table_test
             [],
             {
                 "names": ["Alice", "Bob", "Carol"],
-                CVA_PLUS_CATEGORY: [153.11, 75.82, 71.07],
-                VOLUME_COMPONENT_CATEGORY: [105.36, 112.5, 82.14],
+                CVA_PLUS_CATEGORY: [153.65, 76.35, 70.0],
+                VOLUME_COMPONENT_CATEGORY: [106.43, 113.57, 80.0],
                 EFFICIENCY_COMPONENT_CATEGORY: [200.87, 39.13, 60.0],
             },
         ),

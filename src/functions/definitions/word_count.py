@@ -11,10 +11,15 @@ def add_word_count_columns(df):
     text = df["text"].astype("string")
     mt = df["message_type"].astype("string")
     not_reaction = ~mt.isin(constants.REACTION_TYPES)
-    link_only_mask = text.str.strip().str.fullmatch(constants.LINK_REGEX, na=False)
-    df["is link?"] = (not_reaction & link_only_mask)
+    # treat as link-only if it starts with http/https and has no spaces
+    # much faster than regex full match
+    maybe_link = text.str.startswith(("http://", "https://"), na=False)
+    no_spaces = ~text.str.contains(r"\s", na=False)
+    link_only_mask = maybe_link & no_spaces
+    df["is link?"] = not_reaction & link_only_mask
+    split_series = text.str.split()
     # Handle missing values: .str.len() returns <NA> for missing → fill with 0
-    df["word count"] = text.str.split().str.len().fillna(0).astype("int64")
+    df["word count"] = split_series.str.len().fillna(0).astype("int64")
     return df
 
 
