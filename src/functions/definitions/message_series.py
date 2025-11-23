@@ -18,8 +18,8 @@ def add_message_series_columns(df, minutes_threshold=None):
 
 
 def message_series_count_by_sender(df, member_name=None, time_period=None):
-    """Count message series per sender, matching MessageSeries semantics."""
-    msgs = helpers.get_messages(df, member_name, time_period)
+    """Count message series per sender, matching MessageSeries semantics (non-reactions only)."""
+    msgs = helpers.get_non_reaction_messages(df, member_name, time_period)
     if "is new message series?" not in msgs.columns:
         msgs = add_message_series_columns(msgs)
     series_mask = msgs["is new message series?"].fillna(False)
@@ -54,7 +54,7 @@ class MessageSeries(Function):
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
-        messages_by_member = helpers.get_messages(df, member_name, time_period)
+        messages_by_member = helpers.get_non_reaction_messages(df, member_name, time_period)
         message_series = len(
             messages_by_member[
                 (messages_by_member["is new message series?"])
@@ -65,7 +65,7 @@ class MessageSeries(Function):
         output_dict[average_messages_category].append(
             round(helpers.safe_divide(len(messages_by_member), message_series), 2)
         )
-        all_messages = helpers.get_messages(df, time_period=time_period)
+        all_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
         total_message_series = len(
             all_messages[
                 (all_messages["is new message series?"])
