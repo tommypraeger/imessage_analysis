@@ -26,6 +26,11 @@ const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds })
           <img src={response.imagePath} alt={response.title || "Scatter plot"} />
         </div>
       );
+    } else if ("tableData" in response) {
+      const { headers = [], rows = [] } = response.tableData || {};
+      const sortCol = func === "participation_correlation" ? 0 : 1;
+      const width = func === "participation_correlation" ? 100 : 160;
+      return <NativeTable headers={headers} rows={rows} defaultSortCol={sortCol} columnWidth={width} />;
     } else if ("htmlTable" in response) {
       const nested = extractNestedTables(response.htmlTable);
       if (nested && nested.length > 0) {

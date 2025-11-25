@@ -63,7 +63,7 @@ const buildArgs = () => {
   if (func === "mime_type") {
     args["mime-type"] = s.mimeType;
   }
-  const functionsRequiringMinutes = ["message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus"];
+  const functionsRequiringMinutes = ["message_series", "conversation_starter", "participation", "solo_conversations", "cva_plus", "participation_correlation"];
   if (func === "cva_plus") {
     if (Number.isFinite(s.cvaVolumeWeight)) args["cva-volume-weight"] = s.cvaVolumeWeight;
     if (Number.isFinite(s.cvaEfficiencyWeight)) args["cva-efficiency-weight"] = s.cvaEfficiencyWeight;

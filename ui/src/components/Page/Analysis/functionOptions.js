@@ -7,6 +7,7 @@ export const FUNCTION_OPTIONS = [
   { value: "reactions_received", label: "Reactions received", desc: "How many iMessage reactions each person receives", supportsScatter: true },
   { value: "reaction_matrix", label: "Reaction matrix", desc: "How many reactions each person receives from each other person", supportsScatter: false },
   { value: "participation", label: "Participation", desc: "How often each person participates", supportsScatter: true },
+  { value: "participation_correlation", label: "Participation Correlation", desc: "Pairwise participation correlation matrix (table only)", supportsScatter: false },
   { value: "conversation_starter", label: "Starters", desc: "How many times each person starts the conversation", supportsScatter: true },
   { value: "cva_plus", label: "CVA+ (Conversational Value Added)", desc: "Blended volume/efficiency score with adjustable weights", supportsScatter: true },
   { value: "phrase", label: "Word/Phrase", desc: "How many messages include a certain word/phrase", supportsScatter: true },

@@ -122,7 +122,7 @@ const useAnalysisForm = create((set, get) => ({
     if (outputType !== "scatter" && !func) return true;
     if (func === "phrase" && !s.phrase) return true;
     if (func === "mime_type" && !s.mimeType) return true;
-    if ((func === "message_series" || func === "conversation_starter" || func === "participation" || func === "solo_conversations" || func === "cva_plus") && !s.minutesThreshold)
+    if ((func === "message_series" || func === "conversation_starter" || func === "participation" || func === "solo_conversations" || func === "cva_plus" || func === "participation_correlation") && !s.minutesThreshold)
       return true;
     if (outputType === "graph" && (!category || !s.graphTimeInterval)) return true;
     if (outputType === "scatter") {

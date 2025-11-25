@@ -74,6 +74,22 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
     [headers, colWidths, columnWidth]
   );
 
+  // Detect correlation matrix shape: blank corner + symmetric member headers
+  const correlationMode = headers.length > 1 && headers[0] === "" && headers.slice(1).every((h) => headers.includes(h));
+
+  const colorFor = (val, colIdx) => {
+    if (!correlationMode || colIdx === 0 || typeof val !== "number" || Number.isNaN(val)) return undefined;
+    if (val === 1) return undefined;
+    const min = -0.1;
+    const max = 0.3;
+    const clamped = Math.max(min, Math.min(max, val));
+    const t = (clamped - min) / (max - min); // map [min,max] -> [0,1]
+    const r = Math.round((1 - t) * 255);
+    const g = Math.round(t * 255);
+    const alpha = 0.2;
+    return `rgba(${r},${g},0,${alpha})`;
+  };
+
   const startResize = (idx, event) => {
     event.preventDefault();
     const startX = event.clientX;
@@ -131,9 +147,21 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
         <tbody>
           {sortedRows.map((r, ri) => (
             <tr key={ri} className="hover:bg-slate-50">
-              {r.map((c, ci) => (
-                <td key={ci} className="text-sm border-b border-slate-100 px-3 py-2" style={cellStyle[ci]}>{c}</td>
-              ))}
+              {r.map((c, ci) => {
+                const isNameCol = ci === 0;
+                const isDiagonal = correlationMode && !isNameCol && ci - 1 === ri;
+                const rawVal = typeof c === "string" ? Number(c) : c;
+                const bg = !isNameCol && !isDiagonal ? colorFor(rawVal, ci) : undefined;
+                return (
+                  <td
+                    key={ci}
+                    className="text-sm border-b border-slate-100 px-3 py-2"
+                    style={{ ...cellStyle[ci], backgroundColor: bg }}
+                  >
+                    {c}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

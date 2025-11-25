@@ -65,6 +65,11 @@ def main(args):
     if args.graph:
         return {"graphData": result_dict}
 
+    # If a function provides structured table data, forward it directly
+    if "tableData" in result_dict:
+        print(result_dict["tableData"])
+        return {"tableData": result_dict["tableData"]}
+
     try:
         result_df = pd.DataFrame(data=result_dict)
         # result_df.sort_values(by=result_df.columns[1], inplace=True, ascending=False)

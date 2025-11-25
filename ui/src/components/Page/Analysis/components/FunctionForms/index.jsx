@@ -28,6 +28,9 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
     case "participation":
       return <ParticipationForm scope={scope} />;
 
+    case "participation_correlation":
+      return <ParticipationForm scope={scope} />;
+
     case "phrase":
       return <PhraseForm scope={scope} />;
 
