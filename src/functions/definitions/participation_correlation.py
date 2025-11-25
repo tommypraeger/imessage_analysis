@@ -66,7 +66,7 @@ class ParticipationCorrelation(Function):
         headers = [""] + members
         rows = []
         for name, row in zip(members, matrix):
-            rows.append([name] + [round(v, 2) for v in row])
+            rows.append([name] + [round(v, 3) for v in row])
 
         # Provide structured table data for UI rendering/coloring
         result_dict["tableData"] = {"headers": headers, "rows": rows}

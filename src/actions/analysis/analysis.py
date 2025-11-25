@@ -67,7 +67,6 @@ def main(args):
 
     # If a function provides structured table data, forward it directly
     if "tableData" in result_dict:
-        print(result_dict["tableData"])
         return {"tableData": result_dict["tableData"]}
 
     try:
