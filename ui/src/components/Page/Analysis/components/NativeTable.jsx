@@ -9,6 +9,8 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
   const [sortCol, setSortCol] = useState(defaultSortCol);
   const [sortDir, setSortDir] = useState("desc"); // default for numeric
   const [colWidths, setColWidths] = useState([]);
+  const [columnOrder, setColumnOrder] = useState([]);
+  const [dragColIdx, setDragColIdx] = useState(null);
 
   // Adjust default direction based on detected type of the default column
   useEffect(() => {
@@ -26,15 +28,22 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
     });
   }, [headers, columnWidth]);
 
+  useEffect(() => {
+    setColumnOrder(headers.map((_, i) => i));
+    setDragColIdx(null);
+    // reset sort to default when headers change
+    setSortCol(defaultSortCol);
+  }, [headers, defaultSortCol]);
+
   const sortedRows = useMemo(() => {
-    const col = sortCol ?? 0;
+    const actualCol = columnOrder[sortCol] ?? columnOrder[0] ?? 0;
     const dir = sortDir === "asc" ? 1 : -1;
-    const nums = rows.map((r) => cellToNumber(r?.[col] ?? ""));
+    const nums = rows.map((r) => cellToNumber(r?.[actualCol] ?? ""));
     const isNumeric = nums.every((v) => v !== null);
     const copy = rows.slice();
     copy.sort((a, b) => {
-      const av = a?.[col] ?? "";
-      const bv = b?.[col] ?? "";
+      const av = a?.[actualCol] ?? "";
+      const bv = b?.[actualCol] ?? "";
       if (isNumeric) {
         const an = cellToNumber(av) ?? 0;
         const bn = cellToNumber(bv) ?? 0;
@@ -114,32 +123,63 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
     window.addEventListener("mouseup", onMouseUp);
   };
 
+  const handleDragStart = (orderIdx) => {
+    if (correlationMode) return;
+    setDragColIdx(orderIdx);
+  };
+
+  const handleDragOver = (e) => {
+    if (correlationMode) return;
+    e.preventDefault();
+  };
+
+  const handleDrop = (orderIdx) => {
+    if (correlationMode || dragColIdx === null) return;
+    const newOrder = columnOrder.slice();
+    const [moved] = newOrder.splice(dragColIdx, 1);
+    newOrder.splice(orderIdx, 0, moved);
+    setColumnOrder(newOrder);
+    // keep sort targeting same original column
+    const originalIndex = columnOrder[sortCol];
+    const newSortIdx = newOrder.indexOf(originalIndex);
+    setSortCol(newSortIdx === -1 ? 0 : newSortIdx);
+    setDragColIdx(null);
+  };
+
+  const displayHeaders = columnOrder.map((i) => headers[i]);
+  const displayColStyles = columnOrder.map((i) => cellStyle[i]);
+  const displayRows = sortedRows.map((r) => columnOrder.map((i) => r[i]));
+
   return (
     <div className="overflow-x-auto">
       <table className="border-collapse table-fixed">
         <colgroup>
-          {cellStyle.map((style, idx) => (
+          {displayColStyles.map((style, idx) => (
             <col key={idx} style={style} />
           ))}
         </colgroup>
         <thead>
           <tr>
-            {headers.map((h, i) => (
+            {displayHeaders.map((h, orderIdx) => (
               <th
-                key={i}
+                key={orderIdx}
                 className={`text-left text-sm font-semibold bg-slate-50 border-b border-slate-200 px-3 py-2 cursor-pointer select-none relative ${
-                  i === 0 ? "sticky left-0 z-10 bg-slate-50" : ""
+                  orderIdx === 0 ? "sticky left-0 z-10 bg-slate-50" : ""
                 }`}
-                onClick={() => onHeaderClick(i)}
-                aria-sort={sortCol === i ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+                onClick={() => onHeaderClick(orderIdx)}
+                onDragStart={() => handleDragStart(orderIdx)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(orderIdx)}
+                draggable={!correlationMode}
+                aria-sort={sortCol === orderIdx ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
                 title="Click to sort"
-                style={cellStyle[i]}
+                style={displayColStyles[orderIdx]}
               >
                 <span>{h}</span>
-                <span className="inline-block ml-1 text-slate-400">{arrow(i)}</span>
+                <span className="inline-block ml-1 text-slate-400">{arrow(orderIdx)}</span>
                 <span
                   className="absolute right-0 top-0 h-full w-2 cursor-col-resize select-none"
-                  onMouseDown={(e) => startResize(i, e)}
+                  onMouseDown={(e) => startResize(orderIdx, e)}
                   role="presentation"
                 />
               </th>
@@ -147,7 +187,7 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
           </tr>
         </thead>
         <tbody>
-          {sortedRows.map((r, ri) => (
+          {displayRows.map((r, ri) => (
             <tr key={ri} className="hover:bg-slate-50">
               {r.map((c, ci) => {
                 const isNameCol = ci === 0;
@@ -158,7 +198,7 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
                   <td
                     key={ci}
                     className={`text-sm border-b border-slate-100 px-3 py-2 ${isNameCol ? "sticky left-0 bg-white z-10" : ""}`}
-                    style={{ ...cellStyle[ci], backgroundColor: bg }}
+                    style={{ ...displayColStyles[ci], backgroundColor: bg }}
                   >
                     {c}
                   </td>
