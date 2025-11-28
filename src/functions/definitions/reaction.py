@@ -1,9 +1,9 @@
 from src.functions import Function
 from src.utils import helpers, constants
 
-reactions_messages_category = "Reaction messages (including removing reactions)"
-percent_all_reactions_category = "Percent of all reactions messages"
-percent_reactions_category = "Percent of messages that are reactions"
+reactions_messages_category = "Reaction sent"
+percent_all_reactions_category = "Percent of all reactions sent"
+percent_reactions_category = "Percent of messages sent that are reactions"
 removed_reactions = "Removed reactions"
 
 # TODO: accept reaction list as arg (implemented on frontend for now)

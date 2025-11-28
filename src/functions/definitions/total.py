@@ -1,7 +1,7 @@
 from src.functions import Function
 from src.utils import helpers
 
-total_messages_category = "Total messages"
+total_messages_category = "Total messages (excluding reactions)"
 percent_total_messages_category = "Percent of total messages"
 
 
