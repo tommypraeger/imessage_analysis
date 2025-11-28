@@ -68,6 +68,11 @@ const buildArgs = () => {
     if (Number.isFinite(s.cvaVolumeWeight)) args["cva-volume-weight"] = s.cvaVolumeWeight;
     if (Number.isFinite(s.cvaEfficiencyWeight)) args["cva-efficiency-weight"] = s.cvaEfficiencyWeight;
   }
+  if (func === "participation" || func === "participation_correlation" || func === "solo_conversations") {
+    const useScatterToggle = outputType === "scatter";
+    const flag = useScatterToggle ? s.scatterExcludeReactions : s.excludeReactions;
+    if (flag) args["exclude-reactions"] = "";
+  }
   if (functionsRequiringMinutes.includes(func)) {
     if (typeof s.minutesThreshold === "number" && !Number.isNaN(s.minutesThreshold)) {
       args["minutes-threshold"] = s.minutesThreshold;

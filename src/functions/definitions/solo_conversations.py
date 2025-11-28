@@ -29,15 +29,17 @@ class SoloConversations(Function):
         self._summary_cache.clear()
         return df
 
-    def _get_summary(self, df, time_period: Optional[str]):
+    def _get_summary(self, df, time_period: Optional[str], args):
         key = time_period if time_period is not None else "__all__"
         if key not in self._summary_cache:
+            if getattr(args, "exclude_reactions", False):
+                df = helpers.get_non_reaction_messages(df)
             summary = helpers.summarize_conversations(df, time_period=time_period)
             self._summary_cache[key] = summary
         return self._summary_cache[key]
 
     def get_results(self, output_dict, df, args, member_name=None, time_period=None):
-        participants_by_conv, starter_by_conv, _ = self._get_summary(df, time_period)
+        participants_by_conv, starter_by_conv, _ = self._get_summary(df, time_period, args)
         if member_name is None:
             relevant_starters = starter_by_conv.items()
         else:

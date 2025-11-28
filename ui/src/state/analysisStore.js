@@ -51,6 +51,8 @@ const initialState = {
   scatterXCvaEfficiencyWeight: 50,
   scatterYCvaVolumeWeight: 50,
   scatterYCvaEfficiencyWeight: 50,
+  excludeReactions: false,
+  scatterExcludeReactions: false,
 };
 
 const useAnalysisForm = create((set, get) => ({
@@ -113,6 +115,8 @@ const useAnalysisForm = create((set, get) => ({
     const vol = Math.min(100, Math.max(0, Number(val) || 0));
     set({ scatterYCvaVolumeWeight: vol, scatterYCvaEfficiencyWeight: 100 - vol });
   },
+  setExcludeReactions: (val) => set({ excludeReactions: !!val }),
+  setScatterExcludeReactions: (val) => set({ scatterExcludeReactions: !!val }),
 
   getAnalyzeDisabled: () => {
     const s = get();

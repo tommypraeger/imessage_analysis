@@ -13,7 +13,7 @@ from tests.testutils import format_param, run_table_test
     [
         (
             "basic",
-            [],
+            ["--exclude-reactions"],
             {
                 "Names": ["Alice", "Bob", "Carol"],
                 SOLO_COUNT_CATEGORY: [0, 1, 0],

@@ -1,7 +1,7 @@
 import numpy as np
 
 from src.functions import Function
-from src.utils import helpers
+from src.utils import helpers, constants
 
 
 CORRELATION_CATEGORY = "Participation correlation"
@@ -29,6 +29,11 @@ class ParticipationCorrelation(Function):
 
     def get_table_results(self, result_dict, df, chat_members, args):
         df = self.process_messages_df(df, args)
+
+        # Optionally exclude reactions when determining participation
+        if getattr(args, "exclude_reactions", False):
+            df = helpers.get_non_reaction_messages(df)
+
         participants_by_conv, _, _ = helpers.summarize_conversations(df)
         conv_ids = sorted(participants_by_conv.keys())
         members = sorted({str(m) for m in chat_members})

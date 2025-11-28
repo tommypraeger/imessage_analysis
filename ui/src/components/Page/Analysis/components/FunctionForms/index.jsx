@@ -1,7 +1,9 @@
 import ConvoStarterForm from "./ConvoStarter";
+import SoloConversationsForm from "./SoloConversations";
 import MessageSeriesForm from "./MessageSeries";
 import MimeTypeForm from "./MimeType";
 import ParticipationForm from "./Participation";
+import ParticipationCorrelationForm from "./ParticipationCorrelation";
 import PhraseForm from "./Phrase";
 import ReactionForm from "./Reaction";
 import ReactionsReceivedForm from "./ReactionsReceived";
@@ -17,7 +19,7 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
       return <ConvoStarterForm scope={scope} />;
 
     case "solo_conversations":
-      return <ConvoStarterForm scope={scope} />;
+      return <SoloConversationsForm scope={scope} />;
 
     case "message_series":
       return <MessageSeriesForm scope={scope} />;
@@ -29,7 +31,7 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
       return <ParticipationForm scope={scope} />;
 
     case "participation_correlation":
-      return <ParticipationForm scope={scope} />;
+      return <ParticipationCorrelationForm scope={scope} />;
 
     case "phrase":
       return <PhraseForm scope={scope} />;

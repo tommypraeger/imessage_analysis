@@ -28,7 +28,7 @@ def _parse_html_table(html: str) -> pd.DataFrame:
         (
             "group",
             pd.DataFrame(
-                [[1.0, 0.0, 0.33], [0.0, 1.0, 0.0], [0.33, 0.0, 1.0]],
+                [[1.0, 0.0, -0.58], [0.0, 1.0, 0.0], [-0.58, 0.0, 1.0]],
                 index=["A", "B", "C"],
                 columns=["A", "B", "C"],
             ),
@@ -36,7 +36,7 @@ def _parse_html_table(html: str) -> pd.DataFrame:
         (
             "non_group",
             pd.DataFrame(
-                [[1.0, -0.58], [-0.58, 1.0]],
+                [[1.0, -0.33], [-0.33, 1.0]],
                 index=["A", "B"],
                 columns=["A", "B"],
             ),

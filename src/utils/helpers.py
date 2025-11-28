@@ -354,7 +354,7 @@ def summarize_conversations(df, time_period=None):
     Return (participants_by_conversation, starter_by_conversation, member_conversations)
     using the conversation columns populated by compute_conversation_columns.
     """
-    msgs = get_non_reaction_messages(df, time_period=time_period)
+    msgs = get_messages(df, time_period=time_period)
     msgs = msgs[msgs["sender"].notna()].copy()
     if "conversation number" not in msgs.columns:
         return {}, {}, {}

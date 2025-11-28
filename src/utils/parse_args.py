@@ -52,6 +52,11 @@ def get_analysis_args(args):
         help="Threshold in minutes from last messages for a message to be considered a conversation starter",
     )
     parser.add_argument(
+        "--exclude-reactions",
+        action="store_true",
+        help="Exclude reactions when computing applicable metrics",
+    )
+    parser.add_argument(
         "--cva-volume-weight",
         type=float,
         help="Weight (0-100) assigned to volume stats for CVA+",
