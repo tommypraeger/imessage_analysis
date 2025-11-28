@@ -127,7 +127,9 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
             {headers.map((h, i) => (
               <th
                 key={i}
-                className="text-left text-sm font-semibold bg-slate-50 border-b border-slate-200 px-3 py-2 cursor-pointer select-none relative"
+                className={`text-left text-sm font-semibold bg-slate-50 border-b border-slate-200 px-3 py-2 cursor-pointer select-none relative ${
+                  i === 0 ? "sticky left-0 z-10 bg-slate-50" : ""
+                }`}
                 onClick={() => onHeaderClick(i)}
                 aria-sort={sortCol === i ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
                 title="Click to sort"
@@ -155,7 +157,7 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
                 return (
                   <td
                     key={ci}
-                    className="text-sm border-b border-slate-100 px-3 py-2"
+                    className={`text-sm border-b border-slate-100 px-3 py-2 ${isNameCol ? "sticky left-0 bg-white z-10" : ""}`}
                     style={{ ...cellStyle[ci], backgroundColor: bg }}
                   >
                     {c}
