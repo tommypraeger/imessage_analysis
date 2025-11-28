@@ -78,7 +78,7 @@ def _resolve_category_name(result_dict: Dict, requested_category: str, fn_name: 
 
 
 def _series_by_member(result_dict: Dict, category: str) -> Dict[str, float]:
-    names = result_dict.get("names", [])
+    names = result_dict.get("Names", [])
     values = result_dict.get(category, [])
     return dict(zip(names, values))
 

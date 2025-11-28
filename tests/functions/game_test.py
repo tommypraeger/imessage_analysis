@@ -16,7 +16,7 @@ from tests.testutils import *
             "group",
             [],
                 {
-                    "names": ["A", "B", "C"],
+                    "Names": ["A", "B", "C"],
                     games_category: [2, 2, 2],
                     percent_games_category: [33.33, 66.67, 66.67],
                     game_starts_category: [0, 0, 0],
@@ -27,7 +27,7 @@ from tests.testutils import *
             "non_group",
             [],
                 {
-                    "names": ["A", "B"],
+                    "Names": ["A", "B"],
                     games_category: [4, 2],
                     percent_games_category: [80, 50],
                     game_starts_category: [0, 0],

@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 emoji_category: [1, 2, 0],
                 percent_emoji_category: [16.67, 66.67, 0],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 emoji_category: [1, 1],
                 percent_emoji_category: [25, 20],
             },

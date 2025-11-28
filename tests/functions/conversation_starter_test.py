@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],  # use default
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 conversations_started_category: [2, 2, 0],
                 percent_started_category: [50, 50, 0],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "group",
             ["--minutes-threshold", "240"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 conversations_started_category: [2, 1, 0],
                 percent_started_category: [66.67, 33.33, 0],
             },
@@ -32,7 +32,7 @@ from tests.testutils import *
             "non_group",
             [],  # use default
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 conversations_started_category: [2, 2],
                 percent_started_category: [50, 50],
             },
@@ -41,7 +41,7 @@ from tests.testutils import *
             "non_group",
             ["--minutes-threshold", "240"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 conversations_started_category: [2, 1],
                 percent_started_category: [66.67, 33.33],
             },

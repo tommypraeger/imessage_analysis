@@ -15,7 +15,7 @@ from tests.testutils import format_param, run_table_test
             "basic",
             [],
             {
-                "names": ["Alice", "Bob", "Carol"],
+                "Names": ["Alice", "Bob", "Carol"],
                 SOLO_COUNT_CATEGORY: [0, 1, 0],
                 SOLO_PERCENT_CATEGORY: [0.0, 100.0, 0.0],
             },

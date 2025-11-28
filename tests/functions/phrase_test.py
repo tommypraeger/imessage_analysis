@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "aa"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [2, 3, 1],
                 percent_phrase_category: [100, 100, 50],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "aa aa"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [0, 2, 1],
                 percent_phrase_category: [0, 66.67, 50],
             },
@@ -32,7 +32,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "AA", "--case-sensitive"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [0, 1, 1],
                 percent_phrase_category: [0, 33.33, 50],
             },
@@ -41,7 +41,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "aa", "--separate"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [1, 2, 1],
                 percent_phrase_category: [50, 66.67, 50],
             },
@@ -50,7 +50,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "aa aa", "--separate"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [0, 1, 1],
                 percent_phrase_category: [0, 33.33, 50],
             },
@@ -59,7 +59,7 @@ from tests.testutils import *
             "group",
             ["--phrase", "aa aa", "--separate", "--case-sensitive"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [0, 1, 0],
                 percent_phrase_category: [0, 33.33, 0],
             },
@@ -68,7 +68,7 @@ from tests.testutils import *
             "group",
             ["--phrase", r"[Aa]\s+[Aa]", "--regex"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 phrase_category: [0, 2, 1],
                 percent_phrase_category: [0, 66.67, 50],
             },
@@ -77,7 +77,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "aa"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [2, 4],
                 percent_phrase_category: [100, 80],
             },
@@ -86,7 +86,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "aa aa"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [0, 3],
                 percent_phrase_category: [0, 60],
             },
@@ -95,7 +95,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "AA", "--case-sensitive"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [0, 2],
                 percent_phrase_category: [0, 40],
             },
@@ -104,7 +104,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "aa", "--separate"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [1, 3],
                 percent_phrase_category: [50, 60],
             },
@@ -113,7 +113,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "aa aa", "--separate"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [0, 2],
                 percent_phrase_category: [0, 40],
             },
@@ -122,7 +122,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", "aa aa", "--separate", "--case-sensitive"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [0, 1],
                 percent_phrase_category: [0, 20],
             },
@@ -131,7 +131,7 @@ from tests.testutils import *
             "non_group",
             ["--phrase", r"[Aa]\s+[Aa]", "--regex"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 phrase_category: [0, 3],
                 percent_phrase_category: [0, 60],
             },

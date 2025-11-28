@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 all_caps_category: [2, 1, 0],
                 percent_all_caps_category: [66.67, 25.0, 0],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 all_caps_category: [2, 1],
                 percent_all_caps_category: [50.0, 25.0],
             },

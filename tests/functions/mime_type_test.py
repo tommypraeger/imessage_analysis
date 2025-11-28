@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             ["--mime-type", "text/plain"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 type_category: [3, 1, 2],
                 percent_type_category: [50, 25, 33.33],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "group",
             ["--mime-type", "image/heic"],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 type_category: [1, 0, 0],
                 percent_type_category: [16.67, 0, 0],
             },
@@ -32,7 +32,7 @@ from tests.testutils import *
             "non_group",
             ["--mime-type", "text/plain"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 type_category: [3, 4],
                 percent_type_category: [33.33, 50],
             },
@@ -41,7 +41,7 @@ from tests.testutils import *
             "non_group",
             ["--mime-type", "image/heic"],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 type_category: [1, 0],
                 percent_type_category: [11.11, 0],
             },

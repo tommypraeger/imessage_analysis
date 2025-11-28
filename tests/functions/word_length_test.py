@@ -13,7 +13,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 average_word_length_category: [3, 2, 2],
             },
         ),
@@ -21,7 +21,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 average_word_length_category: [3, 2],
             },
         ),

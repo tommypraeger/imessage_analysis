@@ -10,7 +10,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 links_category: [1, 1, 0],
                 percent_links_category: [50.0, 50.0, 0],
             },
@@ -19,7 +19,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 links_category: [1, 1],
                 percent_links_category: [25.0, 50.0],
             },

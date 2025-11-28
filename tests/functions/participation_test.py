@@ -16,7 +16,7 @@ from tests.testutils import *
             "group",
             [],  # use default
         {
-            "names": ["A", "B", "C"],
+            "Names": ["A", "B", "C"],
             conversations_participated_in_category: [2, 4, 3],
             conversations_participated_in_no_reactions_category: [1, 4, 3],
             participation_rate_category: [50, 100, 75],
@@ -27,7 +27,7 @@ from tests.testutils import *
         "group",
         ["--minutes-threshold", "240"],
         {
-            "names": ["A", "B", "C"],
+            "Names": ["A", "B", "C"],
             conversations_participated_in_category: [1, 3, 3],
             conversations_participated_in_no_reactions_category: [1, 3, 3],
             participation_rate_category: [33.33, 100, 100],
@@ -38,7 +38,7 @@ from tests.testutils import *
         "non_group",
         [],  # use default
         {
-            "names": ["A", "B"],
+            "Names": ["A", "B"],
             conversations_participated_in_category: [3, 3],
             conversations_participated_in_no_reactions_category: [2, 3],
             participation_rate_category: [75, 75],
@@ -49,7 +49,7 @@ from tests.testutils import *
         "non_group",
         ["--minutes-threshold", "240"],
         {
-            "names": ["A", "B"],
+            "Names": ["A", "B"],
             conversations_participated_in_category: [2, 2],
             conversations_participated_in_no_reactions_category: [2, 2],
             participation_rate_category: [66.67, 66.67],

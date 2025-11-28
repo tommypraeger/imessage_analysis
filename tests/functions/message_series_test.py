@@ -13,7 +13,7 @@ TABLE_CASES = [
         "group",
         [],
         {
-            "names": ["A", "B", "C"],
+            "Names": ["A", "B", "C"],
             message_series_category: [2, 5, 5],
             average_messages_category: [1.5, 1.0, 1.0],
             percent_series_category: [16.67, 41.67, 41.67],
@@ -23,7 +23,7 @@ TABLE_CASES = [
         "group",
         ["--minutes-threshold", "240"],
         {
-            "names": ["A", "B", "C"],
+            "Names": ["A", "B", "C"],
             message_series_category: [2, 4, 5],
             average_messages_category: [1.5, 1.25, 1.0],
             percent_series_category: [18.18, 36.36, 45.45],
@@ -33,7 +33,7 @@ TABLE_CASES = [
         "non_group",
         [],
         {
-            "names": ["A", "B"],
+            "Names": ["A", "B"],
             message_series_category: [5, 5],
             average_messages_category: [1.2, 1.4],
             percent_series_category: [50.0, 50.0],
@@ -43,7 +43,7 @@ TABLE_CASES = [
         "non_group",
         ["--minutes-threshold", "240"],
         {
-            "names": ["A", "B"],
+            "Names": ["A", "B"],
             message_series_category: [5, 4],
             average_messages_category: [1.2, 1.75],
             percent_series_category: [55.56, 44.44],

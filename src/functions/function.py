@@ -52,7 +52,7 @@ class Function(abc.ABC):
         result_dict = {}
 
         if args.table:
-            result_dict["names"] = []
+            result_dict["Names"] = []
             for category in self.get_categories():
                 result_dict[category] = []
             df = self.get_table_results(result_dict, df, chat_members, args)

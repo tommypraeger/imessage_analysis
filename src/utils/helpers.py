@@ -16,8 +16,8 @@ CHAT_IDS = ""
 
 
 def initialize_member(member_name, result_dict):
-    if member_name not in result_dict["names"]:
-        result_dict["names"].append(member_name)
+    if member_name not in result_dict["Names"]:
+        result_dict["Names"].append(member_name)
 
 
 def get_messages(df, member_name=None, time_period=None):

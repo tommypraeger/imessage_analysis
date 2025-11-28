@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 total_messages_category: [5, 3, 3],
                 percent_total_messages_category: [45.45, 27.27, 27.27],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 total_messages_category: [4, 5],
                 percent_total_messages_category: [44.44, 55.56],
             },

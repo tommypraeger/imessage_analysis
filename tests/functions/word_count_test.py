@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 average_word_count_category: [1, 2, 3],
                 total_word_count_category: [3, 10, 3],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 average_word_count_category: [1, 2],
                 total_word_count_category: [4, 10],
             },

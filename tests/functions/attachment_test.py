@@ -14,7 +14,7 @@ from tests.testutils import *
             "group",
             [],
             {
-                "names": ["A", "B", "C"],
+                "Names": ["A", "B", "C"],
                 attachment_category: [1, 1, 2],
                 percent_attachment_category: [16.67, 25, 33.33],
             },
@@ -23,7 +23,7 @@ from tests.testutils import *
             "non_group",
             [],
             {
-                "names": ["A", "B"],
+                "Names": ["A", "B"],
                 attachment_category: [2, 2],
                 percent_attachment_category: [22.22, 25],
             },
