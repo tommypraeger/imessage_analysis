@@ -27,10 +27,20 @@ const Analysis = ({ response, category, func, fetchesInProgress, fetchSeconds })
         </div>
       );
     } else if ("tableData" in response) {
-      const { headers = [], rows = [] } = response.tableData || {};
-      const sortCol = func === "participation_correlation" ? 0 : 1;
-      const width = func === "participation_correlation" ? 100 : 160;
-      return <NativeTable headers={headers} rows={rows} defaultSortCol={sortCol} columnWidth={width} />;
+      const { headers = [], rows = [], meta = {} } = response.tableData || {};
+      const sortCol = func === "participation_correlation" || func === "reaction_flow" ? 0 : 1;
+      const width = func === "participation_correlation" || func === "reaction_flow" ? 100 : 160;
+      const enableCellColors = func === "participation_correlation";
+      return (
+        <div className="space-y-2">
+          {func === "reaction_flow" && meta.reactionType && (
+            <div className="text-sm text-slate-600">
+              Reaction type: <span className="font-medium">{meta.reactionType}</span> (rows = reactors, columns = receivers)
+            </div>
+          )}
+          <NativeTable headers={headers} rows={rows} defaultSortCol={sortCol} columnWidth={width} enableCellColors={enableCellColors} />
+        </div>
+      );
     } else if ("htmlTable" in response) {
       const nested = extractNestedTables(response.htmlTable);
       if (nested && nested.length > 0) {

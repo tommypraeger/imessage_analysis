@@ -3,9 +3,9 @@
 
 export const FUNCTION_OPTIONS = [
   { value: "total", label: "Total", desc: "How many messages each person sends", supportsScatter: true },
-  { value: "reaction", label: "Reactions sent", desc: "How many iMessage reactions each person sends", supportsScatter: true },
-  { value: "reactions_received", label: "Reactions received", desc: "How many iMessage reactions each person receives", supportsScatter: true },
-  { value: "reaction_matrix", label: "Reaction matrix", desc: "How many reactions each person receives from each other person", supportsScatter: false },
+  { value: "reaction", label: "Reactions Sent", desc: "How many iMessage reactions each person sends", supportsScatter: true },
+  { value: "reactions_received", label: "Reactions Received", desc: "How many iMessage reactions each person receives", supportsScatter: true },
+  { value: "reaction_flow", label: "Reaction Flow", desc: "Reaction send/receive matrix; pick a reaction or view all", supportsScatter: false },
   { value: "participation", label: "Participation", desc: "How often each person participates", supportsScatter: true },
   { value: "participation_correlation", label: "Participation Correlation", desc: "Pairwise participation correlation matrix (table only)", supportsScatter: false },
   { value: "conversation_starter", label: "Starters", desc: "How many times each person starts the conversation", supportsScatter: true },

@@ -1,6 +1,7 @@
 import argparse
 import sys
 from src.functions import get_functions
+from src.utils import constants
 
 
 def get_analysis_args(args):
@@ -45,6 +46,13 @@ def get_analysis_args(args):
     )
     parser.add_argument(
         "--mime-type", type=str, help="MIME type of message to search for"
+    )
+    parser.add_argument(
+        "--reaction-type",
+        type=str,
+        choices=["all", "total"] + constants.REACTION_TYPES,
+        help="Filter for reaction type in reaction-based functions",
+        required=False,
     )
     parser.add_argument(
         "--minutes-threshold",

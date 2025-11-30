@@ -126,8 +126,8 @@ This is the total number of iMessage reactions each person sends, along with how
 #### Reactions Received
 This is the total number of iMessage reactions each person receives, broken out by reaction type. It also shows what percentage of the total reactions each person receives.
 
-#### Reaction Matrix
-This shows how many reactions each person receives from every other person, broken down by reaction type. Rows are receivers and columns are reactors, so you can see who tends to react to whom.
+#### Reaction Flow
+Shows reaction send/receive patterns. By default (“All”), it lists a table per receiver with reaction breakdowns. Choose a specific reaction type to see a single matrix (rows = reactors, columns = receivers) for that reaction.
 
 #### Starters
 This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time (default 60 minutes). I also show what percentage of the conversations are started by each person.

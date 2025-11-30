@@ -42,6 +42,9 @@ const FunctionForm = ({ func: overrideFunc, scope = "primary" }) => {
     case "reaction":
       return <ReactionForm />;
 
+    case "reaction_flow":
+      return <ReactionForm />;
+
     case "reactions_received":
       return <ReactionsReceivedForm />;
 

@@ -5,7 +5,7 @@ const cellToNumber = (text) => {
   return Number.isNaN(n) ? null : n;
 };
 
-const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) => {
+const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160, enableCellColors = true }) => {
   const [sortCol, setSortCol] = useState(defaultSortCol);
   const [sortDir, setSortDir] = useState("desc"); // default for numeric
   const [colWidths, setColWidths] = useState([]);
@@ -83,11 +83,8 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
     [headers, colWidths, columnWidth]
   );
 
-  // Detect correlation matrix shape: blank corner + symmetric member headers
-  const correlationMode = headers.length > 1 && headers[0] === "" && headers.slice(1).every((h) => headers.includes(h));
-
   const colorFor = (val, colIdx) => {
-    if (!correlationMode || colIdx === 0 || typeof val !== "number" || Number.isNaN(val)) return undefined;
+    if (!enableCellColors || colIdx === 0 || typeof val !== "number" || Number.isNaN(val)) return undefined;
     if (val === 1) return undefined;
     const min = -0.1;
     const max = 0.3;
@@ -124,17 +121,15 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
   };
 
   const handleDragStart = (orderIdx) => {
-    if (correlationMode) return;
     setDragColIdx(orderIdx);
   };
 
   const handleDragOver = (e) => {
-    if (correlationMode) return;
     e.preventDefault();
   };
 
   const handleDrop = (orderIdx) => {
-    if (correlationMode || dragColIdx === null) return;
+    if (dragColIdx === null) return;
     const newOrder = columnOrder.slice();
     const [moved] = newOrder.splice(dragColIdx, 1);
     newOrder.splice(orderIdx, 0, moved);
@@ -170,7 +165,6 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
                 onDragStart={() => handleDragStart(orderIdx)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(orderIdx)}
-                draggable={!correlationMode}
                 aria-sort={sortCol === orderIdx ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
                 title="Click to sort"
                 style={displayColStyles[orderIdx]}
@@ -191,9 +185,8 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160 }) =
             <tr key={ri} className="hover:bg-slate-50">
               {r.map((c, ci) => {
                 const isNameCol = ci === 0;
-                const isDiagonal = correlationMode && !isNameCol && ci - 1 === ri;
                 const rawVal = typeof c === "string" ? Number(c) : c;
-                const bg = !isNameCol && !isDiagonal ? colorFor(rawVal, ci) : undefined;
+                const bg = !isNameCol ? colorFor(rawVal, ci) : undefined;
                 return (
                   <td
                     key={ci}

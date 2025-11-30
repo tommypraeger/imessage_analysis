@@ -15,9 +15,9 @@ const SelectOutput = () => {
   );
   const { fetchCategories } = useAnalysisRunner();
 
-  const graphDisabled = func === "reaction_matrix";
+  const graphDisabled = func === "reaction_flow";
 
-  // If reaction_matrix is selected while on graph, switch back to table
+  // If reaction_flow is selected while on graph, switch back to table
   useEffect(() => {
     if (graphDisabled && outputType === "graph") {
       setOutputType("table");

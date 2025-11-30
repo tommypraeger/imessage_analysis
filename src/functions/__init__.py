@@ -13,7 +13,7 @@ from src.functions.definitions.participation import Participation
 from src.functions.definitions.phrase import Phrase
 from src.functions.definitions.reaction import Reaction
 from src.functions.definitions.reactions_received import ReactionsReceived
-from src.functions.definitions.reaction_matrix import ReactionMatrix
+from src.functions.definitions.reaction_flow import ReactionFlow
 from src.functions.definitions.total import Total
 from src.functions.definitions.tweet import Tweet
 from src.functions.definitions.word_count import WordCount
