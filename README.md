@@ -3,8 +3,8 @@
 ## Prerequisites
 - Mac
   - If you are not using a Mac and/or don't want to access the messages database on your Mac, you can provide messages in a csv format.
-- Python 3.9 (Install from [here](https://www.python.org/downloads/))
-- Node.js 14 (Install from [here](https://nodejs.org/en/))
+- Python 3.13 (Install from [here](https://www.python.org/downloads/))
+- Node.js 22 (Install from [here](https://nodejs.org/en/))
 - If you want to access messages from your Mac, set up permissions to access your messages database:
   - Open System Preferences > Security and Privacy > Privacy > Full Disk Access > and give Terminal (or a Terminal replacement, such as [iTerm2](https://iterm2.com/)) full disk access
 
@@ -20,8 +20,8 @@ Open up Terminal (or wherever you gave permissions in the prerequisites), and th
 
 If you are having an issue, make sure the prerequisites have been met.
 To verify your installations of Python and Node.js, you can run:
-- `python3 --version` and it should print something like `Python 3.9.1`
-- `node -v` and it should print something like `v14.15.4`
+- `python3 --version` and it should print something like `Python 3.13.0`
+- `node -v` and it should print something like `v22.12.0`
 
 If you did not give sufficient permissions on your messages database,
 it should have printed the instructions again when you ran `python3 install.py`
@@ -124,13 +124,22 @@ This is the total number of iMessage reactions each person sends, along with how
 - Custom Emoji
 
 #### Reactions Received
-TODO
+This is the total number of iMessage reactions each person receives, broken out by reaction type. It also shows what percentage of the total reactions each person receives.
 
 #### Reaction Matrix
-TODO
+This shows how many reactions each person receives from every other person, broken down by reaction type. Rows are receivers and columns are reactors, so you can see who tends to react to whom.
 
 #### Starters
-This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time, which I currently default to 60 minutes. I also show what percentage of the conversations are started by each person.
+This is how many times each person in a chat has "started the conversation". I define this as sending a new message that is not an iMessage reaction a certain amount of time after the last message has been sent. You can edit this amount of time (default 60 minutes). I also show what percentage of the conversations are started by each person.
+
+#### Participation
+How many conversations each person participates in, plus participation rate. You can set the conversation gap in minutes to control how conversations are grouped.
+
+#### Solo Conversations
+How often a member starts a conversation that no one else joins. Uses the same configurable conversation gap as Starters.
+
+#### Participation Correlation
+Pairwise correlation of conversation participation between members. Produces a table (not graphable) showing correlations for each pair of members; optionally exclude reactions from participation.
 
 #### Word/Phrase
 This is how many messages include a certain word or phrase that you enter. You have the option of making the search case-sensitive or case-insensitive i.e. whether I should ignore case. You also have the option to search separate words. For example, if you choose to search separate words, then "tom" will not match "tomorrow", but if you choose not to, it will. Punctuation is ignored in the message unless there is punctuation in the search term.You can also choose to provide a [RegEx](https://regexr.com/) input. If you choose to use RegEx, your choices about case-sensitivity and word separation are ignored.
@@ -147,6 +156,9 @@ This is the average number of words in each message.
 
 #### Word Length
 This is the average length of each word sent.
+
+#### CVA+ (Conversational Value Added)
+A composite score blending volume and efficiency metrics (messages sent, conversations started/participated, reactions, word volume, and solo-conversation rate), with adjustable weights for volume vs. efficiency.
 
 #### Attachments
 This is how many messages are attachments. Attachments are defined as anything that isn't plain text.
@@ -168,9 +180,6 @@ This shows how many messages are completely capitalized. A message must contain 
 
 #### File Type
 This shows how many messages are of a specific file type. The only file types that I made searchable are listed above in the Using a CSV section.
-
-#### All: All functions (except a few that require more input)
-This runs all functions and puts them in a table except for Frequency, Word/Phrase, and File Type, because they take special input.
 
 ## Contributing
 - Python formatting is done using [black](https://github.com/psf/black) using the default configuration. Run `black .` from the application directory to formatting before committing.
