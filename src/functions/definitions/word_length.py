@@ -46,10 +46,16 @@ class WordLength(Function):
             return re.sub(r"[^a-zA-Z]+", "", word)
 
         filtered_words = words_series.apply(
-            lambda words: [w for w in words if is_valid_word(w)] if isinstance(words, list) else []
+            lambda words: (
+                [w for w in words if is_valid_word(w)]
+                if isinstance(words, list)
+                else []
+            )
         )
         filtered_counts = filtered_words.apply(len)
-        filtered_letters = filtered_words.apply(lambda ws: sum(len(clean_letters(w)) for w in ws if clean_letters(w)))
+        filtered_letters = filtered_words.apply(
+            lambda ws: sum(len(clean_letters(w)) for w in ws if clean_letters(w))
+        )
 
         mask = (~nr_messages["is link?"]) & (filtered_counts > 0)
 

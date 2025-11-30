@@ -61,11 +61,13 @@ class Application(Resource):
 
 api.add_resource(Application, "/api/v1/<string:action>")
 
+
 # Serve generated images from top-level 'images' directory
 @application.route("/images/<path:filename>")
 def get_image(filename):
     base_dir = os.path.join(application.root_path, "images")
     return send_from_directory(base_dir, filename)
+
 
 if __name__ == "__main__":
     application.run(debug=True, port=8000)

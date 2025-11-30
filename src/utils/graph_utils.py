@@ -32,7 +32,9 @@ def _cleanup_previous_images() -> None:
             pass
 
 
-def _fit_regression(xs: np.ndarray, ys: np.ndarray) -> Optional[Tuple[float, float, float]]:
+def _fit_regression(
+    xs: np.ndarray, ys: np.ndarray
+) -> Optional[Tuple[float, float, float]]:
     """
     Returns (slope, intercept, r_squared) if fit is possible, else None.
     """
@@ -121,9 +123,9 @@ def generate_scatter_image(
             fontsize=9,
             color="#111111",
         )
-        t.set_path_effects([
-            path_effects.withStroke(linewidth=2, foreground="white", alpha=0.85)
-        ])
+        t.set_path_effects(
+            [path_effects.withStroke(linewidth=2, foreground="white", alpha=0.85)]
+        )
     ax_main.set_xlabel(x_label)
     ax_main.set_ylabel(y_label)
     wrapped_title = textwrap.fill(title, width=60)
@@ -164,7 +166,14 @@ def generate_scatter_image(
                 y_pred = slope * xs + intercept
                 for xi, yi, yhat in zip(xs, ys, y_pred):
                     # Vertical dotted line from predicted (on regression) to actual point
-                    ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
+                    ax_main.plot(
+                        [xi, xi],
+                        [yhat, yi],
+                        linestyle=":",
+                        color="#6b7280",
+                        linewidth=1.0,
+                        alpha=0.9,
+                    )
                     # Show signed residual next to the line
                     resid_val = float(yi - yhat)
                     mid_y = (float(yi) + float(yhat)) / 2.0
@@ -189,7 +198,15 @@ def generate_scatter_image(
         hi = min(x_max, y_max)
         if lo < hi:
             diag_x = np.array([lo, hi], dtype=float)
-            ax_main.plot(diag_x, diag_x, color="#6b7280", linestyle="-.", linewidth=1.0, alpha=0.8, label="y = x")
+            ax_main.plot(
+                diag_x,
+                diag_x,
+                color="#6b7280",
+                linestyle="-.",
+                linewidth=1.0,
+                alpha=0.8,
+                label="y = x",
+            )
             # Restore original limits to avoid autoscale widening
             ax_main.set_xlim(x_min, x_max)
             ax_main.set_ylim(y_min, y_max)
@@ -202,7 +219,14 @@ def generate_scatter_image(
     if residuals_to_identity and xs.size >= 1:
         for xi, yi in zip(xs, ys):
             yhat = xi  # identity baseline
-            ax_main.plot([xi, xi], [yhat, yi], linestyle=":", color="#6b7280", linewidth=1.0, alpha=0.9)
+            ax_main.plot(
+                [xi, xi],
+                [yhat, yi],
+                linestyle=":",
+                color="#6b7280",
+                linewidth=1.0,
+                alpha=0.9,
+            )
             resid_val = float(yi - yhat)
             mid_y = (float(yi) + float(yhat)) / 2.0
             _col = "#059669" if resid_val >= 0 else "#b91c1c"
@@ -228,24 +252,68 @@ def generate_scatter_image(
         y_min, y_max = ax_main.get_ylim()
         x_mid = (x_min + x_max) / 2.0
         y_mid = (y_min + y_max) / 2.0
-        ax_main.axvline(x_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8)
-        ax_main.axhline(y_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8)
+        ax_main.axvline(
+            x_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8
+        )
+        ax_main.axhline(
+            y_mid, color="#9ca3af", linestyle="--", linewidth=1.0, alpha=0.8
+        )
         # Use axes-fraction coords for labels so they hug the edges
         if x_left_label:
-            ax_main.annotate(x_left_label, xy=(0.02, 0.52), xycoords="axes fraction", ha="left", va="center", fontsize=10, color="#374151")
+            ax_main.annotate(
+                x_left_label,
+                xy=(0.02, 0.52),
+                xycoords="axes fraction",
+                ha="left",
+                va="center",
+                fontsize=10,
+                color="#374151",
+            )
         if x_right_label:
-            ax_main.annotate(x_right_label, xy=(0.98, 0.52), xycoords="axes fraction", ha="right", va="center", fontsize=10, color="#374151")
+            ax_main.annotate(
+                x_right_label,
+                xy=(0.98, 0.52),
+                xycoords="axes fraction",
+                ha="right",
+                va="center",
+                fontsize=10,
+                color="#374151",
+            )
         if y_top_label:
-            ax_main.annotate(y_top_label, xy=(0.5, 0.98), xycoords="axes fraction", ha="center", va="top", fontsize=10, color="#374151")
+            ax_main.annotate(
+                y_top_label,
+                xy=(0.5, 0.98),
+                xycoords="axes fraction",
+                ha="center",
+                va="top",
+                fontsize=10,
+                color="#374151",
+            )
         if y_bottom_label:
-            ax_main.annotate(y_bottom_label, xy=(0.5, 0.02), xycoords="axes fraction", ha="center", va="bottom", fontsize=10, color="#374151")
+            ax_main.annotate(
+                y_bottom_label,
+                xy=(0.5, 0.02),
+                xycoords="axes fraction",
+                ha="center",
+                va="bottom",
+                fontsize=10,
+                color="#374151",
+            )
 
     fig.tight_layout(rect=[0, 0, 1, 0.92])
 
     # Optional footer text (e.g., date range)
     if footer_text:
         # Bottom-right corner, slightly lower
-        fig.text(0.995, 0.005, footer_text, ha="right", va="bottom", fontsize=9, color="#4b5563")
+        fig.text(
+            0.995,
+            0.005,
+            footer_text,
+            ha="right",
+            va="bottom",
+            fontsize=9,
+            color="#4b5563",
+        )
 
     # Save image
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")

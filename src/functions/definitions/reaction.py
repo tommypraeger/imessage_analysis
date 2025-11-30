@@ -53,7 +53,9 @@ class Reaction(Function):
         reaction_messages_by_member = int(is_reaction.sum())
         output_dict[reactions_messages_category].append(reaction_messages_by_member)
         # Percent of this member's messages that are reactions
-        total_messages_by_member = helpers.get_total_messages(df, member_name, time_period)
+        total_messages_by_member = helpers.get_total_messages(
+            df, member_name, time_period
+        )
         output_dict[percent_reactions_category].append(
             helpers.safe_divide_as_pct(
                 reaction_messages_by_member, total_messages_by_member
@@ -63,7 +65,10 @@ class Reaction(Function):
         # Percent of all reaction messages that belong to this member
         all_messages = helpers.get_messages(df, time_period=time_period)
         total_reaction_messages = int(
-            all_messages["message_type"].astype("string").isin(constants.REACTION_TYPES).sum()
+            all_messages["message_type"]
+            .astype("string")
+            .isin(constants.REACTION_TYPES)
+            .sum()
         )
         output_dict[percent_all_reactions_category].append(
             helpers.safe_divide_as_pct(
@@ -76,7 +81,9 @@ class Reaction(Function):
         removed_reacts = int(messages["is removed reaction?"].sum())
 
         # Count per reaction type (vectorized)
-        per_type_counts = {rt: int((mt_series == rt).sum()) for rt in constants.REACTION_TYPES}
+        per_type_counts = {
+            rt: int((mt_series == rt).sum()) for rt in constants.REACTION_TYPES
+        }
 
         output_dict[removed_reactions].append(removed_reacts)
 

@@ -25,7 +25,9 @@ class ParticipationCorrelation(Function):
     def process_messages_df(df, args):
         # Ensure conversations are computed consistently with other functions
         minutes_threshold = getattr(args, "minutes_threshold", None)
-        return helpers.compute_conversation_columns(df, minutes_threshold=minutes_threshold)
+        return helpers.compute_conversation_columns(
+            df, minutes_threshold=minutes_threshold
+        )
 
     def get_table_results(self, result_dict, df, chat_members, args):
         df = self.process_messages_df(df, args)
@@ -42,7 +44,10 @@ class ParticipationCorrelation(Function):
         members = sorted(members)
         vectors = []
         for name in members:
-            vec = [1 if name in participants_by_conv.get(conv, set()) else 0 for conv in conv_ids]
+            vec = [
+                1 if name in participants_by_conv.get(conv, set()) else 0
+                for conv in conv_ids
+            ]
             vectors.append(vec)
 
         vectors_arr = np.array(vectors, dtype=float) if vectors else np.empty((0, 0))

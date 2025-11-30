@@ -26,7 +26,7 @@ class ReactionsReceived(Function):
             per_type.append(f"{rt_title} reacts received")
             per_type.append(f"{rt_title} reacts received per message")
         return base + per_type
-    
+
     def get_categories_allowing_graph(self):
         return [
             total_reactions_received_category,
@@ -39,14 +39,14 @@ class ReactionsReceived(Function):
             total_reactions_received_category,
             reactions_received_per_message_category,
         ]
-    
+
     @staticmethod
     def process_messages_df(df, args):
         """
         Process the dataframe to calculate necessary columns such as total reactions and reaction stats.
         """
         return helpers.add_reactions_for_each_message(df)
-    
+
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
         """
@@ -74,7 +74,9 @@ class ReactionsReceived(Function):
         # Per-type counts (reactor identity not needed here)
         long = df[["reactions_per_user"]].explode("reactions_per_user")
         if len(long) and "reactions_per_user" in long:
-            long = long.dropna(subset=["reactions_per_user"])  # drop messages with no reactions
+            long = long.dropna(
+                subset=["reactions_per_user"]
+            )  # drop messages with no reactions
             if len(long):
                 # Extract reaction_type from tuple (user, reaction_type)
                 long["reaction_type"] = long["reactions_per_user"].str[1]

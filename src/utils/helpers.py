@@ -27,9 +27,9 @@ def get_messages(df, member_name=None, time_period=None):
     text_series = df["text"].astype("string")
     condition = ~text_series.str.startswith("Edited to", na=False)
     if time_period is not None:
-        condition &= (df["time_period"] == time_period)
+        condition &= df["time_period"] == time_period
     if member_name is not None:
-        condition &= (df["sender"] == member_name)
+        condition &= df["sender"] == member_name
     return df[condition]
 
 
@@ -153,8 +153,6 @@ def date_to_time(date, end_of_day=None):
     return timestamp * 1e9
 
 
-
-
 def is_reaction(message_type):
     message_type = str(message_type)
     return message_type in constants.REACTION_TYPES
@@ -163,8 +161,6 @@ def is_reaction(message_type):
 def is_removed_reaction(message_type):
     message_type = str(message_type)
     return message_type.startswith("removed")
-
-
 
 
 def is_phrase_in(phrase, msg, message_type, case_sensitive, separate, regex):
@@ -200,10 +196,6 @@ def is_sub_list(small, big):
         if big[i : i + small_length] == small:
             return True
     return False
-
-
-
-
 
 
 # huge thank you to this reddit comment and the post as a whole
@@ -246,7 +238,9 @@ def add_reactions_for_each_message(df):
     message_type_series = df["message_type"].astype("string")
     reactions_df = df[message_type_series.isin(constants.REACTION_TYPES)].copy()
     reactions_df["reaction_to"] = (
-        reactions_df["reaction_to"].astype("string").str.replace(r"^p:0/", "", regex=True)
+        reactions_df["reaction_to"]
+        .astype("string")
+        .str.replace(r"^p:0/", "", regex=True)
     )
 
     # Build aggregations keyed by the original message guid that was reacted to
@@ -285,10 +279,14 @@ def compute_conversation_columns(df, minutes_threshold=None):
 
     # Determine reaction flags (including removed reactions)
     mt = df.get("message_type")
-    mt = mt.astype("string") if mt is not None else pd.Series([""] * len(df), index=df.index, dtype="string")
+    mt = (
+        mt.astype("string")
+        if mt is not None
+        else pd.Series([""] * len(df), index=df.index, dtype="string")
+    )
     is_removed = mt.str.startswith("removed", na=False)
     is_reaction_type = mt.isin(constants.REACTION_TYPES)
-    is_reaction_row = (is_removed | is_reaction_type)
+    is_reaction_row = is_removed | is_reaction_type
 
     # Compute starters among non-reaction rows only
     non_reaction_idx = df.index[~is_reaction_row]
@@ -315,7 +313,11 @@ def compute_conversation_columns(df, minutes_threshold=None):
 
     # Attempt to map reactions to their parent conversation via reaction_to
     # Normalize GUIDs similarly to add_reactions_for_each_message
-    guid_norm = df.get("guid").astype("string").str.replace(r"^p:0/", "", regex=True) if "guid" in df.columns else None
+    guid_norm = (
+        df.get("guid").astype("string").str.replace(r"^p:0/", "", regex=True)
+        if "guid" in df.columns
+        else None
+    )
     reaction_to = df.get("reaction_to")
     reaction_to_norm = (
         reaction_to.astype("string").str.replace(r"^p:0/", "", regex=True)
@@ -371,11 +373,17 @@ def summarize_conversations(df, time_period=None):
         participants = set(str(s) for s in senders)
         participants_by_conv[conv_int] = participants
         if "is conversation starter?" in group.columns:
-            starter_mask = group["is conversation starter?"].fillna(False).astype("bool")
+            starter_mask = (
+                group["is conversation starter?"].fillna(False).astype("bool")
+            )
             starter_rows = group[starter_mask]
         else:
             starter_rows = pd.DataFrame()
-        starter_candidates = starter_rows["sender"].dropna().astype("string") if len(starter_rows) > 0 else pd.Series([], dtype="string")
+        starter_candidates = (
+            starter_rows["sender"].dropna().astype("string")
+            if len(starter_rows) > 0
+            else pd.Series([], dtype="string")
+        )
         if len(starter_candidates) > 0:
             starter_by_conv[conv_int] = str(starter_candidates.iloc[0])
         else:

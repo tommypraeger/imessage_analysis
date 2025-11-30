@@ -3,8 +3,14 @@ from typing import Dict, Optional, Tuple
 import pandas as pd
 
 from src.functions import Function
-from src.functions.definitions.message_series import add_message_series_columns, message_series_count_by_sender
-from src.functions.definitions.word_count import add_word_count_columns, total_word_count_by_sender
+from src.functions.definitions.message_series import (
+    add_message_series_columns,
+    message_series_count_by_sender,
+)
+from src.functions.definitions.word_count import (
+    add_word_count_columns,
+    total_word_count_by_sender,
+)
 from src.utils import helpers, constants
 
 CVA_PLUS_CATEGORY = "CVA+ Rating"
@@ -53,7 +59,9 @@ class CVAPlus(Function):
     def __init__(self):
         self._original_messages_df: Optional[pd.DataFrame] = None
         self._member_stats_cache: Dict[str, Dict[str, Dict[str, float]]] = {}
-        self._score_cache: Dict[Tuple[str, float, float], Dict[str, Dict[str, float]]] = {}
+        self._score_cache: Dict[
+            Tuple[str, float, float], Dict[str, Dict[str, float]]
+        ] = {}
 
     @staticmethod
     def get_function_name():
@@ -73,7 +81,9 @@ class CVAPlus(Function):
 
     def process_messages_df(self, df, args):
         minutes_threshold = getattr(args, "minutes_threshold", None)
-        df = helpers.compute_conversation_columns(df, minutes_threshold=minutes_threshold)
+        df = helpers.compute_conversation_columns(
+            df, minutes_threshold=minutes_threshold
+        )
         df = add_message_series_columns(df, minutes_threshold=minutes_threshold)
         df = add_word_count_columns(df)
         self._original_messages_df = helpers.add_reactions_for_each_message(df)
@@ -111,8 +121,12 @@ class CVAPlus(Function):
 
         messages = helpers.get_messages(df, time_period=time_period)
         messages = messages[messages["sender"].notna()].copy()
-        non_reaction_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
-        non_reaction_messages = non_reaction_messages[non_reaction_messages["sender"].notna()].copy()
+        non_reaction_messages = helpers.get_non_reaction_messages(
+            df, time_period=time_period
+        )
+        non_reaction_messages = non_reaction_messages[
+            non_reaction_messages["sender"].notna()
+        ].copy()
 
         if self._original_messages_df is None:
             originals = helpers.add_reactions_for_each_message(df)
@@ -142,18 +156,24 @@ class CVAPlus(Function):
         member_names = sorted([str(name) for name in sender_series.unique().tolist()])
 
         word_counts = total_word_count_by_sender(df, time_period=time_period)
-        message_series_counts = message_series_count_by_sender(df, time_period=time_period)
+        message_series_counts = message_series_count_by_sender(
+            df, time_period=time_period
+        )
         stats = {}
         for member in member_names:
             member_non_reaction_count = int(non_reaction_counts.get(member, 0))
             member_participation = len(member_conversations.get(member, set()))
 
             member_started_convs = [
-                conv_id for conv_id, starter in starter_by_conv.items() if starter == member
+                conv_id
+                for conv_id, starter in starter_by_conv.items()
+                if starter == member
             ]
             member_starters = len(member_started_convs)
             solo_started = sum(
-                1 for conv_id in member_started_convs if len(participants_by_conv.get(conv_id, set())) <= 1
+                1
+                for conv_id in member_started_convs
+                if len(participants_by_conv.get(conv_id, set())) <= 1
             )
             if member_starters > 0:
                 solo_pct = helpers.safe_divide(solo_started, member_starters) * 100.0
@@ -249,12 +269,16 @@ class CVAPlus(Function):
 
         volume_metric_dicts = []
         for metric_key in VOLUME_METRIC_KEYS:
-            values = {member: stats[metric_key] for member, stats in member_stats.items()}
+            values = {
+                member: stats[metric_key] for member, stats in member_stats.items()
+            }
             volume_metric_dicts.append((metric_key, self._normalize_metric(values)))
 
         efficiency_metric_dicts = []
         for metric_key in EFFICIENCY_METRIC_KEYS:
-            values = {member: stats[metric_key] for member, stats in member_stats.items()}
+            values = {
+                member: stats[metric_key] for member, stats in member_stats.items()
+            }
             efficiency_metric_dicts.append((metric_key, self._normalize_metric(values)))
 
         volume_component = self._average_metric_scores(volume_metric_dicts)
@@ -296,7 +320,9 @@ class CVAPlus(Function):
     def get_results(self, output_dict, df, args, member_name=None, time_period=None):
         scores = self._compute_scores(df, args, time_period)
         target = member_name
-        member_scores = scores.get(target, {"rating": 0.0, "volume": 0.0, "efficiency": 0.0})
+        member_scores = scores.get(
+            target, {"rating": 0.0, "volume": 0.0, "efficiency": 0.0}
+        )
         output_dict[CVA_PLUS_CATEGORY].append(member_scores["rating"])
         output_dict[VOLUME_COMPONENT_CATEGORY].append(member_scores["volume"])
         output_dict[EFFICIENCY_COMPONENT_CATEGORY].append(member_scores["efficiency"])

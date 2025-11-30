@@ -201,7 +201,9 @@ class Function(abc.ABC):
             return [p.start_time.strftime("%Y-%m-%d") for p in pr]
         if time_period_name == "week":
             # ISO weeks starting Monday
-            pr = pd.period_range(start=start.to_period("W-MON"), end=end.to_period("W-MON"), freq="W-MON")
+            pr = pd.period_range(
+                start=start.to_period("W-MON"), end=end.to_period("W-MON"), freq="W-MON"
+            )
             labels = []
             for p in pr:
                 d = p.start_time
@@ -209,8 +211,12 @@ class Function(abc.ABC):
                 labels.append(f"{iso.year}-W{iso.week:02d}")
             return labels
         if time_period_name == "month":
-            pr = pd.period_range(start=start.to_period("M"), end=end.to_period("M"), freq="M")
+            pr = pd.period_range(
+                start=start.to_period("M"), end=end.to_period("M"), freq="M"
+            )
             return [p.start_time.strftime("%Y-%m") for p in pr]
         if time_period_name == "year":
-            pr = pd.period_range(start=start.to_period("Y"), end=end.to_period("Y"), freq="Y")
+            pr = pd.period_range(
+                start=start.to_period("Y"), end=end.to_period("Y"), freq="Y"
+            )
             return [p.start_time.strftime("%Y") for p in pr]

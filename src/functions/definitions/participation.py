@@ -2,7 +2,9 @@ from src.functions import Function
 from src.utils import helpers, constants
 
 conversations_participated_in_category = "Conversations participated in"
-conversations_participated_in_no_reactions_category = "Conversations participated in (no reactions)"
+conversations_participated_in_no_reactions_category = (
+    "Conversations participated in (no reactions)"
+)
 participation_rate_category = "Participation rate"
 participation_rate_no_reactions_category = "Participation rate (no reactions)"
 
@@ -51,8 +53,12 @@ class Participation(Function):
         )
 
         # Excluding reactions: count only non-reaction messages when determining participation
-        nr_messages_by_member = helpers.get_non_reaction_messages(df, member_name, time_period)
-        nr_conversations_participated = len(nr_messages_by_member["conversation number"].unique())
+        nr_messages_by_member = helpers.get_non_reaction_messages(
+            df, member_name, time_period
+        )
+        nr_conversations_participated = len(
+            nr_messages_by_member["conversation number"].unique()
+        )
         all_nr_messages = helpers.get_non_reaction_messages(df, time_period=time_period)
         total_nr_conversations = len(all_nr_messages["conversation number"].unique())
         output_dict[conversations_participated_in_no_reactions_category].append(

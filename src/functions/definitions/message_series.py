@@ -43,10 +43,7 @@ class MessageSeries(Function):
 
     @staticmethod
     def get_categories_allowing_graph_total():
-        return [
-            message_series_category,
-            average_messages_category
-        ]
+        return [message_series_category, average_messages_category]
 
     @staticmethod
     def process_messages_df(df, args):
@@ -54,7 +51,9 @@ class MessageSeries(Function):
 
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
-        messages_by_member = helpers.get_non_reaction_messages(df, member_name, time_period)
+        messages_by_member = helpers.get_non_reaction_messages(
+            df, member_name, time_period
+        )
         message_series = len(
             messages_by_member[
                 (messages_by_member["is new message series?"])

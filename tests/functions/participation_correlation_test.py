@@ -53,6 +53,8 @@ def test_table(csv, expected_matrix):
     rows = table_data["rows"]
     assert headers[0] == ""
     names = headers[1:]
-    parsed = pd.DataFrame([r[1:] for r in rows], index=[r[0] for r in rows], columns=names)
+    parsed = pd.DataFrame(
+        [r[1:] for r in rows], index=[r[0] for r in rows], columns=names
+    )
     parsed = parsed.loc[expected_matrix.index, expected_matrix.columns]
     assert parsed.round(2).equals(expected_matrix)

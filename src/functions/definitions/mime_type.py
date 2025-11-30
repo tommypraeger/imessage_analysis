@@ -25,7 +25,7 @@ class MimeType(Function):
             raise Exception("Function is mime type but not given a mime type")
         df[f"is file type {mime_type}?"] = df["type"].astype("string").eq(mime_type)
         mt = df["message_type"].astype("string")
-        df["is game message?"] = mt.isin(["game", "game start"]) 
+        df["is game message?"] = mt.isin(["game", "game start"])
         return df
 
     @staticmethod

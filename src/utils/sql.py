@@ -138,7 +138,7 @@ def get_chat_members(chat_ids, *, conn):
 
 @with_ro_conn
 def get_contact_ids_from_phone_number(phone_number, *, conn):
-    cmd = 'SELECT ROWID FROM handle WHERE id LIKE ?'
+    cmd = "SELECT ROWID FROM handle WHERE id LIKE ?"
     cur = conn.execute(cmd, (f"%{phone_number}%",))
     contact_ids = cur.fetchall()
     return [int(contact_id[0]) for contact_id in contact_ids]
@@ -146,7 +146,7 @@ def get_contact_ids_from_phone_number(phone_number, *, conn):
 
 @with_ro_conn
 def get_chat_ids_from_phone_number(phone_number, *, conn):
-    cmd = 'SELECT ROWID FROM chat WHERE chat_identifier LIKE ?'
+    cmd = "SELECT ROWID FROM chat WHERE chat_identifier LIKE ?"
     cur = conn.execute(cmd, (f"%{phone_number}%",))
     chat_ids = cur.fetchall()
     return [int(chat_id[0]) for chat_id in chat_ids]
@@ -154,7 +154,7 @@ def get_chat_ids_from_phone_number(phone_number, *, conn):
 
 @with_ro_conn
 def get_chat_ids_from_chat_name(chat_name, *, conn):
-    cmd = 'SELECT ROWID FROM chat WHERE display_name = ?'
+    cmd = "SELECT ROWID FROM chat WHERE display_name = ?"
     cur = conn.execute(cmd, (chat_name,))
     chat_ids = cur.fetchall()
     return [int(chat_id[0]) for chat_id in chat_ids]
@@ -169,7 +169,7 @@ def get_phone_number_from_contact_id(contact_id, *, conn):
 
 @with_ro_conn
 def get_all_phone_numbers(*, conn):
-    cmd = 'SELECT DISTINCT id FROM handle'
+    cmd = "SELECT DISTINCT id FROM handle"
     cur = conn.execute(cmd)
     phone_numbers = cur.fetchall()
     return [str(phone_number[0]) for phone_number in phone_numbers]

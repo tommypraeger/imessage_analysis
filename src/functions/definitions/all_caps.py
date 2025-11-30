@@ -25,7 +25,7 @@ class AllCaps(Function):
         letters = text.str.replace("[^a-zA-Z]", "", regex=True)
         non_empty = letters.str.len().gt(0).fillna(False)
         is_upper = letters.str.upper().eq(letters)
-        df["is all caps?"] = (non_empty & is_upper)
+        df["is all caps?"] = non_empty & is_upper
         return df
 
     @staticmethod

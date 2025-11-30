@@ -28,7 +28,7 @@ class Game(Function):
     @staticmethod
     def process_messages_df(df, args):
         mt = df["message_type"].astype("string")
-        df["is game message?"] = mt.isin(["game", "game start"]) 
+        df["is game message?"] = mt.isin(["game", "game start"])
         df["is game start?"] = mt.eq("game start")
         return df
 

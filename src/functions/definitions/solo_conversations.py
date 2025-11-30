@@ -9,7 +9,9 @@ SOLO_PERCENT_CATEGORY = "Percent of started conversations that are solo"
 
 class SoloConversations(Function):
     def __init__(self):
-        self._summary_cache: Dict[str, Tuple[Dict[int, set], Dict[int, str], Dict[str, set]]] = {}
+        self._summary_cache: Dict[
+            str, Tuple[Dict[int, set], Dict[int, str], Dict[str, set]]
+        ] = {}
 
     @staticmethod
     def get_function_name():
@@ -25,7 +27,9 @@ class SoloConversations(Function):
 
     def process_messages_df(self, df, args):
         minutes_threshold = getattr(args, "minutes_threshold", None)
-        df = helpers.compute_conversation_columns(df, minutes_threshold=minutes_threshold)
+        df = helpers.compute_conversation_columns(
+            df, minutes_threshold=minutes_threshold
+        )
         self._summary_cache.clear()
         return df
 
@@ -39,7 +43,9 @@ class SoloConversations(Function):
         return self._summary_cache[key]
 
     def get_results(self, output_dict, df, args, member_name=None, time_period=None):
-        participants_by_conv, starter_by_conv, _ = self._get_summary(df, time_period, args)
+        participants_by_conv, starter_by_conv, _ = self._get_summary(
+            df, time_period, args
+        )
         if member_name is None:
             relevant_starters = starter_by_conv.items()
         else:
@@ -50,9 +56,15 @@ class SoloConversations(Function):
             ]
         total_started = len(relevant_starters)
         solo_started = sum(
-            1 for conv_id, _ in relevant_starters if len(participants_by_conv.get(conv_id, set())) <= 1
+            1
+            for conv_id, _ in relevant_starters
+            if len(participants_by_conv.get(conv_id, set())) <= 1
         )
-        percent_solo = helpers.safe_divide_as_pct(solo_started, total_started) if total_started else 0.0
+        percent_solo = (
+            helpers.safe_divide_as_pct(solo_started, total_started)
+            if total_started
+            else 0.0
+        )
 
         output_dict[SOLO_COUNT_CATEGORY].append(solo_started)
         output_dict[SOLO_PERCENT_CATEGORY].append(percent_solo)

@@ -24,4 +24,6 @@ from tests.testutils import format_param, run_table_test
     ids=format_param,
 )
 def test_table(csv, fn_args, expected_result):
-    run_table_test(SoloConversations(), "solo_conversations", csv, fn_args, expected_result)
+    run_table_test(
+        SoloConversations(), "solo_conversations", csv, fn_args, expected_result
+    )

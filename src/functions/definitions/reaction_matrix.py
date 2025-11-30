@@ -13,22 +13,22 @@ class ReactionMatrix(Function):
     def get_categories():
         return [
             "Reactions received by each person",
-        ] 
-    
+        ]
+
     def get_categories_allowing_graph(self):
         return []
 
     @staticmethod
     def get_categories_allowing_graph_total():
         return []
-    
+
     @staticmethod
     def process_messages_df(df, args):
         """
         Process the dataframe to calculate necessary columns such as total reactions and reaction stats.
         """
         return helpers.add_reactions_for_each_message(df)
-    
+
     @staticmethod
     def get_results(output_dict, df, args, member_name=None, time_period=None):
         """
@@ -46,21 +46,27 @@ class ReactionMatrix(Function):
                 if reaction in constants.REACTION_TYPES:
                     reactions_by_person[user][reaction] += 1
         for user in reactions_by_person:
-            total = sum(reaction_count for reaction_count in reactions_by_person[user].values())
+            total = sum(
+                reaction_count for reaction_count in reactions_by_person[user].values()
+            )
             reactions_by_person[user]["total"] = total
             for reaction_type in constants.REACTION_TYPES:
                 if reaction_type not in reactions_by_person[user]:
                     reactions_by_person[user][reaction_type] = 0
         reactions_by_person = {
             user: reactions_by_person[user]
-            for user in sorted(reactions_by_person.keys(), key=lambda x: reactions_by_person[x]["total"], reverse=True)
+            for user in sorted(
+                reactions_by_person.keys(),
+                key=lambda x: reactions_by_person[x]["total"],
+                reverse=True,
+            )
         }
 
         # Columns order
         columns = ["total"] + constants.REACTION_TYPES
 
         # Generate HTML
-        html_table = "<table border=\"1\">"
+        html_table = '<table border="1">'
         html_table += "<tr>"
         html_table += "<th>Name</th>"
         for column in columns:

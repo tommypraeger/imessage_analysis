@@ -83,7 +83,9 @@ def get_analysis_args(args):
         "--graph", action="store_true", help="output results to view in a line graph"
     )
     output_group.add_argument(
-        "--scatter", action="store_true", help="output results to view in a scatter plot image"
+        "--scatter",
+        action="store_true",
+        help="output results to view in a scatter plot image",
     )
     parser.add_argument(
         "--category",

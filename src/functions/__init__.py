@@ -22,6 +22,7 @@ from src.functions.definitions.cva_plus import CVAPlus
 from src.functions.definitions.solo_conversations import SoloConversations
 from src.functions.definitions.participation_correlation import ParticipationCorrelation
 
+
 def get_function_class_by_name(function_name):
     return [
         function()

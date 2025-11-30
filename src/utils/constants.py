@@ -50,7 +50,15 @@ MESSAGE_TYPES = {
     3005: "removed question",
     3006: "removed custom emoji",
 }
-REACTION_TYPES = ["love", "like", "dislike", "laugh", "emphasize", "question", "custom emoji"]
+REACTION_TYPES = [
+    "love",
+    "like",
+    "dislike",
+    "laugh",
+    "emphasize",
+    "question",
+    "custom emoji",
+]
 GAMES = [
     "8 Ball",
     "Sea Battle",
