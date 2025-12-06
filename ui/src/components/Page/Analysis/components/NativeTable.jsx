@@ -5,7 +5,7 @@ const cellToNumber = (text) => {
   return Number.isNaN(n) ? null : n;
 };
 
-const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160, enableCellColors = true }) => {
+const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160, enableCellColors = false }) => {
   const [sortCol, setSortCol] = useState(defaultSortCol);
   const [sortDir, setSortDir] = useState("desc"); // default for numeric
   const [colWidths, setColWidths] = useState([]);
