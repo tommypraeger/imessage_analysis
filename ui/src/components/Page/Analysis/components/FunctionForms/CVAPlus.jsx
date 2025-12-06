@@ -45,8 +45,9 @@ const CVAPlusForm = ({ scope = "primary" }) => {
           className="w-full accent-slate-900"
         />
         <p className="text-xs text-slate-500 mt-1">
-          Drag to balance volume metrics (messages sent, starters, participation, reactions sent/received) against efficiency metrics
-          (weighted reactions per message, non-solo conversation rate). The weights always sum to 100%.
+          Drag to balance volume metrics (messages sent, starters, participation, message series, reactions sent/received, total
+          word count) against efficiency metrics (weighted reactions per message, non-solo conversation rate). The weights always
+          sum to 100%.
         </p>
       </div>
     </div>
