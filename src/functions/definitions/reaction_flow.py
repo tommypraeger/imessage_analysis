@@ -28,6 +28,8 @@ class ReactionFlow(Function):
         if reaction_filter and reaction_filter.lower() == "all":
             reaction_filter = None
 
+        chat_members = sorted(chat_members)
+
         if reaction_filter:
             # Single matrix: reactors on rows, receivers on columns
             result_dict["tableData"] = self._single_matrix(df, reaction_filter, chat_members)
