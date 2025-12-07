@@ -30,7 +30,7 @@ class ReactionFlow(Function):
 
         if reaction_filter:
             # Single matrix: reactors on rows, receivers on columns
-            result_dict["tableData"] = self._single_matrix(df, reaction_filter)
+            result_dict["tableData"] = self._single_matrix(df, reaction_filter, chat_members)
             return df
 
         # Legacy per-receiver tables
@@ -41,9 +41,7 @@ class ReactionFlow(Function):
         return df
 
     @staticmethod
-    def _single_matrix(df, reaction_filter):
-        reactors = sorted(set(df["sender"].dropna().astype("string")))
-        receivers = sorted(set(df["sender"].dropna().astype("string")))
+    def _single_matrix(df, reaction_filter, chat_members):
         counts = defaultdict(lambda: defaultdict(int))
         for _, row in df.iterrows():
             sender = str(row["sender"])
@@ -56,10 +54,10 @@ class ReactionFlow(Function):
                     continue
                 counts[str(reactor)][sender] += 1
 
-        headers = [""] + receivers
+        headers = ["Reactor"] + chat_members
         rows = []
-        for reactor in reactors:
-            rows.append([reactor] + [counts[reactor].get(rcv, 0) for rcv in receivers])
+        for reactor in chat_members:
+            rows.append([reactor] + [counts[reactor].get(receiver, 0) for receiver in chat_members])
         return {
             "headers": headers,
             "rows": rows,
@@ -101,7 +99,7 @@ class ReactionFlow(Function):
 
         html_table = '<table border="1">'
         html_table += "<tr>"
-        html_table += "<th>Receiver</th>"
+        html_table += "<th>Reactor</th>"
         for column in columns:
             html_table += f"<th>{column.capitalize()}</th>"
         html_table += "</tr>"
