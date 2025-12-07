@@ -161,6 +161,7 @@ const NativeTable = ({ headers, rows, defaultSortCol = 1, columnWidth = 160, ena
                 className={`text-left text-sm font-semibold bg-slate-50 border-b border-slate-200 px-3 py-2 cursor-pointer select-none relative ${
                   orderIdx === 0 ? "sticky left-0 z-10 bg-slate-50" : ""
                 }`}
+                draggable
                 onClick={() => onHeaderClick(orderIdx)}
                 onDragStart={() => handleDragStart(orderIdx)}
                 onDragOver={handleDragOver}
